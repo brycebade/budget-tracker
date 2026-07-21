@@ -1,21 +1,38 @@
-console.error("INDEX.JS IS RUNNING");
-
 const form = document.getElementById("accountForm")
 const acctName = document.getElementById("accountName")
 const acctType = document.getElementById("accountType")
 const acctBalance = document.getElementById("accountBalance")
+const acctContainer = document.getElementById("accountContainer")
 
-
+const accounts = []
 
 form.addEventListener("submit", (event) => {
-    event.preventDefault()
-    
+    event.preventDefault()   
+
     const account = {
         name: acctName.value,
         type: acctType.value,
         balance: Number(acctBalance.value)
     }
 
-    console.log(account)
-    console.log(typeof account.balance)
+    accounts.push(account)
+    renderAccounts()
+
+    acctName.value = ""
+    acctType.value = ""
+    acctBalance.value = ""
 })
+
+const renderAccounts = () => {
+    acctContainer.innerHTML = ""
+
+    for (const account of accounts) {
+        acctContainer.innerHTML += `
+            <div>
+                <h2>${account.name}</h2>
+                <p>${account.type}</p>
+                <p>${account.balance}</p>
+            </div>
+        `
+    }
+}
