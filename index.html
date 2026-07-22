@@ -4,13 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./output.css">
-    <title>Budget Tracker</title>
+    <title>Budget Tracker | Dashboard</title>
 </head>
 <body class="min-h-screen bg-base-300">
 
-    <header class="navbar fixed top-0 left-0 z-20 h-16 bg-base-b border-base-300">
-        <div class="flex-1 px-4">
+    <header class="navbar fixed top-0 left-0 z-20 h-16 bg-base-100 border-base-300">
+        <div class="navbar-start px-4">
             <h1 class="text-xl font-bold">Budget Tracker</h1>
+        </div>
+
+        <div class="navbar-end px-4">
+            <button class="btn btn-primary">Add Account +</button>
         </div>
     </header>
 
@@ -28,74 +32,103 @@
     
     <main class="min-h-screen pt-16 ml-64">
         <div class="p-8">
-            <div class="card w-full max-w-md bg-base-100 border border-base-300 shadow-xl rounded-box">
-                <div class="card-body">
-                    <h2 class="card-title">Add Account</h2>
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold">Dashboard</h2>
+            </div>
+                
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div class="card bg-base-100 shadow">
+                    <div class="card-body">
+                        <p class="text-sm text-base-content/70">Net Worth</p>
+                        <p class="text-2xl font-bold">$0.00</p>
+                    </div>
+                </div>
 
-                    <form id="accountForm" class="space-y-4">
-                        <div>
-                            <label class="card-title" for="accountName">
-                                <span class="label-text">Account Name</span>
-                            </label>
+                <div class="card bg-base-100 shadow">
+                    <div class="card-body">
+                        <p class="text-sm text-base-content/70">Total Debt</p>
+                        <p class="text-2xl font-bold">$0.00</p>
+                    </div>
+                </div>
 
-                            <input 
-                                class="input input-bordered w-full"    
-                                id="accountName" 
-                                type="text" 
-                                placeholder="Account Name" 
-                                required
-                            >
-                        </div>
-
-                        <div>
-                            <label class="label" for="accountType">
-                                <span class="label-text">Account Type</span>
-                            </label>
-
-                            <select 
-                                class="select select-bordered w-full"
-                                id="accountType" 
-                                required
-                            >
-                                <option value="" disabled selected>Select Account Type</option>
-                                <option value="Checking">Checking</option>
-                                <option value="Savings">Savings</option>
-                                <option value="Credit Card">Credit Card</option>
-                                <option value="Loan">Loan</option>
-                                <option value="Investment">Investment</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="label" for="accountBalance">
-                                <span class="label-text">Account Balance</span>
-                            </label>
-
-                            <input 
-                                class="input input-bordered w-full"
-                                id="accountBalance" 
-                                type="number" 
-                                step="0.01" 
-                                required
-                            >
-                        </div>
-
-                        <div class="card-actions justify-end">
-                            <button 
-                                class="btn btn-primary" 
-                                id="addAccountBtn" 
-                                type="submit">
-                                Add Account
-                            </button>
-                        </div>
-                    </form>
+                <div class="card bg-base-100 shadow">
+                    <div class="card-body">
+                        <p class="text-sm text-base-content/70">Available Cash</p>
+                        <p class="text-2xl font-bold">$0.00</p>
+                    </div>
                 </div>
             </div>
+            
+            <section class="mt-8">
+                <h3 class="mb-4 text-xl font-bold">Accounts</h3>
+                <div id="accountContainer"></div>
+            </section>  
         </div>
     </main>
 
-    <div id="accountContainer"></div>
     
-    <script src="./index.js"></script>
+
+    
+    <div class="hidden">
+        <form id="accountForm" class="space-y-4">
+            <div>
+                <label class="label" for="accountName">
+                    <span class="label-text">Account Name</span>
+                </label>
+
+                <input 
+                    class="input input-bordered w-full"    
+                    id="accountName" 
+                    type="text" 
+                    placeholder="Account Name" 
+                    required
+                >
+            </div>
+
+            <div>
+                <label class="label" for="accountType">
+                    <span class="label-text">Account Type</span>
+                </label>
+
+                <select 
+                    class="select select-bordered w-full"
+                    id="accountType" 
+                    required
+                >
+                    <option value="" disabled selected>Select Account Type</option>
+                    <option value="Checking">Checking</option>
+                    <option value="Savings">Savings</option>
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="Loan">Loan</option>
+                    <option value="Investment">Investment</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="label" for="accountBalance">
+                    <span class="label-text">Account Balance</span>
+                </label>
+
+                <input 
+                    class="input input-bordered w-full"
+                    id="accountBalance" 
+                    type="number" 
+                    step="0.01" 
+                    required
+                >
+            </div>
+
+            <div class="card-actions justify-end">
+                <button 
+                    class="btn btn-primary" 
+                    id="addAccountBtn" 
+                    type="submit">
+                    Add Account
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <script src="./dashboard.js"></script>
 </body>
 </html>
