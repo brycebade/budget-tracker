@@ -31,7 +31,7 @@ const renderAccounts = () => {
             <div>
                 <h2>${account.name}</h2>
                 <p>${account.type}</p>
-                <p>${account.balance}</p>
+                <p>$${account.balance}</p>
             </div>
         `
     }
