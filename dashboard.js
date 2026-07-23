@@ -19,10 +19,24 @@ form.addEventListener("submit", (event) => {
     accounts.push(account)
     renderAccounts()
 
+    const availableCash = calculateAvailableCash()
+    console.log(availableCash)
+
     acctName.value = ""
     acctType.value = ""
     acctBalance.value = ""
 })
+
+const calculateAvailableCash = () => {
+    let total = 0
+
+    accounts.forEach((account) => {
+        if (account.type === "checking") {
+            total += account.balance
+        }  
+    }) 
+    return total
+}
 
 const renderAccounts = () => {
     acctContainer.innerHTML = ""
