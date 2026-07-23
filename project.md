@@ -15,6 +15,16 @@ The application should not simply record transactions. It should answer:
 - Where am I headed?
 - What should I do next?
 
+A read-only personal financial planning and decision-support platform.
+
+## User Control and Financial Safety
+
+The application is a financial guidance platform, not a financial control platform.
+
+It may collect or receive read-only financial data, analyze that data, model potential outcomes, and recommend actions. It must not move money, execute trades, pay bills, or make irreversible financial decisions on the user's behalf.
+
+The application looks through the financial window. The user remains the only person who can reach through it.
+
 ---
 
 ## Product Goals
@@ -28,6 +38,8 @@ The application should not simply record transactions. It should answer:
 3. Information should be easy to understand in under 10 seconds.
 
 4. Defaults should be intelligent.
+
+5. The app guides our financial decisions. It does not conrol your money.
 
 ### Goals
 
@@ -94,6 +106,10 @@ Settings
 87 / 100
 
 Later users could click the score to see a detailed breakdown and sugestions for improvement.
+
+## Product Vision
+
+Every recommendation should be accompanied by an explanation and, whenever possible, a way for the user to explore alternatives.
 
 ## Parking Lot
 
