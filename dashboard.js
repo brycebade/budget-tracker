@@ -10,6 +10,7 @@ form.addEventListener("submit", (event) => {
     event.preventDefault()   
 
     const account = {
+        id,
         name: acctName.value,
         type: acctType.value,
         balance: Number(acctBalance.value)
