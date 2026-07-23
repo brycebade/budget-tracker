@@ -10,7 +10,7 @@ form.addEventListener("submit", (event) => {
     event.preventDefault()   
 
     const account = {
-        id,
+        id: crypto.randomUUID(),
         name: acctName.value,
         type: acctType.value,
         balance: Number(acctBalance.value)
