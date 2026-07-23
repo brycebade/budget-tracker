@@ -122,3 +122,4 @@ Every recommendation should be accompanied by an explanation and, whenever possi
 - Shared household budgeting
 - Family accounts
 - Financial document vault
+- Debt accounts like collections/medical bills
