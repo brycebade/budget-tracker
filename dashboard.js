@@ -31,7 +31,7 @@ const calculateDashboardMetrics = () => {
     const metrics = {
         availableCash: 0,
         savings: 0,
-        investments: 0,
+        investment: 0,
         retirement: 0,
         totalDebt: 0,
         netWorth: 0
@@ -41,10 +41,26 @@ const calculateDashboardMetrics = () => {
         if (account.type === "checking") {
             metrics.availableCash += account.balance
             metrics.netWorth += account.balance
+        } else if (account.type === "savings") {
+            metrics.savings += account.balance
+            metrics.netWorth += account.balance
+        } else if (account.type === "investment") {
+            metrics.investment += account.balance
+            metrics.netWorth += account.balance
+        } else if (account.type === "retirement") {
+            metrics.retirement += account.balance
+            metrics.netWorth += account.balance
+        } else if (account.type === "credit_card") {
+            metrics.totalDebt += account.balance
+            metrics.netWorth -= account.balance
+        } else if (account.type === "loan") {
+            metrics.totalDebt += account.balance
+            metrics.netWorth -= account.balance
         }
     })
 
     return metrics
+    console.log(metrics)
 }
 
 const renderAccounts = () => {
