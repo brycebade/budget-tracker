@@ -1,3 +1,5 @@
+// DOM References
+
 const form = document.getElementById("accountForm")
 const acctName = document.getElementById("accountName")
 const acctType = document.getElementById("accountType")
@@ -10,28 +12,9 @@ const savingsValue = document.getElementById("savingsValue")
 const investmentsValue = document.getElementById("investmentsValue")
 const retirementValue = document.getElementById("retirementValue")
 
+// State
+
 const accounts = []
-
-form.addEventListener("submit", (event) => {
-    event.preventDefault()   
-
-    const account = {
-        id: crypto.randomUUID(),
-        name: acctName.value,
-        type: acctType.value,
-        balance: Number(acctBalance.value)
-    }
-
-    accounts.push(account)
-    renderAccounts()
-
-    const availableCash = calculateDashboardMetrics()
-    console.log(availableCash)
-
-    acctName.value = ""
-    acctType.value = ""
-    acctBalance.value = ""
-})
 
 const calculateDashboardMetrics = () => {
     const metrics = {
@@ -51,7 +34,7 @@ const calculateDashboardMetrics = () => {
             metrics.savings += account.balance
             metrics.netWorth += account.balance
         } else if (account.type === "investments") {
-            metrics.investment += account.balance
+            metrics.investments += account.balance
             metrics.netWorth += account.balance
         } else if (account.type === "retirement") {
             metrics.retirement += account.balance
@@ -68,6 +51,8 @@ const calculateDashboardMetrics = () => {
     return metrics
 }
 
+// Render Functions
+
 const renderAccounts = () => {
     acctContainer.innerHTML = ""
 
@@ -81,3 +66,39 @@ const renderAccounts = () => {
         `
     }
 }
+
+const renderDashboard = () => {
+    renderAccounts()
+
+    const metrics = calculateDashboardMetrics()
+    renderDashboardMetrics(metrics)
+}
+
+const renderDashboardMetrics = (metrics) => {
+    availableCashValue.textContent = metrics.availableCash
+    netWorthValue.textContent = metrics.netWorth
+    savingsValue.textContent = metrics.savings
+    investmentsValue.textContent = metrics.investments
+    retirementValue.textContent = metrics.retirement
+    totalDebtValue.textContent = metrics.totalDebt
+}
+
+// Event Listeners
+
+form.addEventListener("submit", (event) => {
+    event.preventDefault()   
+
+    const account = {
+        id: crypto.randomUUID(),
+        name: acctName.value,
+        type: acctType.value,
+        balance: Number(acctBalance.value)
+    }
+
+    accounts.push(account)
+    renderDashboard()
+
+    acctName.value = ""
+    acctType.value = ""
+    acctBalance.value = ""
+})
