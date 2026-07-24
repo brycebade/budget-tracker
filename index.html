@@ -65,19 +65,8 @@
                     </div>
                 </div>
             </div>
-            
-            <section class="mt-8">
-                <h3 class="mb-4 text-xl font-bold">Accounts</h3>
-                <div id="accountContainer"></div>
-            </section>  
-        </div>
-    </main>
 
-    
-
-    
-    <div class="hidden">
-        <form id="accountForm" class="space-y-4">
+            <form id="accountForm" class="space-y-4">
             <div>
                 <label class="label" for="accountName">
                     <span class="label-text">Account Name</span>
@@ -105,11 +94,10 @@
                     <option value="" disabled selected>Select Account Type</option>
                     <option value="checking">Checking</option>
                     <option value="savings">Savings</option>
-                    <option value="investment">Investment</option>
+                    <option value="investments">Investments</option>
                     <option value="retirement">Retirement</option>
                     <option value="credit_card">Credit Card</option>
                     <option value="loan">Loan</option>
-                    <option value="investment">Investment</option>
                 </select>
             </div>
 
@@ -136,7 +124,18 @@
                 </button>
             </div>
         </form>
-    </div>
+            
+            <section class="mt-8">
+                <h3 class="mb-4 text-xl font-bold">Accounts</h3>
+                <div id="accountContainer"></div>
+            </section>  
+        </div>
+    </main>
+
+    
+
+    
+        
     
     <script src="./dashboard.js"></script>
 </body>

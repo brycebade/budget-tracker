@@ -19,7 +19,7 @@ form.addEventListener("submit", (event) => {
     accounts.push(account)
     renderAccounts()
 
-    const availableCash = calculateAvailableCash()
+    const availableCash = calculateDashboardMetrics()
     console.log(availableCash)
 
     acctName.value = ""
@@ -31,7 +31,7 @@ const calculateDashboardMetrics = () => {
     const metrics = {
         availableCash: 0,
         savings: 0,
-        investment: 0,
+        investments: 0,
         retirement: 0,
         totalDebt: 0,
         netWorth: 0
@@ -44,7 +44,7 @@ const calculateDashboardMetrics = () => {
         } else if (account.type === "savings") {
             metrics.savings += account.balance
             metrics.netWorth += account.balance
-        } else if (account.type === "investment") {
+        } else if (account.type === "investments") {
             metrics.investment += account.balance
             metrics.netWorth += account.balance
         } else if (account.type === "retirement") {
@@ -60,7 +60,6 @@ const calculateDashboardMetrics = () => {
     })
 
     return metrics
-    console.log(metrics)
 }
 
 const renderAccounts = () => {
