@@ -3,6 +3,12 @@ const acctName = document.getElementById("accountName")
 const acctType = document.getElementById("accountType")
 const acctBalance = document.getElementById("accountBalance")
 const acctContainer = document.getElementById("accountContainer")
+const availableCashValue = document.getElementById("availableCashValue")
+const netWorthValue = document.getElementById("netWorthValue")
+const totalDebtValue = document.getElementById("totalDebtValue")
+const savingsValue = document.getElementById("savingsValue")
+const investmentsValue = document.getElementById("investmentsValue")
+const retirementValue = document.getElementById("retirementValue")
 
 const accounts = []
 
