@@ -30,10 +30,19 @@ form.addEventListener("submit", (event) => {
 const calculateDashboardMetrics = () => {
     const metrics = {
         availableCash: 0,
-        savingsAndInvestments: 0,
+        savings: 0,
+        investments: 0,
+        retirement: 0,
         totalDebt: 0,
         netWorth: 0
     }
+
+    accounts.forEach((account) => {
+        if (account.type === "checking") {
+            metrics.availableCash += account.balance
+            metrics.netWorth += account.balance
+        }
+    })
 
     return metrics
 }
