@@ -27,15 +27,15 @@ form.addEventListener("submit", (event) => {
     acctBalance.value = ""
 })
 
-const calculateAvailableCash = () => {
-    let total = 0
+const calculateDashboardMetrics = () => {
+    const metrics = {
+        availableCash: 0,
+        savingsAndInvestments: 0,
+        totalDebt: 0,
+        netWorth: 0
+    }
 
-    accounts.forEach((account) => {
-        if (account.type === "checking") {
-            total += account.balance
-        }  
-    }) 
-    return total
+    return metrics
 }
 
 const renderAccounts = () => {
