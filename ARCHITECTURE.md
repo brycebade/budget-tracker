@@ -27,3 +27,12 @@ Includes:
 
 ## Net Worth
 Assets - Liabilities
+
+
+When you're unsure what category something belongs to, ask:
+
+Does it store information? → State
+Does it calculate or transform information? → Business Logic
+Does it display information? → Render Function
+Does it respond to user actions? → Event Listener
+Is it a reusable utility? → Helper Function

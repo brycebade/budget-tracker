@@ -1,4 +1,4 @@
-// DOM References
+// DOM REFERENCES
 
 const form = document.getElementById("accountForm")
 const acctName = document.getElementById("accountName")
@@ -12,9 +12,21 @@ const savingsValue = document.getElementById("savingsValue")
 const investmentsValue = document.getElementById("investmentsValue")
 const retirementValue = document.getElementById("retirementValue")
 
-// State
+// STATE
 
 const accounts = []
+
+// HELPER FUNCTIONS
+
+const formatCurrency = (amount) => {
+    const currency = amount.toLocaleString("en-US", {
+        style:"currency", 
+        currency:"USD"
+    })
+    return currency
+}
+
+// BUSINESS LOGIC
 
 const calculateDashboardMetrics = () => {
     const metrics = {
@@ -51,7 +63,7 @@ const calculateDashboardMetrics = () => {
     return metrics
 }
 
-// Render Functions
+// RENDER FUNCTIONS
 
 const renderAccounts = () => {
     acctContainer.innerHTML = ""
@@ -75,15 +87,15 @@ const renderDashboard = () => {
 }
 
 const renderDashboardMetrics = (metrics) => {
-    availableCashValue.textContent = metrics.availableCash
-    netWorthValue.textContent = metrics.netWorth
-    savingsValue.textContent = metrics.savings
-    investmentsValue.textContent = metrics.investments
-    retirementValue.textContent = metrics.retirement
-    totalDebtValue.textContent = metrics.totalDebt
+    availableCashValue.textContent = formatCurrency(metrics.availableCash)
+    netWorthValue.textContent = formatCurrency(metrics.netWorth)
+    savingsValue.textContent = formatCurrency(metrics.savings)
+    investmentsValue.textContent = formatCurrency(metrics.investments)
+    retirementValue.textContent = formatCurrency(metrics.retirement)
+    totalDebtValue.textContent = formatCurrency(metrics.totalDebt)
 }
 
-// Event Listeners
+// EVENT LISTENERS
 
 form.addEventListener("submit", (event) => {
     event.preventDefault()   
