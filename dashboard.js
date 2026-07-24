@@ -15,6 +15,20 @@ const retirementValue = document.getElementById("retirementValue")
 // STATE
 
 const accounts = []
+const transactions = []
+
+const transactions = [
+    {
+        id: crypto.randomUUID(),
+        accountId: "temporary-account-id",
+        amount: 84.21,
+        type: "expense",
+        description: "Walmart",
+        category: "Groceries",
+        subcategory: "Household groceries",
+        date: "2026-07-24"
+    }
+]
 
 // HELPER FUNCTIONS
 
@@ -61,6 +75,22 @@ const calculateDashboardMetrics = () => {
     })
 
     return metrics
+}
+
+const calculateAccountBalance = (accountId) => {
+    let balance = 0
+
+    transactions.forEach((transaction) => {
+        if (transaction.accoundId !== accountId) return
+        
+        if (transaction.accountId === "income") {
+            balance += transaction.amount
+        } else if (transaction.accountId === "expense") {
+            balance -= transaction.amount
+        }
+    })
+
+    return balance
 }
 
 // RENDER FUNCTIONS
