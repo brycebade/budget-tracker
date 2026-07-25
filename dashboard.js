@@ -15,7 +15,6 @@ const retirementValue = document.getElementById("retirementValue")
 // STATE
 
 const accounts = []
-const transactions = []
 
 const transactions = [
     {
@@ -77,15 +76,15 @@ const calculateDashboardMetrics = () => {
     return metrics
 }
 
-const calculateAccountBalance = (accountId) => {
-    let balance = 0
+const calculateAccountBalance = (accountId, startingBalance) => {
+    let balance = startingBalance
 
     transactions.forEach((transaction) => {
-        if (transaction.accoundId !== accountId) return
+        if (transaction.accountId !== accountId) return
         
-        if (transaction.accountId === "income") {
+        if (transaction.type === "income") {
             balance += transaction.amount
-        } else if (transaction.accountId === "expense") {
+        } else if (transaction.type === "expense") {
             balance -= transaction.amount
         }
     })
@@ -99,11 +98,13 @@ const renderAccounts = () => {
     acctContainer.innerHTML = ""
 
     for (const account of accounts) {
+        const balance = calculateAccountBalance(account.id, account.balance)
+
         acctContainer.innerHTML += `
             <div>
                 <h2>${account.name}</h2>
                 <p>${account.type}</p>
-                <p>$${account.balance}</p>
+                <p>$${formatCurrency(balance)}</p>
             </div>
         `
     }
