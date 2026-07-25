@@ -1,9 +1,17 @@
 {
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js"
+  },
   "devDependencies": {
     "daisyui": "^5.7.0"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.3.3",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "pg": "^8.22.0",
     "tailwindcss": "^4.3.3"
   }
 }
