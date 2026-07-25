@@ -52,24 +52,26 @@ const calculateDashboardMetrics = () => {
     }
 
     accounts.forEach((account) => {
+        const balance = calculateAccountBalance(account.id, account.balance)
+
         if (account.type === "checking") {
-            metrics.availableCash += account.balance
-            metrics.netWorth += account.balance
+            metrics.availableCash += balance
+            metrics.netWorth += balance
         } else if (account.type === "savings") {
-            metrics.savings += account.balance
-            metrics.netWorth += account.balance
+            metrics.savings += balance
+            metrics.netWorth += balance
         } else if (account.type === "investments") {
-            metrics.investments += account.balance
-            metrics.netWorth += account.balance
+            metrics.investments += balance
+            metrics.netWorth += balance
         } else if (account.type === "retirement") {
-            metrics.retirement += account.balance
-            metrics.netWorth += account.balance
+            metrics.retirement += balance
+            metrics.netWorth += balance
         } else if (account.type === "credit_card") {
-            metrics.totalDebt += account.balance
-            metrics.netWorth -= account.balance
+            metrics.totalDebt += balance
+            metrics.netWorth -= balance
         } else if (account.type === "loan") {
-            metrics.totalDebt += account.balance
-            metrics.netWorth -= account.balance
+            metrics.totalDebt += balance
+            metrics.netWorth -= balance
         }
     })
 
@@ -104,7 +106,7 @@ const renderAccounts = () => {
             <div>
                 <h2>${account.name}</h2>
                 <p>${account.type}</p>
-                <p>$${formatCurrency(balance)}</p>
+                <p>${formatCurrency(balance)}</p>
             </div>
         `
     }
