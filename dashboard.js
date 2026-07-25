@@ -1,3 +1,5 @@
+import { createAccount, getAccounts } from "./api/accountsApi.js"
+
 // DOM REFERENCES
 
 const form = document.getElementById("accountForm")
@@ -15,19 +17,7 @@ const retirementValue = document.getElementById("retirementValue")
 // STATE
 
 const accounts = []
-
-const transactions = [
-    {
-        id: crypto.randomUUID(),
-        accountId: "temporary-account-id",
-        amount: 84.21,
-        type: "expense",
-        description: "Walmart",
-        category: "Groceries",
-        subcategory: "Household groceries",
-        date: "2026-07-24"
-    }
-]
+const transactions = []
 
 // HELPER FUNCTIONS
 
@@ -130,20 +120,54 @@ const renderDashboardMetrics = (metrics) => {
 
 // EVENT LISTENERS
 
-form.addEventListener("submit", (event) => {
+form.addEventListener("submit", async (event) => {
     event.preventDefault()   
 
-    const account = {
-        id: crypto.randomUUID(),
+    const accountData = {
         name: acctName.value,
         type: acctType.value,
-        balance: Number(acctBalance.value)
+        openingBalance: Number(acctBalance.value)
     }
 
-    accounts.push(account)
-    renderDashboard()
+    try {
+        const savedAccount = await createAccount(accountData)
 
-    acctName.value = ""
-    acctType.value = ""
-    acctBalance.value = ""
+        accounts.push({
+            id: savedAccount.id,
+            name: savedAccount.name,
+            type: savedAccount.type,
+            balance: savedAccount.opening_balance
+        })
+
+        renderDashboard()
+
+        acctName.value = ""
+        acctType.value = ""
+        acctBalance.value = ""
+    } catch (error) {
+        console.error("Account could not be saved:", error)
+    }
 })
+
+// INITIALIZATION
+
+const loadAccounts = async () => {
+    try {
+        const savedAccounts = await getAccounts()
+
+        const formattedAccounts = savedAccounts.map((account) => ({
+            id: account.id,
+            name: account.name,
+            type: account.type,
+            balance: Number(account.opening_balance)
+        }))
+
+        accounts.push(...formattedAccounts)
+
+        renderDashboard()
+    } catch(error) {
+        console.error("Accounts could not be loaded:", error)
+    }
+}
+
+loadAccounts()

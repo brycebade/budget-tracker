@@ -1,13 +1,20 @@
 import "dotenv/config"
 import express from "express"
 import pg from "pg"
+import cors from "cors"
 
 const { Pool } = pg
 
 const app = express()
+
+app.use(cors({
+    origin: "http://127.0.0.1:5500"
+}))
+
 app.use(express.json())
 
 const PORT = 3000
+
 const TEMP_USER_ID = "local-development-user"
 
 if (!process.env.DATABASE_URL) {
@@ -26,7 +33,12 @@ app.get("/api/accounts", async (request, response) => {
             ORDER BY created_at DESC
         `)
 
-        response.json(result.rows)
+        const savedAccounts = result.rows.map((account) => ({
+            ...account,
+            opening_balance: Number(account.opening_balance)
+        }))
+
+        response.json(savedAccounts)
     } catch (error) {
         console.error("Failed to load accounts:", error)
 
@@ -84,7 +96,7 @@ app.post("/api/accounts", async (request, response) => {
             ]
         )
 
-        const savedAccounts = {
+        const savedAccount = {
             ...result.rows[0],
             opening_balance: Number(result.rows[0].opening_balance)
         }
