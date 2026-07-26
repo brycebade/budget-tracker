@@ -20,7 +20,7 @@ export const renderLayout = ({
         "navbar fixed top-0 left-0 z-20 h-16 bg-base-100 border-b border-base-300"
 
     sidebar.className =
-        "fixed top-16 left-0 bottom-0 z-10 w-64 bg-base-200 border-r broder-base-300"
+        "fixed top-16 left-0 bottom-0 z-10 w-64 bg-base-200 border-r border-base-300"
 
     navbar.innerHTML = `
         <div class="navbar-start px-4">
