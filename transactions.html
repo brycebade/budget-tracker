@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./output.css">
+    <title>Financial Planner | Transactions</title>
+</head>
+<body class="min-h-screen bg-base-300">
+
+    <header id="navbar"></header>
+    <aside id="sidebar"></aside>
+    
+    <main class="min-h-screen pt-16 ml-64">
+        <div class="p-8">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold">Transactions</h2>
+                <p class="mt-1 text-base-content/70">
+                    View and manage your account activity.
+                </p>
+            </div>
+
+            <div id="transactionContainer">
+                <div class="card bg-base-100 border border-base-300 shadow-sm">
+                    <div class="card-body">
+                        <p class="text-base-content/70">
+                            No transactions to display.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script type="module" src="./transactions.js"></script>
+</body>
+</html>

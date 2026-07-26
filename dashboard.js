@@ -1,4 +1,10 @@
 import { createAccount, getAccounts } from "./api/accountsApi.js"
+import { renderLayout } from "./components/layout.js"
+
+renderLayout({
+    title: "Dashboard",
+    activePage: "dashboard"
+})
 
 // DOM REFERENCES
 
@@ -27,6 +33,19 @@ const formatCurrency = (amount) => {
         currency:"USD"
     })
     return currency
+}
+
+const formatAccountType = (type) => {
+    const accountTypeLabels = {
+        checking: "Checking",
+        savings: "Savings",
+        investments: "Investments",
+        retirement: "Retirement",
+        credit_card: "Credit Card",
+        loan: "Loan"
+    }
+
+    return accountTypeLabels[type]
 }
 
 // BUSINESS LOGIC
@@ -93,10 +112,12 @@ const renderAccounts = () => {
         const balance = calculateAccountBalance(account.id, account.balance)
 
         acctContainer.innerHTML += `
-            <div>
-                <h2>${account.name}</h2>
-                <p>${account.type}</p>
-                <p>${formatCurrency(balance)}</p>
+            <div class="card bg-base-100 border border-base-300 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title">${account.name}</h2>
+                    <p class="text-sm opacity-70">${formatAccountType(account.type)}</p>
+                    <p class="text-2xl font-bold">${formatCurrency(balance)}</p>
+                </div>
             </div>
         `
     }
