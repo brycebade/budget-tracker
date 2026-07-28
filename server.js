@@ -154,7 +154,7 @@ app.post("/api/transactions", async (request, response) => {
                     amount,
                     type,
                     category,
-                    transaction_date,
+                    transaction_date::text AS transaction_date,
                     created_at
             `,
             [

@@ -1,6 +1,7 @@
 import { renderLayout } from "./components/layout.js"
 import { renderTransactionModal } from "./transactionModal.js"
 import { getAccounts } from "./api/accountsApi.js"
+import { createTransaction } from "./api/transactionsApi.js"
 
 renderLayout({
     title: "Transactions",
@@ -107,26 +108,38 @@ const renderTransactions = () => {
     })
 }
 
-transactionForm.addEventListener("submit", (event) => {
+transactionForm.addEventListener("submit", async (event) => {
     event.preventDefault()
 
-    const transaction = {
-        id: crypto.randomUUID(),
-        accountId: transactionAccount.value,
-        description: transactionDescription.value,
-        amount: Number(transactionAmount.value),
-        type: transactionType.value,
-        category: transactionCategory.value,
-        date: transactionDate.value
+    const transactionData = {
+       accountId: transactionAccount.value,
+       description: transactionDescription.value,
+       amount: Number(transactionAmount.value),
+       type: transactionType.value,
+       category: transactionCategory.value,
+       date: transactionDate.value
     }
 
-    transactions.push(transaction)
-    renderTransactions()
+    try {
+        const savedTransaction = await createTransaction(transactionData)
 
-    console.log(transactions)
+        transactions.push({
+            id: savedTransaction.id,
+            accountId: savedTransaction.account_id,
+            description: savedTransaction.description,
+            amount: savedTransaction.amount,
+            type: savedTransaction.type,
+            category: savedTransaction.category,
+            date: savedTransaction.transaction_date
+        })
 
-    transactionForm.reset()
-    transactionModal.close()
+        renderTransactions()
+
+        transactionForm.reset()
+        transactionModal.close()
+    } catch (error) {
+        console.error("Transaction could not be saved", error)
+    }
 })
 
 loadAccountOptions()
