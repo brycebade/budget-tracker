@@ -111,6 +111,78 @@ app.post("/api/accounts", async (request, response) => {
     }
 })
 
+app.post("/api/transactions", async (request, response) => {
+    const {
+        accountId,
+        description,
+        amount,
+        type,
+        category,
+        date
+    } = request.body
+
+    if (
+        !accountId ||
+        !description ||
+        amount === undefined ||
+        !type ||
+        !category ||
+        !date
+    ) {
+        return response.status(400).json({
+            message: "All transaction fields are required"
+        })
+    }
+
+    try {
+        const result = await pool.query(
+            `
+                INSERT INTO transactions (
+                    user_id,
+                    account_id,
+                    description,
+                    amount,
+                    type,
+                    category,
+                    transaction_date
+                )
+                VALUES ($1, $2, $3, $4, $5, $6, $7)
+                RETURNING
+                    id,
+                    account_id,
+                    description,
+                    amount,
+                    type,
+                    category,
+                    transaction_date,
+                    created_at
+            `,
+            [
+                TEMP_USER_ID,
+                accountId,
+                description,
+                amount,
+                type,
+                category,
+                date
+            ]
+        )
+
+        const savedTransaction = {
+            ...result.rows[0],
+            amount: Number(result.rows[0].amount)
+        }
+
+        response.status(201).json(savedTransaction)
+    } catch (error) {
+        console.error("Failed to create transaction:", error)
+
+        response.status(500).json({
+            message: "Failed to create transaction"
+        })
+    }
+})
+
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`)
 })
