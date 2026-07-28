@@ -183,6 +183,43 @@ app.post("/api/transactions", async (request, response) => {
     }
 })
 
+app.get("/api/transactions", async (request, response) => {
+    try {
+        const result = await pool.query(
+            `
+                SELECT
+                    id,
+                    account_id,
+                    description,
+                    amount,
+                    type,
+                    category,
+                    transaction_date::text AS transaction_date,
+                    created_at
+                FROM transactions
+                WHERE user_id = $1
+                ORDER BY transaction_date DESC, created_at DESC
+            `,
+            [
+                TEMP_USER_ID
+            ]
+        )
+
+        const savedTransactions = result.rows.map((transaction) => ({
+            ...transaction,
+            amount: Number(transaction.amount)
+        }))
+
+        response.json(savedTransactions)
+    } catch (error) {
+        console.error("Failed to load transactions:", error)
+
+        response.status(500).json({
+            message: "Failed to load transactions"
+        })
+    }
+})
+
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`)
 })
