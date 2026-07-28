@@ -15,3 +15,13 @@ export const createTransaction = async (transactionData) => {
 
     return response.json()
 }
+
+export const getTransactions = async () => {
+    const response = await fetch(TRANSACTION_URL)
+
+    if (!response.ok) {
+        throw new Error("Failed to load transactions")
+    }
+
+    return response.json()
+}

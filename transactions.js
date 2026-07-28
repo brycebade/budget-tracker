@@ -1,7 +1,7 @@
 import { renderLayout } from "./components/layout.js"
 import { renderTransactionModal } from "./transactionModal.js"
 import { getAccounts } from "./api/accountsApi.js"
-import { createTransaction } from "./api/transactionsApi.js"
+import { createTransaction, getTransactions } from "./api/transactionsApi.js"
 
 renderLayout({
     title: "Transactions",
@@ -47,6 +47,30 @@ const loadAccountOptions = async () => {
         })
     } catch (error) {
         console.error("Account options could not be loaded:", error)
+    }
+}
+
+const loadTransactions = async () => {
+    try {
+        const savedTransactions = await getTransactions()
+
+        const formattedTransactions = savedTransactions.map(
+            (transaction) => ({
+                id: transaction.id,
+                accountId: transaction.account_id,
+                description: transaction.description,
+                amount: Number(transaction.amount),
+                type: transaction.type,
+                category: transaction.category,
+                date: transaction.transaction_date
+            })
+        )
+
+        transactions.push(...formattedTransactions)
+
+        renderTransactions()
+    } catch (error) {
+        console.error("Transactions could not be loaded:", error)
     }
 }
 
@@ -142,4 +166,9 @@ transactionForm.addEventListener("submit", async (event) => {
     }
 })
 
-loadAccountOptions()
+const initializeTransactionPage = async () => {
+    await loadAccountOptions()
+    await loadTransactions()
+}
+
+initializeTransactionPage()
