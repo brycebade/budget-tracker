@@ -1,5 +1,5 @@
-import { createAccount, getAccounts } from "./api/accountsApi.js"
 import { renderLayout } from "./components/layout.js"
+import { getAccounts } from "./api/accountsApi.js"
 
 renderLayout({
     title: "Dashboard",
@@ -8,11 +8,6 @@ renderLayout({
 
 // DOM REFERENCES
 
-const form = document.getElementById("accountForm")
-const acctName = document.getElementById("accountName")
-const acctType = document.getElementById("accountType")
-const acctBalance = document.getElementById("accountBalance")
-const acctContainer = document.getElementById("accountContainer")
 const availableCashValue = document.getElementById("availableCashValue")
 const netWorthValue = document.getElementById("netWorthValue")
 const totalDebtValue = document.getElementById("totalDebtValue")
@@ -105,27 +100,7 @@ const calculateAccountBalance = (accountId, startingBalance) => {
 
 // RENDER FUNCTIONS
 
-const renderAccounts = () => {
-    acctContainer.innerHTML = ""
-
-    for (const account of accounts) {
-        const balance = calculateAccountBalance(account.id, account.balance)
-
-        acctContainer.innerHTML += `
-            <div class="card bg-base-100 border border-base-300 shadow-sm">
-                <div class="card-body">
-                    <h2 class="card-title">${account.name}</h2>
-                    <p class="text-sm opacity-70">${formatAccountType(account.type)}</p>
-                    <p class="text-2xl font-bold">${formatCurrency(balance)}</p>
-                </div>
-            </div>
-        `
-    }
-}
-
 const renderDashboard = () => {
-    renderAccounts()
-
     const metrics = calculateDashboardMetrics()
     renderDashboardMetrics(metrics)
 }
@@ -140,35 +115,6 @@ const renderDashboardMetrics = (metrics) => {
 }
 
 // EVENT LISTENERS
-
-form.addEventListener("submit", async (event) => {
-    event.preventDefault()   
-
-    const accountData = {
-        name: acctName.value,
-        type: acctType.value,
-        openingBalance: Number(acctBalance.value)
-    }
-
-    try {
-        const savedAccount = await createAccount(accountData)
-
-        accounts.push({
-            id: savedAccount.id,
-            name: savedAccount.name,
-            type: savedAccount.type,
-            balance: savedAccount.opening_balance
-        })
-
-        renderDashboard()
-
-        acctName.value = ""
-        acctType.value = ""
-        acctBalance.value = ""
-    } catch (error) {
-        console.error("Account could not be saved:", error)
-    }
-})
 
 // INITIALIZATION
 
