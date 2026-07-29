@@ -10,7 +10,6 @@ renderLayout({
 })
 
 const transactionModal = renderTransactionModal()
-
 const actionButton = document.getElementById("pageActionButton")
 const cancelTransactionButton = document.getElementById("cancelTransactionButton")
 const transactionForm = document.getElementById("transactionForm")

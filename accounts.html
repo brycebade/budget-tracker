@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./output.css">
+    <title>Financial Planner | Accounts</title>
+</head>
+
+<body class="min-h-screen bg-base-300">
+
+    <header id="navbar"></header>
+    <aside id="sidebar"></aside>
+
+    <main class="min-h-screen pt-16 ml-64">
+        <div class="p-8">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold">Accounts</h2>
+
+                <p class="mt-1 text-base-content/70">
+                    View and manage yoru financial accounts
+                </p>
+            </div>
+
+            <div id="accountContainer" class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"></div>
+        </div>
+    </main>
+
+    <div id="modalRoot"></div>
+    
+    <script type="module" src="./accounts.js"></script>
+</body>
+</html>
