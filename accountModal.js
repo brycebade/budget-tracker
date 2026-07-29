@@ -63,14 +63,13 @@ export const renderAccountModal = () => {
                             Purchase APR
 
                             <span
-                                class="tooltip tooltip-bottom"
+                                class="tooltip tooltip-right before:max-w-64 before:whitespace-normal before:text-left"
                                 data-tip="Find this under Interest Charge Calculation on your latest statement."
                             >
                                 <button
                                     class="btn btn-circle btn-ghost btn-xs"
                                     type="button"
                                     aria-label="Where to find purchase APR"
-                                    tabindex="0"
                                 >
                                     ?
                                 </button>
@@ -89,12 +88,12 @@ export const renderAccountModal = () => {
                 </div>
 
                 <div>
-                    <label class="label" for="paymentDueDay">
+                    <label class="label" for="paymentDueDate">
                         <span class="label-text flex items-center gap-2">
                             Payment Due Day
 
                             <span
-                                class="tooltip"
+                                class="tooltip tooltip-right before:max-w-64 before:whitespace-normal before:text-left"
                                 data-tip="Use the day of the month your payment is normally due."
                             >
                                 <span
@@ -108,7 +107,7 @@ export const renderAccountModal = () => {
                     </label>
 
                     <input
-                        id="paymentDueDay"
+                        id="paymentDueDate"
                         class="input input-bordered w-full"
                         type="number"
                         min="1"
@@ -141,7 +140,7 @@ export const renderAccountModal = () => {
                             APR
 
                             <span
-                                class="tooltip"
+                                class="tooltip tooltip-right before:max-w-64 before:whitespace-normal before:text-left"
                                 data-tip="Find the annual percentage rate on the loan agreement or current statement."
                             >
                                 <span

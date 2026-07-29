@@ -18,6 +18,13 @@ const cancelAccountButton = document.getElementById("cancelAccountButton")
 const accountContainer = document.getElementById("accountContainer")
 const creditCardFields = document.getElementById("creditCardFields")
 const loanFields = document.getElementById("loanFields")
+const accountApr = document.getElementById("accountApr")
+const paymentDueDate = document.getElementById("paymentDueDate")
+const minimumPayment = document.getElementById("minimumPayment")
+const loanApr = document.getElementById("loanApr")
+const scheduledPayment = document.getElementById("scheduledPayment")
+const nextDueDate = document.getElementById("nextDueDate")
+const paymentFrequency = document.getElementById("paymentFrequency")
 
 const accounts = []
 
@@ -32,11 +39,32 @@ cancelAccountButton.addEventListener("click", () => {
 accountForm.addEventListener("submit", async (event) => {
     event.preventDefault()
 
+    let accountDetails = null
+
+    if (accountType.value === "credit_card") {
+        accountDetails = {
+            apr: Number(accountApr.value),
+            dueDay: Number(paymentDueDate.value),
+            minimumPayment: Number(minimumPayment.value)
+        }
+    } else if (accountType.value === "loan") {
+        accountDetails = {
+            apr: Number(loanApr.value),
+            scheduledPayment: Number(scheduledPayment.value),
+            nextDueDate: nextDueDate.value,
+            paymentFrequency: paymentFrequency.value
+        }
+    }
+
     const accountData = {
         name: accountName.value,
         type: accountType.value,
-        openingBalance: Number(accountBalance.value)
+        openingBalance: Number(accountBalance.value),
+        details: accountDetails
     }
+
+    console.log(accountData)
+    return
 
     try {
         const savedAccount = await createAccount(accountData)

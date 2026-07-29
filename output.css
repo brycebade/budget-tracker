@@ -1145,13 +1145,17 @@
     position: fixed;
   }
   @layer daisyui.l1.l2 {
-    .tooltip-bottom  > .tooltip-content, .tooltip-bottom[data-tip]:before {
-      transform: translateX(var(--tt-trans, -50%)) translateY(var(--tt-pos, -0.25rem));
-      inset: var(--tt-off) auto auto 50%;
+    .tooltip-right  > .tooltip-content, .tooltip-right[data-tip]:before {
+      transform: translateX(calc(var(--tt-pos, -0.25rem) + 0.25rem)) translateY(var(--tt-trans, -50%));
+      left: var(--tt-off);
+      right: auto;
+      inset-block: var(--tt-inset, 50% auto);
     }
-    .tooltip-bottom:after {
-      transform: translateX(var(--tt-trans, -50%)) translateY(var(--tt-pos, -0.25rem)) rotate(180deg);
-      inset: var(--tt-tail) auto auto 50%;
+    .tooltip-right:after {
+      transform: translateX(var(--tt-pos, -0.25rem)) translateY(var(--tt-trans, -50%)) rotate(90deg);
+      left: calc(var(--tt-tail) + 1px);
+      right: auto;
+      inset-block: var(--tt-tail-inset, 50% auto);
     }
   }
   .top-0 {
@@ -1556,6 +1560,18 @@
       --btn-p: 0.5rem;
       --size: calc(var(--size-field, 0.25rem) * 6);
     }
+  }
+  .before\:max-w-64::before {
+    content: var(--tw-content);
+    max-width: calc(var(--spacing) * 64);
+  }
+  .before\:text-left::before {
+    content: var(--tw-content);
+    text-align: left;
+  }
+  .before\:whitespace-normal::before {
+    content: var(--tw-content);
+    white-space: normal;
   }
   @media (width >= 48rem) {
     .md\:grid-cols-2 {
@@ -2979,6 +2995,11 @@
   inherits: false;
   initial-value: 0 0 #0000;
 }
+@property --tw-content {
+  syntax: "*";
+  initial-value: "";
+  inherits: false;
+}
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
@@ -3009,6 +3030,7 @@
       --tw-ring-offset-width: 0px;
       --tw-ring-offset-color: #fff;
       --tw-ring-offset-shadow: 0 0 #0000;
+      --tw-content: "";
     }
   }
 }
