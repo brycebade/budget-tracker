@@ -25,6 +25,7 @@ const loanApr = document.getElementById("loanApr")
 const scheduledPayment = document.getElementById("scheduledPayment")
 const nextDueDate = document.getElementById("nextDueDate")
 const paymentFrequency = document.getElementById("paymentFrequency")
+const statementClosingDate = document.getElementById("statementClosingDate")
 
 const accounts = []
 
@@ -44,6 +45,7 @@ accountForm.addEventListener("submit", async (event) => {
     if (accountType.value === "credit_card") {
         accountDetails = {
             apr: Number(accountApr.value),
+            statementClosingDate: Number(statementClosingDate.value),
             dueDay: Number(paymentDueDate.value),
             minimumPayment: Number(minimumPayment.value)
         }

@@ -88,6 +88,35 @@ export const renderAccountModal = () => {
                 </div>
 
                 <div>
+                    <label class="label" for="statementClosingDate">
+                        <span class="label-text flex items-center gap-2">
+                            Statement Closing Date
+
+                            <span
+                                class="tooltip tooltip-right before:max-w-64 before:whitespace-normal before:text-left"
+                                data-tip="Enter the day of the month your billing cycle normally ends. Find it near Statement Closing Date, Closing Date, or Billing Cycle on your latest statement."
+                            >
+                                <span
+                                    class="btn btn-circle btn-ghost btn-xs"
+                                    tabindex="0"
+                                >
+                                    ?
+                                </span>
+                            </span>
+                        </span>
+                    </label>
+
+                    <input
+                        id="statementClsingDate"
+                        class="input input-bordered w-full"
+                        type="number"
+                        min="1"
+                        max="31"
+                        placeholder="19"
+                    >
+                </div>
+
+                <div>
                     <label class="label" for="paymentDueDate">
                         <span class="label-text flex items-center gap-2">
                             Payment Due Day
