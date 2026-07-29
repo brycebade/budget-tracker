@@ -1,5 +1,6 @@
 import { renderLayout } from "./components/layout.js"
 import { renderAccountModal } from "./accountModal.js"
+import { createAccount, getAccounts } from "./api/accountsApi.js"
 
 renderLayout({
     title: "Accounts",
@@ -8,8 +9,15 @@ renderLayout({
 })
 
 const accountModal = renderAccountModal()
+const accountForm = document.getElementById("accountForm")
+const accountName = document.getElementById("accountName")
+const accountType = document.getElementById("accountType")
+const accountBalance = document.getElementById("accountBalance")
 const actionButton = document.getElementById("pageActionButton")
 const cancelAccountButton = document.getElementById("cancelAccountButton")
+const accountContainer = document.getElementById("accountContainer")
+
+const accounts = []
 
 actionButton.addEventListener("click", () => {
     accountModal.showModal()
@@ -18,3 +26,108 @@ actionButton.addEventListener("click", () => {
 cancelAccountButton.addEventListener("click", () => {
     accountModal.close()
 })
+
+accountForm.addEventListener("submit", async (event) => {
+    event.preventDefault()
+
+    const accountData = {
+        name: accountName.value,
+        type: accountType.value,
+        openingBalance: Number(accountBalance.value)
+    }
+
+    try {
+        const savedAccount = await createAccount(accountData)
+
+        accounts.push({
+            id: savedAccount.id,
+            name: savedAccount.name,
+            type: savedAccount.type,
+            balance: Number(savedAccount.opening_balance)
+        })
+
+        renderAccounts()
+
+        accountForm.reset()
+        accountModal.close()
+    } catch (error) {
+        console.error("Account could not be saved:", error)
+    }
+})
+
+const formatCurrency = (amount) => {
+    return amount.toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD"
+    })
+}
+
+const formatAccountType = (type) => {
+    const accountTypeLabels = {
+        checking: "Checking",
+        savings: "Savings",
+        investments: "Investments",
+        retirement: "Retirement",
+        credit_card: "Credit Card",
+        loan: "Loan"
+    }
+
+    return accountTypeLabels[type] || type
+}
+
+const renderAccounts = () => {
+    accountContainer.innerHTML = ""
+
+    if (accounts.length === 0) {
+        accountContainer.innerHTML = `
+            <div class="card bg-base-100 border border-base-300 shadow-sm">
+                <div class="card-body">
+                    <p class="text-base-content/70">
+                        No accounts to display.
+                    </p>
+                </div>
+            </div>
+        `
+
+        return
+    }
+
+    accounts.forEach((account) => {
+        accountContainer.innerHTML += `
+            <div class="card bg-base-100 border border-base-300 shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title">${account.name}</h2>
+
+                    <p class="text-sm opacity-70">
+                        ${formatAccountType(account.type)}
+                    </p>
+
+                    <p class="text-2xl font-bold">
+                        ${formatCurrency(account.balance)}
+                    </p>
+                </div>
+            </div>
+        `
+    })
+}
+
+const loadAccounts = async () => {
+    try {
+        const savedAccounts = await getAccounts()
+
+        const formattedAccounts = savedAccounts.map((account) => ({
+            id: account.id,
+            name: account.name,
+            type: account.type,
+            balance: Number(account.opening_balance)
+        }))
+
+        accounts.push(...formattedAccounts)
+
+        renderAccounts()
+    } catch (error) {
+        console.error("Accounts could not be loaded:", error)
+    }
+}
+
+loadAccounts()
