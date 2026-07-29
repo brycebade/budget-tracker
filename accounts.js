@@ -16,6 +16,8 @@ const accountBalance = document.getElementById("accountBalance")
 const actionButton = document.getElementById("pageActionButton")
 const cancelAccountButton = document.getElementById("cancelAccountButton")
 const accountContainer = document.getElementById("accountContainer")
+const creditCardFields = document.getElementById("creditCardFields")
+const loanFields = document.getElementById("loanFields")
 
 const accounts = []
 
@@ -52,6 +54,17 @@ accountForm.addEventListener("submit", async (event) => {
         accountModal.close()
     } catch (error) {
         console.error("Account could not be saved:", error)
+    }
+})
+
+accountType.addEventListener("change", () => {
+    creditCardFields.classList.add("hidden")
+    loanFields.classList.add("hidden")
+
+    if (accountType.value === "credit_card") {
+        creditCardFields.classList.remove("hidden")
+    } else if (accountType.value === "loan") {
+        loanFields.classList.remove("hidden")
     }
 })
 

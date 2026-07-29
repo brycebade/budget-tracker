@@ -54,6 +54,158 @@ export const renderAccountModal = () => {
                 >
             </div>
 
+            <div id="creditCardFields" class="hidden space-y-4">
+                <div class="divider">Credit Card Details</div>
+
+                <div>
+                    <label class="label" for="accountApr">
+                        <span class="label-text flex items-center gap-2">
+                            Purchase APR
+
+                            <span
+                                class="tooltip tooltip-bottom"
+                                data-tip="Find this under Interest Charge Calculation on your latest statement."
+                            >
+                                <button
+                                    class="btn btn-circle btn-ghost btn-xs"
+                                    type="button"
+                                    aria-label="Where to find purchase APR"
+                                    tabindex="0"
+                                >
+                                    ?
+                                </button>
+                            </span>
+                        </span>
+                    </label>
+
+                    <input
+                        id="accountApr"
+                        class="input input-bordered w-full"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        placeholder="28.24"
+                    >
+                </div>
+
+                <div>
+                    <label class="label" for="paymentDueDay">
+                        <span class="label-text flex items-center gap-2">
+                            Payment Due Day
+
+                            <span
+                                class="tooltip"
+                                data-tip="Use the day of the month your payment is normally due."
+                            >
+                                <span
+                                    class="btn btn-circle btn-ghost btn-xs"
+                                    tabindex="0"
+                                >
+                                    ?
+                                </span>
+                            </span>
+                        </span>
+                    </label>
+
+                    <input
+                        id="paymentDueDay"
+                        class="input input-bordered w-full"
+                        type="number"
+                        min="1"
+                        max="31"
+                        placeholder="12"
+                    >
+                </div>
+
+                <div>
+                    <label class="label" for="minimumPayment">
+                        <span class="label-text">Minimum Payment</span>
+                    </label>
+
+                    <input
+                        id="minimumPayment"
+                        class="input input-bordered w-full"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                    >
+                </div>
+            </div>
+
+            <div id="loanFields" class="hidden space-y-4">
+                <div class="divider">Loan Details</div>
+
+                <div>
+                    <label class="label" for="loanApr">
+                        <span class="label-text flex items-center gap-2">
+                            APR
+
+                            <span
+                                class="tooltip"
+                                data-tip="Find the annual percentage rate on the loan agreement or current statement."
+                            >
+                                <span
+                                    class="btn btn-circle btn-ghost btn-xs"
+                                    tabindex="0"
+                                >
+                                    ?
+                                </span>
+                            </span>
+                        </span>
+                    </label>
+
+                    <input
+                        id="loanApr"
+                        class="input input-bordered w-full"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                    >
+                </div>
+
+                <div>
+                    <label class="label" for="scheduledPayment">
+                        <span class="label-text">Scheduled Payment</span>
+                    </label>
+
+                    <input
+                        id="scheduledPayment"
+                        class="input input-bordered w-full"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                    >
+                </div>
+
+                <div>
+                    <label class="label" for="nextDueDate">
+                        <span class="label-text">Next Due Date</span>
+                    </label>
+
+                    <input
+                        id="nextDueDate"
+                        class="input input-bordered w-full"
+                        type="date"
+                    >
+                </div>
+
+                <div>
+                    <label class="label" for="paymentFrequency">
+                        <span class="label-text">Payment Frequency</span>
+                    </label>
+
+                    <select
+                        id="paymentFrequency"
+                        class="select select-bordered w-full"
+                    >
+                        <option value="">Select Frequency</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="biweekly">Every Two Weeks</option>
+                        <option value="weekly">Weekly</option>
+                    </select>
+                </div>
+            </div>
+
             <div class="modal-action">
                 <button
                     id="cancelAccountButton"
