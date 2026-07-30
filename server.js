@@ -68,7 +68,7 @@ app.get("/api/health", async (request, response) => {
 })
 
 app.post("/api/accounts", async (request, response) => {
-    const { name, type, openingBalance } = request.body
+    const { name, type, openingBalance, details } = request.body
     
     if (!name || !type || openingBalance === undefined) {
         return response.status(400).json({
@@ -76,8 +76,12 @@ app.post("/api/accounts", async (request, response) => {
         })
     }
 
+    const client = await pool.connect()
+
     try {
-        const result = await pool.query(
+        await client.query("BEGIN")
+
+        const accountResult = await client.query(
             `
                 INSERT INTO accounts (
                     user_id,
@@ -86,7 +90,12 @@ app.post("/api/accounts", async (request, response) => {
                     opening_balance
                 )
                 VALUES ($1, $2, $3, $4)
-                RETURNING id, name, type, opening_balance, created_at
+                RETURNING 
+                    id, 
+                    name, 
+                    type, 
+                    opening_balance, 
+                    created_at
             `,
             [
                 TEMP_USER_ID,
@@ -96,18 +105,57 @@ app.post("/api/accounts", async (request, response) => {
             ]
         )
 
-        const savedAccount = {
-            ...result.rows[0],
-            opening_balance: Number(result.rows[0].opening_balance)
+        const savedAccount = accountResult.rows[0]
+        let savedTerms = null
+
+        if (details) {
+            const termsResult = await client.query(
+                `
+                    INSERT INTO account_terms (
+                        account_id,
+                        apr,
+                        statement_closing_date,
+                        due_day,
+                        minimum_payment,
+                        scheduled_payment,
+                        next_due_date,
+                        payment_frequency
+                    )
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                    RETURNING *
+                `,
+                [
+                    savedAccount.id,
+                    details.apr,
+                    details.statementClosingDate,
+                    details.dueDay,
+                    details.minimumPayment,
+                    details.scheduledPayment,
+                    details.nextDueDate,
+                    details.paymentFrequency
+                ]
+            )
+
+            savedTerms = termsResult.rows[0]
         }
 
-        response.status(201).json(savedAccount)
+        await client.query("COMMIT")
+
+        response.status(201).json({
+            ...savedAccount,
+            opening_balance: Number(savedAccount.opening_balance),
+            details: savedTerms
+        })
     } catch (error) {
+        await client.query("ROLLBACK")
+
         console.error("Failed to create account:", error)
 
         response.status(500).json({
             message: "Failed to create account"
         })
+    } finally {
+        client.release()
     }
 })
 

@@ -107,7 +107,7 @@ export const renderAccountModal = () => {
                     </label>
 
                     <input
-                        id="statementClsingDate"
+                        id="statementClosingDate"
                         class="input input-bordered w-full"
                         type="number"
                         min="1"

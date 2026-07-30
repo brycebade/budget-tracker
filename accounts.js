@@ -65,9 +65,6 @@ accountForm.addEventListener("submit", async (event) => {
         details: accountDetails
     }
 
-    console.log(accountData)
-    return
-
     try {
         const savedAccount = await createAccount(accountData)
 
