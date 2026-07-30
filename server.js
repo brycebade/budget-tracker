@@ -27,16 +27,72 @@ const pool = new Pool({
 
 app.get("/api/accounts", async (request, response) => {
     try {
-        const result = await pool.query(`
-            SELECT id, name, type, opening_balance, created_at
-            FROM accounts
-            ORDER BY created_at DESC
-        `)
+        const result = await pool.query(
+            `
+                SELECT 
+                    accounts.id, 
+                    accounts.name, 
+                    accounts.type, 
+                    accounts.opening_balance, 
+                    accounts.created_at,
 
-        const savedAccounts = result.rows.map((account) => ({
-            ...account,
-            opening_balance: Number(account.opening_balance)
-        }))
+                    account_terms.account_id AS terms_account_id,
+                    account_terms.apr,
+                    account_terms.statement_closing_date,
+                    account_terms.due_day,
+                    account_terms.minimum_payment,
+                    account_terms.scheduled_payment,
+                    account_terms.next_due_date::text AS next_due_date,
+                    account_terms.payment_frequency
+                FROM accounts
+                LEFT JOIN account_terms
+                    ON account_terms.account_id = accounts.id
+                WHERE accounts.user_id = $1
+                ORDER BY accounts.created_at DESC
+            `,
+            [TEMP_USER_ID]
+        )
+
+        const savedAccounts = result.rows.map((account) => {
+            let details = null
+
+            if (account.terms_account_id) {
+                details = {
+                    apr: account.apr === null
+                        ? null 
+                        : Number(account.apr),
+
+                    statementClosingDate:
+                        account.statement_closing_date,
+
+                    dueDay: account.due_day,
+
+                    minimumPayment: 
+                        account.minimum_payment === null
+                        ? null
+                        : Number(account.minimum_payment),
+
+                    scheduledPayment:
+                        account.scheduled_payment === null
+                        ? null
+                        : Number(account.scheduled_payment),
+                    
+                    nextDueDate: account.next_due_date,
+
+                    paymentFrequency:
+                        account.payment_frequency
+                }
+            }
+
+            return {
+                id: account.id,
+                name: account.name,
+                type: account.type,
+                opening_balance: Number(account.opening_balance),
+                created_at: account.created_at,
+                details
+            }
+        })
 
         response.json(savedAccounts)
     } catch (error) {
