@@ -234,9 +234,36 @@ const renderAccounts = () => {
                     </p>
 
                     ${renderAccountDetails(account)}
+                
+
+                    <div class="card-actions justify-end">
+                        <button
+                            class="btn btn-sm btn-outline edit-account-btn"
+                            data-account-id="${account.id}"
+                        >
+                            Edit
+                        </button>
+                    </div>
                 </div>
             </div>
         `
+    })
+    addEditButtonListeners()
+}
+
+const addEditButtonListeners = () => {
+    const editButtons = document.querySelectorAll(".edit-account-btn")
+
+    editButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const accountId = button.dataset.accountId
+            
+            const selectedAccount = accounts.find((account) => {
+                return account.id === accountId
+            })
+
+            console.log(selectedAccount.name)
+        })
     })
 }
 
