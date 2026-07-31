@@ -1,6 +1,6 @@
 import { renderModal } from "./components/modal.js"
 
-export const renderAccountModal = () => {
+export const renderAccountModal = (account = null) => {
     const content = `
         <form id="accountForm" class="mt-4 space-y-4">
             <div>
@@ -244,7 +244,7 @@ export const renderAccountModal = () => {
                 </button>
 
                 <button class="btn btn-primary" type="submit">
-                    Save Account
+                    ${account ? "Update Account" : "Save Account"}
                 </button>
             </div>
         </form>
@@ -253,7 +253,7 @@ export const renderAccountModal = () => {
     return renderModal({
         containerId: "modalRoot",
         modalId: "accountModal",
-        title: "Add Account",
+        title: account ? "Edit Account" : "Add Account",
         content
     })
 }
