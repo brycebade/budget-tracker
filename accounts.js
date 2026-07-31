@@ -115,6 +115,94 @@ const formatAccountType = (type) => {
     return accountTypeLabels[type] || type
 }
 
+const formatDate = (dateString) => {
+    if (!dateString) return "Not set"
+
+    const [year, month, day] = dateString
+        .split("-")
+        .map(Number)
+
+    const date = new Date(year, month -1, day)
+
+    return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+    })
+}
+
+const renderAccountDetails = (account) => {
+    const details = account.details
+    
+    if (!details) return ""
+
+    if (account.type === "credit_card") {
+        return `
+            <div class="divider my-2"></div>
+
+            <dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                <dt class="text-base-content/60">Purchase APR</dt>
+                <dd class="text-right">
+                    ${details.apr ?? "Not set"}%
+                </dd>
+
+                <dt class=text-base-content/60">Statement Closes</dt>
+                <dd class="text-right">
+                    Day ${details.statementClosingDate ?? "Not set"}
+                </dd>
+
+                <dt class="text-base-content/60">Payment Due</dt>
+                <dd class="text-right">
+                    Day ${details.dueDay ?? "Not set"}
+                </dd>
+
+                <dt class="text-base-content/60">Minimum Payment</dt>
+                <dd class="text-right">
+                    ${
+                        details.minimumPayment === null
+                            ? "Not set"
+                            : formatCurrency(details.minimumPayment)
+                    }
+                </dd>
+            </dl>
+        `
+    }
+
+    if (account.type === "loan") {
+        return `
+            <div class=divider my-2"></div>
+
+            <dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                <dt class="text-base-content/60">APR</dt>
+                <dd class="text-right">
+                    ${details.apr ?? "Not set"}
+                </dd>
+
+                <dt class="text-base-content/60">Scheduled Payment</dt>
+                <dd class="text-right">
+                    ${
+                        details.scheduledPayment === null
+                            ? "Not set"
+                            : formatCurrency(details.scheduledPayment)
+                    }
+                </dd>
+
+                <dt class="text-base-content/60">Next Due Date</dt>
+                <dd class="text-right"
+                    ${formatDate(details.nextDueDate)}
+                </dd>
+
+                <dt class="text-base-content/60">Frequency</dt>
+                <dd class="text-right capitalize">
+                    ${details.paymentFrequency ?? "Not set"}
+                </dd>
+            </dl>
+        `
+    }
+
+    return ""
+}
+
 const renderAccounts = () => {
     accountContainer.innerHTML = ""
 
@@ -134,17 +222,18 @@ const renderAccounts = () => {
 
     accounts.forEach((account) => {
         accountContainer.innerHTML += `
-            <div class="card bg-base-100 border border-base-300 shadow-sm">
+            <div class="card bg-base-100 border border-base-300">
                 <div class="card-body">
                     <h2 class="card-title">${account.name}</h2>
 
-                    <p class="text-sm opacity-70">
-                        ${formatAccountType(account.type)}
+                    <p>${formatAccountType(account.type)}
                     </p>
 
                     <p class="text-2xl font-bold">
                         ${formatCurrency(account.balance)}
                     </p>
+
+                    ${renderAccountDetails(account)}
                 </div>
             </div>
         `
@@ -159,7 +248,8 @@ const loadAccounts = async () => {
             id: account.id,
             name: account.name,
             type: account.type,
-            balance: Number(account.opening_balance)
+            balance: Number(account.opening_balance),
+            details: account.details
         }))
 
         accounts.push(...formattedAccounts)
