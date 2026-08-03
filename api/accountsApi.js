@@ -21,9 +21,7 @@ export const createAccount = async (accountData) => {
 }
 
 export const getAccounts = async () => {
-    const response = await fetch(
-        "https://fuzzy-sniffle-5gppg5r766952459q-3000.app.github.dev/api/accounts"
-    )
+    const response = await fetch(ACCOUNTS_URL)
 
     if (!response.ok) {
         throw new Error("failed to load accounts")

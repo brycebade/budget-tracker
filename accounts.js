@@ -38,9 +38,13 @@ const openAccountModal = (account = null) => {
     const accountNameInput = document.getElementById("accountName")
     const accountBalanceInput = document.getElementById("accountBalance")
     const accountAprInput = document.getElementById("accountApr")
-    const statementClosingDate = document.getElementById("statementClosingDate")
+    const statementClosingDateInput = document.getElementById("statementClosingDate")
     const paymentDueDateInput = document.getElementById("paymentDueDate")
     const minimumPaymentInput = document.getElementById("minimumPayment")
+    const loanAprInput = document.getElementById("loanApr")
+    const scheduledPaymentInput = document.getElementById("scheduledPayment")
+    const nextDueDateInput = document.getElementById("nextDueDay")
+    const paymentFrequencyInput = document.getElementById("paymentFrequency")
 
     const updateAccountTypeFields = () => {
         creditFields.classList.add("hidden")
@@ -69,6 +73,17 @@ const openAccountModal = (account = null) => {
     
         if (account.type === "credit_card") {
         accountAprInput.value = account.details.apr
+        statementClosingDateInput.value = account.details.statementClosingDate
+        paymentDueDateInput.value = account.details.dueDay
+        minimumPaymentInput.value = account.details.minimumPayment
+        }
+
+        if (account.type === "loan") {
+            loanAprInput.value = account.details.apr
+            scheduledPaymentInput.value = account.details.scheduledPayment
+            nextDueDateInput.value = account.details.nextDueDate
+            paymentFrequencyInput.value = account.details.paymentFrequency
+        }
     }
 
     modal.showModal()
@@ -191,7 +206,7 @@ const renderAccountDetails = (account) => {
                     ${details.apr ?? "Not set"}%
                 </dd>
 
-                <dt class=text-base-content/60">Statement Closes</dt>
+                <dt class="text-base-content/60">Statement Closes</dt>
                 <dd class="text-right">
                     Day ${details.statementClosingDate ?? "Not set"}
                 </dd>
@@ -215,7 +230,7 @@ const renderAccountDetails = (account) => {
 
     if (account.type === "loan") {
         return `
-            <div class=divider my-2"></div>
+            <div class="divider my-2"></div>
 
             <dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
                 <dt class="text-base-content/60">APR</dt>
@@ -233,7 +248,7 @@ const renderAccountDetails = (account) => {
                 </dd>
 
                 <dt class="text-base-content/60">Next Due Date</dt>
-                <dd class="text-right"
+                <dd class="text-right">
                     ${formatDate(details.nextDueDate)}
                 </dd>
 
