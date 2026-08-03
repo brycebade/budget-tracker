@@ -60,6 +60,7 @@ const openAccountModal = (account = null) => {
     if (account) {
         accountNameInput.value = account.name
         accountTypeSelect.value = account.type
+        updateAccountTypeFields()
         accountBalanceInput.value = account.balance
     }
 
