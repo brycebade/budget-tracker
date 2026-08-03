@@ -29,8 +29,45 @@ const statementClosingDate = document.getElementById("statementClosingDate")
 
 const accounts = []
 
+const openAccountModal = (account = null) => {
+    const modal = renderAccountModal(account)
+    const cancelButton = document.getElementById("cancelAccountButton")
+    const accountTypeSelect = document.getElementById("accountType")
+    const creditFields = document.getElementById("creditCardFields")
+    const loanFields = document.getElementById("loanFields")
+    const accountNameInput = document.getElementById("accountName")
+    const accountBalanceInput = document.getElementById("accountBalance")
+
+    const updateAccountTypeFields = () => {
+        creditFields.classList.add("hidden")
+        loanFields.classList.add("hidden")
+
+        if (accountTypeSelect.value === "credit_card") {
+            creditFields.classList.remove("hidden")
+        } else if (accountTypeSelect.value === "loan") {
+            loanFields.classList.remove("hidden")
+        }
+    }
+
+    cancelButton.addEventListener("click", () => {
+        modal.close()
+    })
+
+    accountTypeSelect.addEventListener("change", () => {
+        updateAccountTypeFields()       
+    })
+
+    if (account) {
+        accountNameInput.value = account.name
+        accountTypeSelect.value = account.type
+        accountBalanceInput.value = account.balance
+    }
+
+    modal.showModal()
+}
+
 actionButton.addEventListener("click", () => {
-    accountModal.showModal()
+    openAccountModal()
 })
 
 cancelAccountButton.addEventListener("click", () => {
@@ -262,7 +299,7 @@ const addEditButtonListeners = () => {
                 return account.id === accountId
             })
 
-            console.log(selectedAccount.name)
+            openAccountModal(selectedAccount)
         })
     })
 }
