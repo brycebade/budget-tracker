@@ -37,6 +37,10 @@ const openAccountModal = (account = null) => {
     const loanFields = document.getElementById("loanFields")
     const accountNameInput = document.getElementById("accountName")
     const accountBalanceInput = document.getElementById("accountBalance")
+    const accountAprInput = document.getElementById("accountApr")
+    const statementClosingDate = document.getElementById("statementClosingDate")
+    const paymentDueDateInput = document.getElementById("paymentDueDate")
+    const minimumPaymentInput = document.getElementById("minimumPayment")
 
     const updateAccountTypeFields = () => {
         creditFields.classList.add("hidden")
@@ -62,6 +66,9 @@ const openAccountModal = (account = null) => {
         accountTypeSelect.value = account.type
         updateAccountTypeFields()
         accountBalanceInput.value = account.balance
+    
+        if (account.type === "credit_card") {
+        accountAprInput.value = account.details.apr
     }
 
     modal.showModal()
