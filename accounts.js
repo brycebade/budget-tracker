@@ -8,24 +8,8 @@ renderLayout({
     actionLabel: "Add Account +"
 })
 
-const accountModal = renderAccountModal()
-const accountForm = document.getElementById("accountForm")
-const accountName = document.getElementById("accountName")
-const accountType = document.getElementById("accountType")
-const accountBalance = document.getElementById("accountBalance")
 const actionButton = document.getElementById("pageActionButton")
-const cancelAccountButton = document.getElementById("cancelAccountButton")
 const accountContainer = document.getElementById("accountContainer")
-const creditCardFields = document.getElementById("creditCardFields")
-const loanFields = document.getElementById("loanFields")
-const accountApr = document.getElementById("accountApr")
-const paymentDueDate = document.getElementById("paymentDueDate")
-const minimumPayment = document.getElementById("minimumPayment")
-const loanApr = document.getElementById("loanApr")
-const scheduledPayment = document.getElementById("scheduledPayment")
-const nextDueDate = document.getElementById("nextDueDate")
-const paymentFrequency = document.getElementById("paymentFrequency")
-const statementClosingDate = document.getElementById("statementClosingDate")
 
 const accounts = []
 
@@ -92,14 +76,22 @@ const openAccountModal = (account = null) => {
 
         if (account) {
             const result = await updateAccount(account.id, accountData)
+            const accountIndex = accounts.findIndex((item) => {
+                return item.id === account.id
+            })
 
-            console.log(result)
-            return
+            accounts[accountIndex] = {
+                id: result.id,
+                name: result.name,
+                type: result.type,
+                balance: Number(result.opening_balance),
+                details: result.details
+            }
+
+            renderAccounts()
+            modal.close()
         } else {
-            console.log("Creating new account")
-        }
-
-        const savedAccount = await createAccount(accountData)
+           const savedAccount = await createAccount(accountData)
 
         accounts.push({
             id: savedAccount.id,
@@ -110,9 +102,9 @@ const openAccountModal = (account = null) => {
         })
 
         renderAccounts()
-
         modal.close()
-    })
+    }
+})
 
     accountTypeSelect.addEventListener("change", () => {
         updateAccountTypeFields()       
@@ -144,68 +136,6 @@ const openAccountModal = (account = null) => {
 
 actionButton.addEventListener("click", () => {
     openAccountModal()
-})
-
-cancelAccountButton.addEventListener("click", () => {
-    accountModal.close()
-})
-
-accountForm.addEventListener("submit", async (event) => {
-    event.preventDefault()
-
-    let accountDetails = null
-
-    if (accountType.value === "credit_card") {
-        accountDetails = {
-            apr: Number(accountApr.value),
-            statementClosingDate: Number(statementClosingDate.value),
-            dueDay: Number(paymentDueDate.value),
-            minimumPayment: Number(minimumPayment.value)
-        }
-    } else if (accountType.value === "loan") {
-        accountDetails = {
-            apr: Number(loanApr.value),
-            scheduledPayment: Number(scheduledPayment.value),
-            dueDay: Number(loanDueDayInput.value),
-            paymentFrequency: paymentFrequency.value
-        }
-    }
-
-    const accountData = {
-        name: accountName.value,
-        type: accountType.value,
-        openingBalance: Number(accountBalance.value),
-        details: accountDetails
-    }
-
-    try {
-        const savedAccount = await createAccount(accountData)
-
-        accounts.push({
-            id: savedAccount.id,
-            name: savedAccount.name,
-            type: savedAccount.type,
-            balance: Number(savedAccount.opening_balance)
-        })
-
-        renderAccounts()
-
-        accountForm.reset()
-        accountModal.close()
-    } catch (error) {
-        console.error("Account could not be saved:", error)
-    }
-})
-
-accountType.addEventListener("change", () => {
-    creditCardFields.classList.add("hidden")
-    loanFields.classList.add("hidden")
-
-    if (accountType.value === "credit_card") {
-        creditCardFields.classList.remove("hidden")
-    } else if (accountType.value === "loan") {
-        loanFields.classList.remove("hidden")
-    }
 })
 
 const formatCurrency = (amount) => {

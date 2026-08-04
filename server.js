@@ -356,19 +356,122 @@ app.put("/api/accounts/:id", async (request, response) => {
         details,
     } = request.body
 
-    console.log({
-        accountId,
-        name,
-        type,
-        openingBalance,
-        details
-    })
+    const client = await pool.connect()
 
-    console.log("Account to update:", accountId)
+    try {
+        await client.query("BEGIN")
 
-    response.json({
-        message: "Update route reached"
-    })
+        const accountResult = await client.query(
+            `
+                UPDATE accounts
+                SET
+                    name = $1,
+                    type = $2,
+                    opening_balance = $3
+                WHERE id = $4
+                    AND user_id = $5
+                RETURNING
+                    id,
+                    name,
+                    type,
+                    opening_balance,
+                    created_at
+            `,
+            [
+                name,
+                type,
+                openingBalance,
+                accountId,
+                TEMP_USER_ID
+            ]
+        )
+
+        const updatedAccount = accountResult.rows[0]
+
+        let updatedTerms = null
+
+        if (details) {
+            const termsResult = await client.query(
+                `
+                    INSERT INTO account_terms (
+                        account_id,
+                        apr,
+                        statement_closing_date,
+                        due_day,
+                        minimum_payment,
+                        scheduled_payment,
+                        payment_frequency
+                    )
+                    VALUES ($1, $2, $3, $4, $5, $6, $7)
+
+                    ON CONFLICT (account_id)
+                    DO UPDATE SET
+                        apr = EXCLUDED.apr,
+                        statement_closing_date = EXCLUDED.statement_closing_date,
+                        due_day = EXCLUDED.due_day,
+                        minimum_payment = EXCLUDED.minimum_payment,
+                        scheduled_payment = EXCLUDED.scheduled_payment,
+                        payment_frequency = EXCLUDED.payment_frequency
+
+                    RETURNING *
+                `,
+                [
+                    accountId,
+                    details.apr ?? null,
+                    details.statementClosingDate ?? null,
+                    details.dueDay ?? null,
+                    details.minimumPayment ?? null,
+                    details.scheduledPayment ?? null,
+                    details.paymentFrequency ?? null
+                ]
+            )
+            updatedTerms = termsResult.rows[0]
+        }
+
+        let formattedUpdatedTerms = null
+        
+        if (updatedTerms) {
+            formattedUpdatedTerms = {
+                apr: 
+                    updatedTerms.apr === null
+                        ? null
+                        : Number(updatedTerms.apr),
+
+                dueDay: updatedTerms.due_day,
+                paymentFrequency: updatedTerms.payment_frequency,
+                statementClosingDate: updatedTerms.statement_closing_date,
+
+                minimumPayment: 
+                    updatedTerms.minimum_payment === null
+                        ? null
+                        : Number(updatedTerms.minimum_payment),
+
+                scheduledPayment:
+                    updatedTerms.scheduled_payment === null
+                        ? null
+                        : Number(updatedTerms.scheduled_payment)
+            }
+        }
+
+        await client.query("COMMIT")
+
+        response.json({
+            ...updatedAccount,
+            opening_balance: Number(updatedAccount.opening_balance),
+            details: formattedUpdatedTerms
+        })
+
+    } catch (error) {
+        await client.query("ROLLBACK")
+
+        console.error("Failed to update account:", error)
+
+        response.status(500).json({
+            message: "Failed to update account"
+        })
+    } finally {
+        client.release()
+    }
 })
 
 app.listen(PORT, () => {
