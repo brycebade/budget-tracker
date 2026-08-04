@@ -43,8 +43,9 @@ const openAccountModal = (account = null) => {
     const minimumPaymentInput = document.getElementById("minimumPayment")
     const loanAprInput = document.getElementById("loanApr")
     const scheduledPaymentInput = document.getElementById("scheduledPayment")
-    const nextDueDateInput = document.getElementById("nextDueDay")
+    const loanDueDayInput = document.getElementById("loanDueDay")
     const paymentFrequencyInput = document.getElementById("paymentFrequency")
+    const form = document.getElementById("accountForm")
 
     const updateAccountTypeFields = () => {
         creditFields.classList.add("hidden")
@@ -58,6 +59,49 @@ const openAccountModal = (account = null) => {
     }
 
     cancelButton.addEventListener("click", () => {
+        modal.close()
+    })
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault()
+
+        let accountDetails = null
+
+        if (accountTypeSelect.value === "credit_card") {
+            accountDetails = {
+                apr: Number(accountAprInput.value),
+                statementClosingDate: Number(statementClosingDateInput.value),
+                dueDay: Number(paymentDueDateInput.value),
+                minimumPayment: Number(minimumPaymentInput.value)
+            }
+        } else if (accountTypeSelect.value === "loan") {
+            accountDetails = {
+                apr: Number(loanAprInput.value),
+                scheduledPayment: Number(scheduledPaymentInput.value),
+                dueDay: Number(loanDueDayInput.value),
+                paymentFrequency: paymentFrequencyInput.value
+            }
+        }
+
+        const accountData = {
+            name: accountNameInput.value,
+            type: accountTypeSelect.value,
+            openingBalance: Number(accountBalanceInput.value),
+            details: accountDetails
+        }
+
+        const savedAccount = await createAccount(accountData)
+
+        accounts.push({
+            id: savedAccount.id,
+            name: savedAccount.name,
+            type: savedAccount.type,
+            balance: Number(savedAccount.opening_balance),
+            details: savedAccount.details
+        })
+
+        renderAccounts()
+
         modal.close()
     })
 
@@ -81,7 +125,7 @@ const openAccountModal = (account = null) => {
         if (account.type === "loan") {
             loanAprInput.value = account.details.apr
             scheduledPaymentInput.value = account.details.scheduledPayment
-            nextDueDateInput.value = account.details.nextDueDate
+            loanDueDayInput.value = account.details.dueDay
             paymentFrequencyInput.value = account.details.paymentFrequency
         }
     }
@@ -113,7 +157,7 @@ accountForm.addEventListener("submit", async (event) => {
         accountDetails = {
             apr: Number(loanApr.value),
             scheduledPayment: Number(scheduledPayment.value),
-            nextDueDate: nextDueDate.value,
+            dueDay: Number(loanDueDayInput.value),
             paymentFrequency: paymentFrequency.value
         }
     }

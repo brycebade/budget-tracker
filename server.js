@@ -194,10 +194,35 @@ app.post("/api/accounts", async (request, response) => {
 
         await client.query("COMMIT")
 
+        let formattedTerms = null
+        
+        if (savedTerms) {
+            formattedTerms = {
+                apr: 
+                    savedTerms.apr === null
+                        ? null
+                        : Number(savedTerms.apr),
+
+                dueDay: savedTerms.due_day,
+                paymentFrequency: savedTerms.payment_frequency,
+                statementClosingDate: savedTerms.statement_closing_date,
+
+                minimumPayment: 
+                    savedTerms.minimum_payment === null
+                        ? null
+                        : Number(savedTerms.minimum_payment),
+
+                scheduledPayment:
+                    savedTerms.scheduled_payment === null
+                        ? null
+                        : Number(savedTerms.scheduled_payment)
+            }
+        }
+
         response.status(201).json({
             ...savedAccount,
             opening_balance: Number(savedAccount.opening_balance),
-            details: savedTerms
+            details: formattedTerms
         })
     } catch (error) {
         await client.query("ROLLBACK")

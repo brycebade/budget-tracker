@@ -211,9 +211,11 @@ export const renderAccountModal = (account = null) => {
                     </label>
 
                     <input
-                        id="nextDueDate"
+                        id="loanDueDay"
                         class="input input-bordered w-full"
-                        type="date"
+                        type="number"
+                        min="1"
+                        max="31"
                     >
                 </div>
 
