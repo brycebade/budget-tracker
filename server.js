@@ -346,6 +346,31 @@ app.get("/api/transactions", async (request, response) => {
     }
 })
 
+app.put("/api/accounts/:id", async (request, response) => {
+    const accountId = request.params.id
+
+    const {
+        name,
+        type,
+        openingBalance,
+        details,
+    } = request.body
+
+    console.log({
+        accountId,
+        name,
+        type,
+        openingBalance,
+        details
+    })
+
+    console.log("Account to update:", accountId)
+
+    response.json({
+        message: "Update route reached"
+    })
+})
+
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`)
 })

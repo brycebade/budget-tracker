@@ -1,6 +1,6 @@
 import { renderLayout } from "./components/layout.js"
 import { renderAccountModal } from "./accountModal.js"
-import { createAccount, getAccounts } from "./api/accountsApi.js"
+import { createAccount, getAccounts, updateAccount } from "./api/accountsApi.js"
 
 renderLayout({
     title: "Accounts",
@@ -88,6 +88,15 @@ const openAccountModal = (account = null) => {
             type: accountTypeSelect.value,
             openingBalance: Number(accountBalanceInput.value),
             details: accountDetails
+        }
+
+        if (account) {
+            const result = await updateAccount(account.id, accountData)
+
+            console.log(result)
+            return
+        } else {
+            console.log("Creating new account")
         }
 
         const savedAccount = await createAccount(accountData)

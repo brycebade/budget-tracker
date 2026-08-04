@@ -29,3 +29,19 @@ export const getAccounts = async () => {
 
     return response.json()
 }
+
+export const updateAccount = async (accountId, accountData) => {
+    const response = await fetch(`${ACCOUNTS_URL}/${accountId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(accountData)
+    })
+
+    if (!response.ok) {
+        throw new Error("Failed to update account")
+    }
+
+    return response.json()
+}
