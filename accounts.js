@@ -22,6 +22,7 @@ const openAccountModal = (account = null) => {
     const accountNameInput = document.getElementById("accountName")
     const accountBalanceInput = document.getElementById("accountBalance")
     const accountAprInput = document.getElementById("accountApr")
+    const creditLimitInput = document.getElementById("creditLimit")
     const statementClosingDateInput = document.getElementById("statementClosingDate")
     const paymentDueDateInput = document.getElementById("paymentDueDate")
     const minimumPaymentInput = document.getElementById("minimumPayment")
@@ -30,6 +31,7 @@ const openAccountModal = (account = null) => {
     const loanDueDayInput = document.getElementById("loanDueDay")
     const paymentFrequencyInput = document.getElementById("paymentFrequency")
     const form = document.getElementById("accountForm")
+    
 
     const updateAccountTypeFields = () => {
         creditFields.classList.add("hidden")
@@ -46,6 +48,12 @@ const openAccountModal = (account = null) => {
         modal.close()
     })
 
+    const numberOrNull = (input) => {
+        return input.value === ""
+            ? null
+            : Number(input.value)
+    }
+
     form.addEventListener("submit", async (event) => {
         event.preventDefault()
 
@@ -53,16 +61,17 @@ const openAccountModal = (account = null) => {
 
         if (accountTypeSelect.value === "credit_card") {
             accountDetails = {
-                apr: Number(accountAprInput.value),
-                statementClosingDate: Number(statementClosingDateInput.value),
-                dueDay: Number(paymentDueDateInput.value),
-                minimumPayment: Number(minimumPaymentInput.value)
+                apr: numberOrNull(accountAprInput),
+                creditLimit: numberOrNull(creditLimitInput),
+                statementClosingDate: numberOrNull(statementClosingDateInput),
+                dueDay: numberOrNull(paymentDueDateInput),
+                minimumPayment: numberOrNull(minimumPaymentInput),
             }
         } else if (accountTypeSelect.value === "loan") {
             accountDetails = {
-                apr: Number(loanAprInput.value),
-                scheduledPayment: Number(scheduledPaymentInput.value),
-                dueDay: Number(loanDueDayInput.value),
+                apr: numberOrNull(loanAprInput),
+                scheduledPayment: numberOrNull(scheduledPaymentInput),
+                dueDay: numberOrNull(loanDueDayInput),
                 paymentFrequency: paymentFrequencyInput.value
             }
         }
@@ -116,14 +125,15 @@ const openAccountModal = (account = null) => {
         updateAccountTypeFields()
         accountBalanceInput.value = account.balance
     
-        if (account.type === "credit_card") {
+        if (account.type === "credit_card" && account.details) {
         accountAprInput.value = account.details.apr
         statementClosingDateInput.value = account.details.statementClosingDate
         paymentDueDateInput.value = account.details.dueDay
         minimumPaymentInput.value = account.details.minimumPayment
+        creditLimitInput.value = account.details.creditLimit
         }
 
-        if (account.type === "loan") {
+        if (account.type === "loan" && account.details) {
             loanAprInput.value = account.details.apr
             scheduledPaymentInput.value = account.details.scheduledPayment
             loanDueDayInput.value = account.details.dueDay

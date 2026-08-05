@@ -35,6 +35,7 @@ app.get("/api/accounts", async (request, response) => {
 
                     account_terms.account_id AS terms_account_id,
                     account_terms.apr,
+                    account_terms.credit_limit,
                     account_terms.statement_closing_date,
                     account_terms.due_day,
                     account_terms.minimum_payment,
@@ -58,6 +59,11 @@ app.get("/api/accounts", async (request, response) => {
                     apr: account.apr === null
                         ? null 
                         : Number(account.apr),
+
+                    creditLimit: 
+                        account.credit_limit === null
+                            ? null
+                            : Number(account.credit_limit),
 
                     statementClosingDate:
                         account.statement_closing_date,
@@ -167,11 +173,11 @@ app.post("/api/accounts", async (request, response) => {
                     INSERT INTO account_terms (
                         account_id,
                         apr,
+                        credit_limit,
                         statement_closing_date,
                         due_day,
                         minimum_payment,
                         scheduled_payment,
-                        next_due_date,
                         payment_frequency
                     )
                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
@@ -180,11 +186,11 @@ app.post("/api/accounts", async (request, response) => {
                 [
                     savedAccount.id,
                     details.apr,
+                    details.creditLimit ?? null,
                     details.statementClosingDate,
                     details.dueDay,
                     details.minimumPayment,
                     details.scheduledPayment,
-                    details.nextDueDate,
                     details.paymentFrequency
                 ]
             )
@@ -202,6 +208,11 @@ app.post("/api/accounts", async (request, response) => {
                     savedTerms.apr === null
                         ? null
                         : Number(savedTerms.apr),
+
+                creditLimit: 
+                    savedTerms.credit_limit === null
+                    ? null
+                    : Number(savedTerms.credit_limit),
 
                 dueDay: savedTerms.due_day,
                 paymentFrequency: savedTerms.payment_frequency,
@@ -396,17 +407,19 @@ app.put("/api/accounts/:id", async (request, response) => {
                     INSERT INTO account_terms (
                         account_id,
                         apr,
+                        credit_limit,
                         statement_closing_date,
                         due_day,
                         minimum_payment,
                         scheduled_payment,
                         payment_frequency
                     )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 
                     ON CONFLICT (account_id)
                     DO UPDATE SET
                         apr = EXCLUDED.apr,
+                        credit_limit = EXCLUDED.credit_limit,
                         statement_closing_date = EXCLUDED.statement_closing_date,
                         due_day = EXCLUDED.due_day,
                         minimum_payment = EXCLUDED.minimum_payment,
@@ -418,6 +431,7 @@ app.put("/api/accounts/:id", async (request, response) => {
                 [
                     accountId,
                     details.apr ?? null,
+                    details.creditLimit ?? null,
                     details.statementClosingDate ?? null,
                     details.dueDay ?? null,
                     details.minimumPayment ?? null,
@@ -436,6 +450,11 @@ app.put("/api/accounts/:id", async (request, response) => {
                     updatedTerms.apr === null
                         ? null
                         : Number(updatedTerms.apr),
+
+                creditLimit:
+                    updatedTerms.credit_limit === null
+                        ? null
+                        : Number(updatedTerms.credit_limit),
 
                 dueDay: updatedTerms.due_day,
                 paymentFrequency: updatedTerms.payment_frequency,
