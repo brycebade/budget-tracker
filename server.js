@@ -474,6 +474,35 @@ app.put("/api/accounts/:id", async (request, response) => {
     }
 })
 
+app.delete("/api/accounts/:id", async (request, response) => {
+    const accountId = request.params.id
+
+    try {
+        const result = await pool.query(
+            `
+                DELETE FROM accounts
+                WHERE id = $1
+                    AND user_id = $2
+                RETURNING id
+            `,
+            [
+                accountId,
+                TEMP_USER_ID
+            ]
+        )
+
+        response.json({
+            deletedId: result.rows[0]?.id ?? null
+        })
+    } catch (error) {
+        console.error("Failed to delete account:", error)
+
+        response.status(500).json({
+            message: "Failed to delete account"
+        })
+    }
+})
+
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`)
 })

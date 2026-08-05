@@ -1,6 +1,6 @@
 import { renderLayout } from "./components/layout.js"
 import { renderAccountModal } from "./accountModal.js"
-import { createAccount, getAccounts, updateAccount } from "./api/accountsApi.js"
+import { createAccount, getAccounts, updateAccount, deleteAccount } from "./api/accountsApi.js"
 
 renderLayout({
     title: "Accounts",
@@ -158,22 +158,6 @@ const formatAccountType = (type) => {
     return accountTypeLabels[type] || type
 }
 
-const formatDate = (dateString) => {
-    if (!dateString) return "Not set"
-
-    const [year, month, day] = dateString
-        .split("-")
-        .map(Number)
-
-    const date = new Date(year, month -1, day)
-
-    return date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric"
-    })
-}
-
 const renderAccountDetails = (account) => {
     const details = account.details
     
@@ -230,9 +214,9 @@ const renderAccountDetails = (account) => {
                     }
                 </dd>
 
-                <dt class="text-base-content/60">Next Due Date</dt>
+                <dt class="text-base-content/60">Payment Due</dt>
                 <dd class="text-right">
-                    ${formatDate(details.nextDueDate)}
+                    Day ${details.dueDay ?? "Not set"}
                 </dd>
 
                 <dt class="text-base-content/60">Frequency</dt>
@@ -286,12 +270,19 @@ const renderAccounts = () => {
                         >
                             Edit
                         </button>
+                        <button
+                            class="btn btn-sm btn-error btn-outline delete-account-btn"
+                            data-account-id="${account.id}"
+                        >
+                            Delete
+                        </button>
                     </div>
                 </div>
             </div>
         `
     })
     addEditButtonListeners()
+    addDeleteButtonListeners()
 }
 
 const addEditButtonListeners = () => {
@@ -306,6 +297,38 @@ const addEditButtonListeners = () => {
             })
 
             openAccountModal(selectedAccount)
+        })
+    })
+}
+
+const addDeleteButtonListeners = () => {
+    const deleteButtons = document.querySelectorAll(".delete-account-btn")
+
+    deleteButtons.forEach((button) => {
+        button.addEventListener("click", async () => {
+            const accountId = button.dataset.accountId
+            
+            const selectedAccount = accounts.find((account) => {
+                return account.id === accountId
+            })
+
+            const confirmed = window.confirm(
+                `Delete ${selectedAccount.name}?`
+            )
+
+            if (!confirmed) {
+                return
+            }
+
+            await deleteAccount(selectedAccount.id)
+
+            const accountIndex = accounts.findIndex((item) => {
+                return item.id === selectedAccount.id
+            })
+
+            accounts.splice(accountIndex, 1)
+
+            renderAccounts()
         })
     })
 }

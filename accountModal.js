@@ -206,7 +206,7 @@ export const renderAccountModal = (account = null) => {
                 </div>
 
                 <div>
-                    <label class="label" for="nextDueDate">
+                    <label class="label" for="loanDueDay">
                         <span class="label-text">Next Due Date</span>
                     </label>
 

@@ -45,3 +45,15 @@ export const updateAccount = async (accountId, accountData) => {
 
     return response.json()
 }
+
+export const deleteAccount = async (accountId) => {
+    const response = await fetch(`${ACCOUNTS_URL}/${accountId}`, {
+        method: "DELETE"
+    })
+
+    if (!response.ok) {
+        throw new Error("Failed to delete account")
+    }
+
+    return response.json()
+}
