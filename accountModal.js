@@ -88,6 +88,20 @@ export const renderAccountModal = (account = null) => {
                 </div>
 
                 <div>
+                    <label class="label" for="creditLimit">
+                        <span class="label-text">Credit Limit</span>
+                    </label>
+
+                    <input
+                        id="creditLimit"
+                        class="input input-bordered w-full"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                    >
+                </div>
+
+                <div>
                     <label class="label" for="statementClosingDate">
                         <span class="label-text flex items-center gap-2">
                             Statement Closing Date
