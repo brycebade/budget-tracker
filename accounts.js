@@ -126,11 +126,11 @@ const openAccountModal = (account = null) => {
         accountBalanceInput.value = account.balance
     
         if (account.type === "credit_card" && account.details) {
-        accountAprInput.value = account.details.apr
-        statementClosingDateInput.value = account.details.statementClosingDate
-        paymentDueDateInput.value = account.details.dueDay
-        minimumPaymentInput.value = account.details.minimumPayment
-        creditLimitInput.value = account.details.creditLimit
+            accountAprInput.value = account.details.apr
+            statementClosingDateInput.value = account.details.statementClosingDate
+            paymentDueDateInput.value = account.details.dueDay
+            minimumPaymentInput.value = account.details.minimumPayment
+            creditLimitInput.value = account.details.creditLimit
         }
 
         if (account.type === "loan" && account.details) {
@@ -184,10 +184,31 @@ const renderAccountDetails = (account) => {
     if (!details) return ""
 
     if (account.type === "credit_card") {
+        const availableCredit = calculateAvailableCredit(account)
+
         return `
             <div class="divider my-2"></div>
 
             <dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+
+                <dt class="text-base-content/60">Credit Limit</dt>
+                <dd class="text-right">
+                    ${
+                        details.creditLimit == null
+                            ? "Not set"
+                            : formatCurrency(details.creditLimit)
+                    }
+                </dd>
+
+                <dt class="text-base-content/60">Available Credit</dt>
+                <dd class="text-right">
+                    ${
+                        availableCredit === null
+                            ? "Not Set"
+                            : formatCurrency(availableCredit)
+                    }
+                </dd>
+
                 <dt class="text-base-content/60">Purchase APR</dt>
                 <dd class="text-right">
                     ${details.apr ?? "Not set"}%
@@ -220,6 +241,7 @@ const renderAccountDetails = (account) => {
             <div class="divider my-2"></div>
 
             <dl class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+
                 <dt class="text-base-content/60">APR</dt>
                 <dd class="text-right">
                     ${details.apr ?? "Not set"}
