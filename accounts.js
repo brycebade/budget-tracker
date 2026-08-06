@@ -195,6 +195,7 @@ const renderAccountDetails = (account) => {
 
     if (account.type === "credit_card") {
         const availableCredit = calculateAvailableCredit(account)
+        const creditUtilization = calculateCreditUtilization(account)
 
         return `
             <div class="divider my-2"></div>
@@ -216,6 +217,15 @@ const renderAccountDetails = (account) => {
                         availableCredit === null
                             ? "Not Set"
                             : formatCurrency(availableCredit)
+                    }
+                </dd>
+
+                <dt class="text-base-content/60">Credit Utilization</dt>
+                <dd class="text-right">
+                    ${
+                        creditUtilization == null
+                            ? "Not set"
+                            : `${creditUtilization.toFixed(1)}%`
                     }
                 </dd>
 
