@@ -168,6 +168,16 @@ const formatAccountType = (type) => {
     return accountTypeLabels[type] || type
 }
 
+const calculateAvailableCredit = (account) => {
+    const creditLimit = account.details?.creditLimit
+
+    if (creditLimit === null || creditLimit === undefined) {
+        return null
+    }
+
+    return creditLimit - account.balance
+}
+
 const renderAccountDetails = (account) => {
     const details = account.details
     
