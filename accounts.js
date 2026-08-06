@@ -178,6 +178,16 @@ const calculateAvailableCredit = (account) => {
     return creditLimit - account.balance
 }
 
+const calculateCreditUtilization = (account) => {
+    const creditLimit = account.details?.creditLimit
+
+    if (creditLimit == null || creditLimit === 0) {
+        return null
+    }
+
+    return (account.balance / creditLimit) * 100
+}
+
 const renderAccountDetails = (account) => {
     const details = account.details
     
