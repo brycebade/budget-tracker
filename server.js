@@ -40,7 +40,6 @@ app.get("/api/accounts", async (request, response) => {
                     account_terms.due_day,
                     account_terms.minimum_payment,
                     account_terms.scheduled_payment,
-                    account_terms.next_due_date::text AS next_due_date,
                     account_terms.payment_frequency
                 FROM accounts
                 LEFT JOIN account_terms
