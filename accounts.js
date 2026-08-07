@@ -1,6 +1,7 @@
 import { renderLayout } from "./components/layout.js"
 import { renderAccountModal } from "./accountModal.js"
 import { createAccount, getAccounts, updateAccount, deleteAccount } from "./api/accountsApi.js"
+import { getTransactions } from "./api/transactionsApi.js"
 
 renderLayout({
     title: "Accounts",
@@ -12,6 +13,7 @@ const actionButton = document.getElementById("pageActionButton")
 const accountContainer = document.getElementById("accountContainer")
 
 const accounts = []
+const transactions = []
 
 const openAccountModal = (account = null) => {
     const modal = renderAccountModal(account)
