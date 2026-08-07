@@ -362,7 +362,6 @@ app.put("/api/accounts/:id", async (request, response) => {
     const {
         name,
         type,
-        openingBalance,
         details,
     } = request.body
 
@@ -377,9 +376,8 @@ app.put("/api/accounts/:id", async (request, response) => {
                 SET
                     name = $1,
                     type = $2,
-                    opening_balance = $3
-                WHERE id = $4
-                    AND user_id = $5
+                WHERE id = $3
+                    AND user_id = $4
                 RETURNING
                     id,
                     name,

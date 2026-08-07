@@ -124,6 +124,7 @@ const openAccountModal = (account = null) => {
         accountTypeSelect.value = account.type
         updateAccountTypeFields()
         accountBalanceInput.value = account.balance
+        accountBalanceInput.disabled = true
     
         if (account.type === "credit_card" && account.details) {
             accountAprInput.value = account.details.apr
@@ -264,7 +265,7 @@ const renderAccountDetails = (account) => {
 
                 <dt class="text-base-content/60">APR</dt>
                 <dd class="text-right">
-                    ${details.apr ?? "Not set"}
+                    ${details.apr ?? "Not set"}%
                 </dd>
 
                 <dt class="text-base-content/60">Scheduled Payment</dt>

@@ -42,7 +42,7 @@ export const renderAccountModal = (account = null) => {
 
             <div>
                 <label class="label" for="accountBalance">
-                    <span class="label-text">Opening Balance</span>
+                    <span class="label-text">Current Balance</span>
                 </label>
 
                 <input
