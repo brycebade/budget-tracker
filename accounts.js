@@ -191,6 +191,42 @@ const calculateCreditUtilization = (account) => {
     return (account.balance / creditLimit) * 100
 }
 
+const getTransactionsForAccount = (accountId) => {
+    return transactions.filter((transaction) => {
+        return transaction.account_id === accountId
+    })
+}
+
+const calculateCurrentBalance = (account) => {
+    const accountTransactions = getTransactionsForAccounts(account.id)
+
+    let balance = account.balance
+
+    accountTransactions.forEach((transaction) => {
+        if (account.type === "checking" || account.type === "savings") {
+            if (transaction.type === "income") {
+                balance += transaction.amount
+            }
+
+            if (transaction.type === "expense") {
+                balance -= transaction.amount
+            }
+        }
+
+        if (account.type === "credit_card") {
+            if (transaction.type === "expense") {
+                balance += transaction.amount
+            }
+
+            if (transaction.type === "income") {
+                balance -= transaction.amount
+            }
+        }
+    })
+
+    return balance
+}
+
 const renderAccountDetails = (account) => {
     const details = account.details
     
@@ -400,7 +436,12 @@ const addDeleteButtonListeners = () => {
 
 const loadAccounts = async () => {
     try {
-        const savedAccounts = await getAccounts()
+        const [savedAccounts, savedTransactions] = await Promise.all([
+            getAccounts(),
+            getTransactions()
+        ]) 
+
+        transactions.length = 0
 
         const formattedAccounts = savedAccounts.map((account) => ({
             id: account.id,
@@ -411,6 +452,7 @@ const loadAccounts = async () => {
         }))
 
         accounts.push(...formattedAccounts)
+        accounts.push(...savedTransactions)
 
         renderAccounts()
     } catch (error) {
