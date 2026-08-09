@@ -198,7 +198,7 @@ const getTransactionsForAccount = (accountId) => {
 }
 
 const calculateCurrentBalance = (account) => {
-    const accountTransactions = getTransactionsForAccounts(account.id)
+    const accountTransactions = getTransactionsForAccount(account.id)
 
     let balance = account.balance
 
@@ -349,6 +349,8 @@ const renderAccounts = () => {
     }
 
     accounts.forEach((account) => {
+        const currentBalance = calculateCurrentBalance(account)
+
         accountContainer.innerHTML += `
             <div class="card bg-base-100 border border-base-300">
                 <div class="card-body">
@@ -358,7 +360,7 @@ const renderAccounts = () => {
                     </p>
 
                     <p class="text-2xl font-bold">
-                        ${formatCurrency(account.balance)}
+                        ${formatCurrency(currentBalance)}
                     </p>
 
                     ${renderAccountDetails(account)}
@@ -452,7 +454,7 @@ const loadAccounts = async () => {
         }))
 
         accounts.push(...formattedAccounts)
-        accounts.push(...savedTransactions)
+        transactions.push(...savedTransactions)
 
         renderAccounts()
     } catch (error) {

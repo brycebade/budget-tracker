@@ -19,6 +19,7 @@ const transactionType = document.getElementById("transactionType")
 const transactionCategory = document.getElementById("transactionCategory")
 const transactionDate = document.getElementById("transactionDate")
 const transactionContainer = document.getElementById("transactionContainer")
+const transactionAccount = document.getElementById("transactionAccount")
 
 const transactions = []
 const accounts = []
@@ -130,6 +131,55 @@ const renderTransactions = () => {
         `
     })
 }
+
+transactionAccount.addEventListener("change", () => {
+    const selectedAccount = accounts.find((account) => {
+        return account.id === transactionAccount.value
+    })
+
+    transactionType.innerHTML = `
+        <option value= "" disabled selected>
+            Select Type
+        </option>
+    `
+
+    if (!selectedAccount) {
+        return
+    }
+    
+    if (selectedAccount.type === "credit_card") {
+        transactionType.innerHTML += `
+            <option value="expense">Purchase / Expense</option>
+            <option value="payment">Payment</option>
+            <option value="refund">Refund</option>
+            <option value="interest">Interest</option>
+            <option value="fee">Fee</option>
+        `
+    }
+
+    if (
+        selectedAccount.type === "checking" || 
+        selectedAccount.type === "savings"
+    ) {
+        transactionType.innerHTML += `
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+            <option value="transfer_in">Transfer In</option>
+            <option value="transfer_out">Transfer Out</option>
+            <option value="payment">Payment</option>
+            <option value="refund">Refund</option>
+            <option value="fee">Fee</option>
+        `
+    }
+
+    if (selectedAccount.type === "loan") {
+        transactionType.innerHTML += `
+            <option value="payment">Payment</option>
+            <option value="interest">Interest</option>
+            <option value="fee">Fee</option>
+        `
+    }
+})
 
 transactionForm.addEventListener("submit", async (event) => {
     event.preventDefault()

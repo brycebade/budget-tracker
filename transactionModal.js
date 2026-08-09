@@ -58,9 +58,9 @@ export const renderTransactionModal = () => {
                     class="select select-bordered w-full"
                     required
                 >
-                    <option value="" disabled selected>Select Type</option>
-                    <option value="income">Income</option>
-                    <option value="expense">Expense</option>
+                    <option value="" disabled selected>
+                        Select Type
+                    </option>
                 </select>
             </div>
 
