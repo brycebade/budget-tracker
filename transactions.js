@@ -122,6 +122,19 @@ const getTransactionBalanceChange = (account, transaction) => {
         }
     }
 
+    if (account.type === "loan") {
+        if (
+            transaction.type === "interest" ||
+            transaction.type === "fee"
+        ) {
+            return transaction.amount
+        }
+
+        if (transaction.type === "payment") {
+            return -transaction.amount
+        }
+    }
+
     return 0
 }
 
