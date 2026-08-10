@@ -83,6 +83,13 @@ const loadTransactions = async () => {
     }
 }
 
+const formatCurrency = (amount) => {
+    return amount.toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD"
+    })
+}
+
 const getTransactionBalanceChange = (account, transaction) => {
     if (
         account.type === "checking" ||
@@ -163,6 +170,18 @@ const renderTransactions = () => {
         return account.id === selectedAccountId
     })
 
+    const balanceLabel = 
+        selectedAccount.type === "credit_card" ||
+        selectedAccount.type === "loan"
+            ? "Balance Owed"
+            : "Balance"
+
+    const isCreditCard = selectedAccount.type === "credit_card"
+
+    const ledgerGridClass = isCreditCard    
+        ? "grid-cols-[minmax(0,1fr)_160px_120px_120px_120px_140px]"
+        : "grid-cols-[minmax(0,1fr)_160px_120px_120px_120px]"
+
     const filteredTransactions = transactions.filter((transaction) => {
         return transaction.accountId === selectedAccountId
     })
@@ -181,12 +200,44 @@ const renderTransactions = () => {
         return
     }
 
+    const chronologicalTransactions = [...filteredTransactions].sort((a, b) => {
+        const dateComparison = a.date.localeCompare(b.date)
+
+        if (dateComparison !== 0) {
+            return dateComparison
+        }
+
+        return new Date(a.createdAt) - new Date(b.createdAt)
+    }) 
+
+    let runningBalance = Number(selectedAccount.opening_balance)
+
+    const balanceAfterTransaction = {}
+
+    chronologicalTransactions.forEach((transaction) => {
+        const balanceChange = getTransactionBalanceChange(
+            selectedAccount,
+            transaction
+        )
+
+        runningBalance += balanceChange
+
+        balanceAfterTransaction[transaction.id] = runningBalance
+    })
+
     transactionContainer.innerHTML = `
-        <div class="grid grid-cols-[1fr_160px_120px_120px] gap-4 bg-base-200/60 px-4 py-2 text-sm font-semibold text-base-content/60">
+        <div class="grid ${ledgerGridClass} gap-4 bg-base-200/60 px-4 py-2 text-sm font-semibold text-base-content/60">
             <span>Description</span>
             <span>Category</span>
             <span>Date</span>
             <span class="text-right">Amount</span>
+            <span class="text-right">${balanceLabel}</span>
+
+            ${
+                isCreditCard
+                    ? `<span class="text-right">Available Credit</span>`
+                    : ""
+            }
         </div>
     `
 
@@ -198,12 +249,25 @@ const renderTransactions = () => {
 
         const amountPrefix = balanceChange < 0 ? "-" : "+"
 
-        const amountClass = balanceChange < 0
-            ? "text-error" 
-            : "text-success"
+        const isDebtAccount =
+            selectedAccount.type === "credit_card" ||
+            selectedAccount.type === "loan"
+
+        const amountClass = isDebtAccount
+            ? balanceChange > 0
+                ? "text-error" 
+                : "text-success"
+            : balanceChange < 0
+                ? "text-error"
+                : "text-success"
+
+        const availableCreditAfter = isCreditCard
+            ? selectedAccount.details?.creditLimit
+                - balanceAfterTransaction[transaction.id]
+            : null
 
         transactionContainer.innerHTML += `
-            <div class="grid grid-cols-[1fr_160px_120px_120px] gap-4 items-center border-t border-base-300 px-4 py-4 hover:bg-base-200/40">
+            <div class="grid ${ledgerGridClass} gap-4 items-center border-t border-base-300 px-4 py-4 hover:bg-base-200/40">
                 <span class="font-medium truncate">
                     ${transaction.description}
                 </span>
@@ -219,6 +283,24 @@ const renderTransactions = () => {
                 <span class="text-right font-semibold tabular-nums ${amountClass}">
                     ${amountPrefix}$${transaction.amount.toFixed(2)}
                 </span>
+
+                <span class="text-right font-semibold tabular-nums">
+                    ${formatCurrency(balanceAfterTransaction[transaction.id])}
+                </span>
+
+                ${
+                    isCreditCard
+                        ? `
+                            <span class="text-right font-semibold tabular-nums">
+                                ${
+                                    availableCreditAfter == null
+                                        ? "Not set"
+                                        : formatCurrency(availableCreditAfter)
+                                }
+                            </span>
+                        `
+                        : ""
+                }
             </div>
         `
     })
