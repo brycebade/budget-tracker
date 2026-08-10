@@ -105,6 +105,23 @@ const getTransactionBalanceChange = (account, transaction) => {
         }
     }
 
+    if (account.type === "credit_card") {
+        if (
+            transaction.type === "expense" ||
+            transaction.type === "interest" ||
+            transaction.type === "fee"
+        ) {
+            return transaction.amount
+        }
+
+        if (
+            transaction.type === "payment" ||
+            transaction.type === "refund"
+        ) {
+            return -transaction.amount
+        }
+    }
+
     return 0
 }
 
