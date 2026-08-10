@@ -20,6 +20,7 @@ const transactionCategory = document.getElementById("transactionCategory")
 const transactionDate = document.getElementById("transactionDate")
 const transactionContainer = document.getElementById("transactionContainer")
 const transactionAccount = document.getElementById("transactionAccount")
+const transactionAccountFilter = document.getElementById("transactionAccountFilter")
 
 const transactions = []
 const accounts = []
@@ -44,7 +45,14 @@ const loadAccountOptions = async () => {
                     ${account.name}
                 </option>
             `
+
+            transactionAccountFilter.innerHTML += `
+                <option value="${account.id}">
+                    ${account.name}
+                </option>
+            `
         })
+
     } catch (error) {
         console.error("Account options could not be loaded:", error)
     }
@@ -76,14 +84,16 @@ const loadTransactions = async () => {
 
 const renderTransactions = () => {
     transactionContainer.innerHTML = ""
-    transactionContainer.className = "space-y-2"
+    transactionContainer.className = "overflow-hidden rounded-box border border-base-300 bg-base-100"
 
-    if (transactions.length === 0) {
+    const selectedAccountId = transactionAccountFilter.value
+
+    if (!selectedAccountId) {
         transactionContainer.innerHTML = `
             <div class="card bg-base-100 border border-base-300 shadow-md">
                 <div class="card-body">
                     <p class="text-base-content/70">
-                        No transactions to display.
+                        Select an account to view its transactions.
                     </p>
                 </div>
             </div>
@@ -92,11 +102,34 @@ const renderTransactions = () => {
         return
     }
 
-    transactions.forEach((transaction) => {
-        const account = accounts.find((account) => {
-            return account.id === transaction.accountId
-        })
+    const filteredTransactions = transactions.filter((transaction) => {
+        return transaction.accountId === selectedAccountId
+    })
 
+    if (filteredTransactions.length === 0) {
+        transactionContainer.innerHTML = `
+            <div class="card bg-base-100 border border-base-300 shadow-md">
+                <div class="card-body">
+                    <p class="text-base-content/70">
+                        No Transactions to Display
+                    </p>
+                </div>
+            </div>
+        `
+
+        return
+    }
+
+    transactionContainer.innerHTML = `
+        <div class="grid grid-cols-[1fr_160px_120px_120px] gap-4 bg-base-200/60 px-4 py-2 text-sm font-semibold text-base-content/60">
+            <span>Description</span>
+            <span>Category</span>
+            <span>Date</span>
+            <span class="text-right">Amount</span>
+        </div>
+    `
+
+    filteredTransactions.forEach((transaction) => {
         const isExpense = transaction.type === "expense"
         const amountPrefix = isExpense ? "-" : "+"
 
@@ -105,32 +138,30 @@ const renderTransactions = () => {
             : "text-success"
 
         transactionContainer.innerHTML += `
-            <div class="rounded-box border border-base-300 bg-base-100 shadow-md">
-                <div class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 p-4">
-                    <div class="min-w-0">
-                        <div class="flex items-center gap-2">
-                            <h3 class="truncate font-semibold">
-                                ${transaction.description}
-                            </h3>
+            <div class="grid grid-cols-[1fr_160px_120px_120px] gap-4 items-center border-t border-base-300 px-4 py-4 hover:bg-base-200/40">
+                <span class="font-medium truncate">
+                    ${transaction.description}
+                </span>
+            
+                <span class="text-sm text-base-content/70">
+                    ${transaction.category}
+                </span>
 
-                            <span class="badge badge-ghost badge-sm">
-                                ${transaction.category}
-                            </span>
-                        </div>
+                <span class="text-sm text-base-content/70">
+                    ${transaction.date}
+                </span>
 
-                        <p class="mt-1 text-sm text-base-content/60">
-                            ${account?.name || "Unknwon Account"} · ${transaction.date}
-                        </p>
-                    </div>
-
-                    <p class="text-lg font-bold tabular-nums ${amountClass}">
-                        ${amountPrefix}$${transaction.amount.toFixed(2)}
-                    </p>
-                </div>
+                <span class="text-right font-semibold tabular-nums ${amountClass}">
+                    ${amountPrefix}$${transaction.amount.toFixed(2)}
+                </span>
             </div>
         `
     })
 }
+
+transactionAccountFilter.addEventListener("change", () => {
+    renderTransactions()
+})
 
 transactionAccount.addEventListener("change", () => {
     const selectedAccount = accounts.find((account) => {

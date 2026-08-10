@@ -20,11 +20,23 @@
                 </p>
             </div>
 
+            <div class="mb-6 max-w-md">
+                <label class="label" for="transactionAccountFilter">
+                    <span class="label-text">Account</span>
+                </label>
+
+                <select id="transactionAccountFilter" class="select select-bordered w-full">
+                    <option value="" selected>
+                        Select An Account
+                    </option>
+                </select>
+            </div>
+
             <div id="transactionContainer">
                 <div class="card bg-base-100 border border-base-300 shadow-sm">
                     <div class="card-body">
                         <p class="text-base-content/70">
-                            No transactions to display.
+                            Select an account to view its transactions.
                         </p>
                     </div>
                 </div>
