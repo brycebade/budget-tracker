@@ -82,6 +82,32 @@ const loadTransactions = async () => {
     }
 }
 
+const getTransactionBalanceChange = (account, transaction) => {
+    if (
+        account.type === "checking" ||
+        account.type === "savings"
+    ) {
+        if (
+            transaction.type === "income" ||
+            transaction.type === "transfer_in" ||
+            transaction.type === "refund"
+        ) {
+            return transaction.amount
+        }
+
+        if (
+            transaction.type === "expense" ||
+            transaction.type === "transfer_out" ||
+            transaction.type === "payment" ||
+            transaction.type === "fee"
+        ) {
+            return -transaction.amount
+        }
+    }
+
+    return 0
+}
+
 const renderTransactions = () => {
     transactionContainer.innerHTML = ""
     transactionContainer.className = "overflow-hidden rounded-box border border-base-300 bg-base-100"
