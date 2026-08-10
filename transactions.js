@@ -70,7 +70,8 @@ const loadTransactions = async () => {
                 amount: Number(transaction.amount),
                 type: transaction.type,
                 category: transaction.category,
-                date: transaction.transaction_date
+                date: transaction.transaction_date,
+                createdAt: transaction.created_at
             })
         )
 
@@ -158,6 +159,10 @@ const renderTransactions = () => {
         return
     }
 
+    const selectedAccount = accounts.find((account) => {
+        return account.id === selectedAccountId
+    })
+
     const filteredTransactions = transactions.filter((transaction) => {
         return transaction.accountId === selectedAccountId
     })
@@ -186,10 +191,14 @@ const renderTransactions = () => {
     `
 
     filteredTransactions.forEach((transaction) => {
-        const isExpense = transaction.type === "expense"
-        const amountPrefix = isExpense ? "-" : "+"
+        const balanceChange = getTransactionBalanceChange(
+            selectedAccount,
+            transaction
+        )
 
-        const amountClass = isExpense
+        const amountPrefix = balanceChange < 0 ? "-" : "+"
+
+        const amountClass = balanceChange < 0
             ? "text-error" 
             : "text-success"
 
@@ -290,7 +299,8 @@ transactionForm.addEventListener("submit", async (event) => {
             amount: savedTransaction.amount,
             type: savedTransaction.type,
             category: savedTransaction.category,
-            date: savedTransaction.transaction_date
+            date: savedTransaction.transaction_date,
+            createdAt: savedTransaction.created_at
         })
 
         renderTransactions()
