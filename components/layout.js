@@ -17,14 +17,19 @@ export const renderLayout = ({
     }
 
     navbar.className = 
-        "navbar fixed top-0 left-0 z-20 h-16 bg-base-100 border-b border-base-300"
+        "navbar fixed top-0 left-0 z-20 h-16 bg-base-200 border-b border-base-300"
 
     sidebar.className =
         "fixed top-16 left-0 bottom-0 z-10 w-64 bg-base-200 border-r border-base-300"
 
     navbar.innerHTML = `
         <div class="navbar-start px-4">
-            <h1 class="text-xl font-bold">${title}</h1>
+            <a 
+                href="./index.html"
+                class="text-xl font-bold tracking-tight"
+            >
+                Financial Planner
+            </a>
         </div>
 
         <div class="navbar-end px-4">
@@ -38,7 +43,11 @@ export const renderLayout = ({
                 <li>
                     <a
                         href="./index.html"
-                        class="${activePage === "dashboard" ? "active" : ""}"
+                        class="${
+                            activePage === "dashboard" 
+                                ? "bg-base-100 font-semibold"
+                                : ""
+                        }"
                     >
                         Dashboard
                     </a>
@@ -46,7 +55,11 @@ export const renderLayout = ({
                 <li>
                     <a
                         href="./accounts.html"
-                        class="${activePage === "accounts" ? "active" : ""}"
+                        class="${
+                            activePage === "accounts" 
+                                ? "bg-base-100 font-semibold"
+                                : ""
+                        }"
                     >
                         Accounts
                     </a>
@@ -54,7 +67,11 @@ export const renderLayout = ({
                 <li>
                     <a
                         href="./transactions.html"
-                        class="${activePage === "transactions" ? "active" : ""}"
+                        class="${
+                            activePage === "transactions" 
+                                ? "bg-base-100 font-semibold"
+                                : ""
+                        }"
                     >
                         Transactions
                     </a>
@@ -62,7 +79,11 @@ export const renderLayout = ({
                 <li>
                     <a
                         href="./budgets.html"
-                        class="${activePage === "budgets" ? "active" : ""}"
+                        class="${
+                            activePage === "budgets" 
+                                ? "bg-base-100 font-semibold"
+                                : ""
+                        }"
                     >
                         Budgets
                     </a>
@@ -70,7 +91,11 @@ export const renderLayout = ({
                 <li>
                     <a
                         href="./bills.html"
-                        class="${activePage === "bills" ? "active" : ""}"
+                        class="${
+                            activePage === "bills" 
+                                ? "bg-base-100 font-semibold"
+                                : ""
+                        }"
                     >
                         Bills
                     </a>
