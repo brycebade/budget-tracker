@@ -1,5 +1,7 @@
 import { renderLayout } from "./components/layout.js"
 import { getAccounts } from "./api/accountsApi.js"
+import { getTransactions } from "./api/transactionsApi.js"
+import { calculateCurrentBalance } from "./utils/financialCalculations.js"
 
 renderLayout({
     title: "Dashboard",
@@ -56,7 +58,14 @@ const calculateDashboardMetrics = () => {
     }
 
     accounts.forEach((account) => {
-        const balance = calculateAccountBalance(account.id, account.balance)
+        const accountTransactions = transactions.filter((transaction) => {
+            return transaction.account_id === account.id
+        })
+
+        const balance = calculateCurrentBalance(
+            account,
+            accountTransactions
+        )
 
         if (account.type === "checking") {
             metrics.availableCash += balance
@@ -82,22 +91,6 @@ const calculateDashboardMetrics = () => {
     return metrics
 }
 
-const calculateAccountBalance = (accountId, startingBalance) => {
-    let balance = startingBalance
-
-    transactions.forEach((transaction) => {
-        if (transaction.accountId !== accountId) return
-        
-        if (transaction.type === "income") {
-            balance += transaction.amount
-        } else if (transaction.type === "expense") {
-            balance -= transaction.amount
-        }
-    })
-
-    return balance
-}
-
 // RENDER FUNCTIONS
 
 const renderDashboard = () => {
@@ -120,7 +113,10 @@ const renderDashboardMetrics = (metrics) => {
 
 const loadAccounts = async () => {
     try {
-        const savedAccounts = await getAccounts()
+        const [savedAccounts, savedTransactions] = await Promise.all([
+            getAccounts(),
+            getTransactions()
+        ])
 
         const formattedAccounts = savedAccounts.map((account) => ({
             id: account.id,
@@ -130,8 +126,10 @@ const loadAccounts = async () => {
         }))
 
         accounts.push(...formattedAccounts)
+        transactions.push(...savedTransactions)
 
         renderDashboard()
+
     } catch(error) {
         console.error("Accounts could not be loaded:", error)
     }
