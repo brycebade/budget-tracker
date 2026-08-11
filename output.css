@@ -2914,6 +2914,68 @@
     filter: blur(1.5rem);
   }
 }
+@layer base {
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+      color-scheme: dark;
+      --color-base-100: #22272e;
+      --color-base-200: #15191e;
+      --color-base-300: #0b0e11;
+      --color-base-content: #e8eaed;
+      --color-primary: #3b424c;
+      --color-primary-content: #f4f4f5;
+      --color-secondary: #525963;
+      --color-secondary-content: #ffffff;
+      --color-accent: #8b9eb7;
+      --color-accent-content: #0b0d10;
+      --color-neutral: #282e35;
+      --color-neutral-content: #e8eaed;
+      --color-info: #60a5fa;
+      --color-info-content: #07150c;
+      --color-success: #4ade80;
+      --color-success-content: #07150c;
+      --color-warning: #fbbf24;
+      --color-warning-content: #1a1200;
+      --color-error: #f87171;
+      --color-error-content: #1c0707;
+      --radius-selector: 0.5rem;
+      --radius-field: 0.5rem;
+      --radius-box: 0.75rem;
+      --border: 1px;
+      --depth: 1;
+      --noise: 0;
+    }
+  }
+  :where(:root),:root:has(input.theme-controller[value=charcoal]:checked),[data-theme="charcoal"] {
+    color-scheme: dark;
+    --color-base-100: #22272e;
+    --color-base-200: #15191e;
+    --color-base-300: #0b0e11;
+    --color-base-content: #e8eaed;
+    --color-primary: #3b424c;
+    --color-primary-content: #f4f4f5;
+    --color-secondary: #525963;
+    --color-secondary-content: #ffffff;
+    --color-accent: #8b9eb7;
+    --color-accent-content: #0b0d10;
+    --color-neutral: #282e35;
+    --color-neutral-content: #e8eaed;
+    --color-info: #60a5fa;
+    --color-info-content: #07150c;
+    --color-success: #4ade80;
+    --color-success-content: #07150c;
+    --color-warning: #fbbf24;
+    --color-warning-content: #1a1200;
+    --color-error: #f87171;
+    --color-error-content: #1c0707;
+    --radius-selector: 0.5rem;
+    --radius-field: 0.5rem;
+    --radius-box: 0.75rem;
+    --border: 1px;
+    --depth: 1;
+    --noise: 0;
+  }
+}
 @property --tw-rotate-x {
   syntax: "*";
   inherits: false;
