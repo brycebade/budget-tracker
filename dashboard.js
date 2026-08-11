@@ -111,7 +111,7 @@ const renderDashboardMetrics = (metrics) => {
 
 // INITIALIZATION
 
-const loadAccounts = async () => {
+const loadDashboardData = async () => {
     try {
         const [savedAccounts, savedTransactions] = await Promise.all([
             getAccounts(),
@@ -135,4 +135,4 @@ const loadAccounts = async () => {
     }
 }
 
-loadAccounts()
+loadDashboardData()
