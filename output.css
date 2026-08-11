@@ -1392,23 +1392,11 @@
   .grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .grid-cols-\[1fr_160px_120px_120px_120px\] {
-    grid-template-columns: 1fr 160px 120px 120px 120px;
-  }
-  .grid-cols-\[minmax\(0\,1fr\)\] {
-    grid-template-columns: minmax(0,1fr);
-  }
-  .grid-cols-\[minmax\(0\,1fr\)_160px\] {
-    grid-template-columns: minmax(0,1fr) 160px;
-  }
   .grid-cols-\[minmax\(0\,1fr\)_160px_120px_120px_120px\] {
     grid-template-columns: minmax(0,1fr) 160px 120px 120px 120px;
   }
   .grid-cols-\[minmax\(0\,1fr\)_160px_120px_120px_120px_140px\] {
     grid-template-columns: minmax(0,1fr) 160px 120px 120px 120px 140px;
-  }
-  .grid-cols-\[minmax\] {
-    grid-template-columns: minmax;
   }
   .items-center {
     align-items: center;

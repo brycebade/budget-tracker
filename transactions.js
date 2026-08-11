@@ -2,6 +2,7 @@ import { renderLayout } from "./components/layout.js"
 import { renderTransactionModal } from "./transactionModal.js"
 import { getAccounts } from "./api/accountsApi.js"
 import { createTransaction, getTransactions } from "./api/transactionsApi.js"
+import { getTransactionBalanceChange } from "./utils/financialCalculations.js"
 
 renderLayout({
     title: "Transactions",
@@ -88,62 +89,6 @@ const formatCurrency = (amount) => {
         style: "currency",
         currency: "USD"
     })
-}
-
-const getTransactionBalanceChange = (account, transaction) => {
-    if (
-        account.type === "checking" ||
-        account.type === "savings"
-    ) {
-        if (
-            transaction.type === "income" ||
-            transaction.type === "transfer_in" ||
-            transaction.type === "refund"
-        ) {
-            return transaction.amount
-        }
-
-        if (
-            transaction.type === "expense" ||
-            transaction.type === "transfer_out" ||
-            transaction.type === "payment" ||
-            transaction.type === "fee"
-        ) {
-            return -transaction.amount
-        }
-    }
-
-    if (account.type === "credit_card") {
-        if (
-            transaction.type === "expense" ||
-            transaction.type === "interest" ||
-            transaction.type === "fee"
-        ) {
-            return transaction.amount
-        }
-
-        if (
-            transaction.type === "payment" ||
-            transaction.type === "refund"
-        ) {
-            return -transaction.amount
-        }
-    }
-
-    if (account.type === "loan") {
-        if (
-            transaction.type === "interest" ||
-            transaction.type === "fee"
-        ) {
-            return transaction.amount
-        }
-
-        if (transaction.type === "payment") {
-            return -transaction.amount
-        }
-    }
-
-    return 0
 }
 
 const renderTransactions = () => {

@@ -2,6 +2,7 @@ import { renderLayout } from "./components/layout.js"
 import { renderAccountModal } from "./accountModal.js"
 import { createAccount, getAccounts, updateAccount, deleteAccount } from "./api/accountsApi.js"
 import { getTransactions } from "./api/transactionsApi.js"
+import { calculateCurrentBalance } from "./utils/financialCalculations.js"
 
 renderLayout({
     title: "Accounts",
@@ -197,36 +198,6 @@ const getTransactionsForAccount = (accountId) => {
     })
 }
 
-const calculateCurrentBalance = (account) => {
-    const accountTransactions = getTransactionsForAccount(account.id)
-
-    let balance = account.balance
-
-    accountTransactions.forEach((transaction) => {
-        if (account.type === "checking" || account.type === "savings") {
-            if (transaction.type === "income") {
-                balance += transaction.amount
-            }
-
-            if (transaction.type === "expense") {
-                balance -= transaction.amount
-            }
-        }
-
-        if (account.type === "credit_card") {
-            if (transaction.type === "expense") {
-                balance += transaction.amount
-            }
-
-            if (transaction.type === "income") {
-                balance -= transaction.amount
-            }
-        }
-    })
-
-    return balance
-}
-
 const renderAccountDetails = (account) => {
     const details = account.details
     
@@ -349,7 +320,12 @@ const renderAccounts = () => {
     }
 
     accounts.forEach((account) => {
-        const currentBalance = calculateCurrentBalance(account)
+        const accountTransactions = getTransactionsForAccount(account.id)
+
+        const currentBalance = calculateCurrentBalance(
+            account,
+            accountTransactions
+        )
 
         accountContainer.innerHTML += `
             <div class="card bg-base-100 border border-base-300">
