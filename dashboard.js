@@ -1,7 +1,7 @@
 import { renderLayout } from "./components/layout.js"
 import { getAccounts } from "./api/accountsApi.js"
 import { getTransactions } from "./api/transactionsApi.js"
-import { calculateCurrentBalance } from "./utils/financialCalculations.js"
+import { calculateCurrentBalance, getTransactionBalanceChange } from "./utils/financialCalculations.js"
 
 renderLayout({
     title: "Dashboard",
@@ -16,6 +16,7 @@ const totalDebtValue = document.getElementById("totalDebtValue")
 const savingsValue = document.getElementById("savingsValue")
 const investmentsValue = document.getElementById("investmentsValue")
 const retirementValue = document.getElementById("retirementValue")
+const recentTransactionsContainer = document.getElementById("recentTransactionsContainer")
 
 // STATE
 
@@ -95,7 +96,9 @@ const calculateDashboardMetrics = () => {
 
 const renderDashboard = () => {
     const metrics = calculateDashboardMetrics()
+
     renderDashboardMetrics(metrics)
+    renderRecentTransactions()
 }
 
 const renderDashboardMetrics = (metrics) => {
@@ -105,6 +108,71 @@ const renderDashboardMetrics = (metrics) => {
     investmentsValue.textContent = formatCurrency(metrics.investments)
     retirementValue.textContent = formatCurrency(metrics.retirement)
     totalDebtValue.textContent = formatCurrency(metrics.totalDebt)
+}
+
+const renderRecentTransactions = () => {
+    if (transactions.length === 0) {
+        recentTransactionsContainer.innerHTML = `
+            <div class="p-4 text-base-content/60">
+                No recent transactions to display.
+            </div>
+        `
+
+        return
+    }
+
+    const recentTransactions = transactions.slice(0, 5)
+
+    recentTransactionsContainer.innerHTML = ""
+
+    recentTransactions.forEach((transaction) => {
+        const account = accounts.find((account) => {
+            return account.id === transaction.account_id
+        })
+
+        if (!account) return
+
+        const balanceChange = getTransactionBalanceChange(
+            account,
+            transaction
+        )
+
+        const amountPrefix = balanceChange < 0 ? "-" : "+"
+
+        const isDebtAccount =
+            account.type === "credit_card" ||
+            account.type === "loan"
+
+            const amountClass = isDebtAccount
+                ? balanceChange > 0
+                    ? "text-error"
+                    : "text-success"
+                : balanceChange < 0
+                    ? "text-error"
+                    : "text-success"
+
+        recentTransactionsContainer.innerHTML += `
+            <div class="grid grid-cols-[minmax(0,1fr)_160px_120px] items-center gap-4 border-t border-base-300 px-4 py-3 first:border-t-0">
+                <div class="min-w-0">
+                    <p class="truncate font-medium">
+                        ${transaction.description}
+                    </p>
+
+                    <p class="text-sm text-base-content/60">
+                        ${account.name} · ${transaction.category}
+                    </p>
+                </div>
+
+                <span class="text-sm text-base-content/60">
+                    ${transaction.transaction_date}
+                </span>
+                
+                <span class="text-right font-semibold tabular-nums ${amountClass}">
+                    ${amountPrefix}${formatCurrency(transaction.amount)}
+                </span>
+            </div>
+        `
+    })
 }
 
 // EVENT LISTENERS
