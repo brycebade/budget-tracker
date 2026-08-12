@@ -152,16 +152,19 @@ const renderRecentTransactions = () => {
                     : "text-success"
 
         recentTransactionsContainer.innerHTML += `
-            <div class="grid grid-cols-[minmax(0,1fr)_160px_120px] items-center gap-4 border-t border-base-300 px-4 py-3 first:border-t-0">
-                <div class="min-w-0">
-                    <p class="truncate font-medium">
-                        ${transaction.description}
-                    </p>
+            <div class="grid grid-cols-[minmax(0,1fr)_90px_75px_95px_90px] items-center gap-2 border-b border-base-300 px-3 py-2 last:border-b-0">
+                
+                <span class="truncate font-semibold">
+                    ${transaction.description}
+                </span>
 
-                    <p class="text-sm text-base-content/60">
-                        ${account.name} · ${transaction.category}
-                    </p>
-                </div>
+                <span class="truncate text-sm text-base-content/60">
+                    ${account.name}
+                </span>
+
+                <span class="truncate text-sm capitalize text-base-content/60">
+                    ${transaction.type.replaceAll("_", " ")}
+                </span>
 
                 <span class="text-sm text-base-content/60">
                     ${transaction.transaction_date}
