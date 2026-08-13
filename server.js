@@ -563,6 +563,84 @@ app.get("/api/bills", async (request, response) => {
     }
 })
 
+app.post("/api/bills", async (request, response) => {
+    const {
+        name,
+        category,
+        expectedAmount,
+        minimumPayment,
+        dueDay,
+        fundingAccountId,
+        linkedAccountId 
+    } = request.body
+
+    if (
+        !name ||
+        !category ||
+        expectedAmount === undefined ||
+        !dueDay
+    ) {
+        return response.status(400).json({
+            message: "Name, category, expected amount, and due day are required"
+        })
+    }
+
+    try {
+        const result = await pool.query(
+            `
+                INSERT INTO bills (
+                    user_id,
+                    name,
+                    category,
+                    expected_amount,
+                    minimum_payment,
+                    due_day,
+                    funding_account_id
+                )
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                RETURNING
+                    id,
+                    name,
+                    category,
+                    expected_amount,
+                    minimum_payment,
+                    due_day,
+                    funding_account_id,
+                    linked_account_id,
+                    active,
+                    created_at
+            `,
+            [
+                TEMP_USER_ID,
+                name,
+                category,
+                expectedAmount,
+                minimumPayment ?? null,
+                dueDay,
+                fundingAccountId ?? null,
+                linkedAccountId ?? null
+            ]
+        )
+
+        const savedBill = result.rows[0]
+
+        response.status(201).json({
+            ...savedBill,
+            expected_amount: Number(savedBill.expected_amount),
+            minimum_payment:
+                savedBill.minimum_payment === null
+                    ? null
+                    : Number(savedBill.minimum_payment)
+        })
+    } catch (error) {
+        console.error("Failed to create bill:", error)
+
+        response.status(500).json({
+            message: "Failed to create bill"
+        })
+    }
+})
+
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`)
 })
