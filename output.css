@@ -1399,20 +1399,8 @@
   .grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .grid-cols-\[minmax\(0\,1\.4fr\)_100px_80px_90px_90px\] {
-    grid-template-columns: minmax(0,1.4fr) 100px 80px 90px 90px;
-  }
-  .grid-cols-\[minmax\(0\,1fr\)_90px_75px_90px_90px\] {
-    grid-template-columns: minmax(0,1fr) 90px 75px 90px 90px;
-  }
   .grid-cols-\[minmax\(0\,1fr\)_90px_75px_95px_90px\] {
     grid-template-columns: minmax(0,1fr) 90px 75px 95px 90px;
-  }
-  .grid-cols-\[minmax\(0\,1fr\)_90px_80px_90px_90px\] {
-    grid-template-columns: minmax(0,1fr) 90px 80px 90px 90px;
-  }
-  .grid-cols-\[minmax\(0\,1fr\)_100px_80px_90px_90px\] {
-    grid-template-columns: minmax(0,1fr) 100px 80px 90px 90px;
   }
   .grid-cols-\[minmax\(0\,1fr\)_160px_120px_120px_120px\] {
     grid-template-columns: minmax(0,1fr) 160px 120px 120px 120px;
@@ -1656,9 +1644,6 @@
     }
   }
   @media (width >= 80rem) {
-    .xl\:w-1\/2 {
-      width: calc(1 / 2 * 100%);
-    }
     .xl\:grid-cols-3 {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
