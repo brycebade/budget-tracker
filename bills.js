@@ -138,19 +138,19 @@ const renderBills = () => {
         return
     }
 
-    const fundingAccount = accounts.find((account) => {
-        return account.id === bills.funding_account_id
-    })
-
-    const linkedAccount = accounts.find((account) => {
-        return account.id === bills.linked_account_id
-    })
-
     bills.forEach((bill) => {
+        const fundingAccount = accounts.find((account) => {
+            return account.id === bill.funding_account_id
+        })
+
+        const linkedAccount = accounts.find((account) => {
+            return account.id === bill.linked_account_id
+        })
+
         billsContainer.innerHTML += `
             <div class="card bg-base-100 border border-base-300">
                 <div class="card-body">
-                    <h2 class="card=title">
+                    <h2 class="card-title">
                         ${bill.name}
                     </h2>
 
