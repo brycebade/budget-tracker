@@ -1,0 +1,118 @@
+import { renderModal } from "./components/modal,js"
+
+export const renderBillModal = () => {
+    const content = `
+        <form id="billForm" class="mt-4 space-y-4">
+
+            <div>
+                <label class="label" for="billName">
+                    <span class="label-text">Bill Name</span>
+                </label>
+
+                <input
+                    id="billName"
+                    class="input input-bordered w-full"
+                    type="text"
+                    placeholder="Mortgage, Chase, Evergy..."
+                    required
+                >
+            </div>
+
+            <div>
+                <label class="label" for="billCategory">
+                    <span class="label-text">Category</label>
+                </label>
+
+                <input
+                    id="billCategory"
+                    class="input input-bordered w-full"
+                    type="text"
+                    placeholder="Housing, Utilities, Debt..."
+                    required
+                >
+            </div>
+
+            <div>
+                <label class="label" for="billExpectedAmount">
+                    <span class="label-text">Expected Amount</span>
+                </label>
+
+                <input
+                    id="billExpectedAmout"
+                    class="input input-bordered w-full"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    required
+                >
+            </div>
+
+            <div>
+                <label class="label" for="billMinimumPayment">
+                    <span class="label-text">Minimum Payment</span>
+                </label>
+
+                <input
+                    id="billMinimumPayment"
+                    class="input input-bordered w-full"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                >
+            </div>
+
+            <div>
+                <label class="label" for="billDueDay">
+                    <span class="label-text">Due Day</span>
+                </label>
+
+                <input
+                    id="billDueDay"
+                    class="input input-bordered w-full"
+                    type="number"
+                    min="1"
+                    max="31"
+                    required
+                >
+            </div>
+
+            <div>
+                <label class="label" for="billFundingAccount">
+                    <span class="label-text">Paid From</span>
+                </label>
+
+                <select
+                    id="billFundingAccount"
+                    class="select select-bordered w-full"
+                >
+                    <option value="">None</option<
+                </select>
+            </div>
+
+            <div class="modal-action">
+                <button
+                    id="cancelBillButton"
+                    class="btn"
+                    type="button"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    class="btn btn-primary"
+                    type="submit"
+                >
+                    Save Bill
+                </button>
+            </div>
+
+        </form>
+    `
+
+    return renderModal({
+        containerId: "modalRoot",
+        modalId: "billModal",
+        title: "Add Bill",
+        content
+    })
+}
