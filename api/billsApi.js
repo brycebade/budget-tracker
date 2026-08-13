@@ -1,4 +1,8 @@
-const BILLS_URL = "http://localhost:3000/api/bills"
+const isCodespaces = window.location.hostname.endsWith(".app.github.dev")
+
+const BILLS_URL = isCodespaces
+    ? `https://${window.location.hostname.replace("-5000.", "-3000.")}/api/bills`
+    : "http://localhost:3000/api/bills"
 
 export const getBills = async () => {
     const response = await fetch(BILLS_URL)

@@ -38,7 +38,7 @@ export const renderBillModal = () => {
                 </label>
 
                 <input
-                    id="billExpectedAmout"
+                    id="billExpectedAmount"
                     class="input input-bordered w-full"
                     type="number"
                     min="0"
