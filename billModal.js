@@ -1,4 +1,4 @@
-import { renderModal } from "./components/modal,js"
+import { renderModal } from "./components/modal.js"
 
 export const renderBillModal = () => {
     const content = `
@@ -85,7 +85,21 @@ export const renderBillModal = () => {
                     id="billFundingAccount"
                     class="select select-bordered w-full"
                 >
-                    <option value="">None</option<
+                    <option value="">Select Account</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="label" for="billLinkedAccount">
+                    <span class="label-text">Linked Debt Account</span>
+                </label>
+
+                <select
+                    id="billLinkedAccount"
+                    class="select select-bordered w-full"
+                >
+
+                    <option value="">None</option>
                 </select>
             </div>
 

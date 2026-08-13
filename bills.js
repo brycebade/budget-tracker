@@ -38,8 +38,8 @@ const openBillModal = () => {
             account.type === "credit_card" ||
             account.type === "loan"
         ) {
-            linkedAccountSelect.innerHTML = `
-                <option value="${account.id}"
+            linkedAccountSelect.innerHTML += `
+                <option value="${account.id}">
                     ${account.name}
                 </option>
             `
