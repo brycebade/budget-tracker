@@ -519,6 +519,50 @@ app.delete("/api/accounts/:id", async (request, response) => {
     }
 })
 
+app.get("/api/bills", async (request, response) => {
+    try {
+        const result = await pool.query(
+            `
+                SELECT
+                    id,
+                    name,
+                    category,
+                    expected_amount,
+                    minimum_payment,
+                    due_day,
+                    funding_account_id,
+                    linked_account_id,
+                    active,
+                    created_at
+                FROM bills
+                WHERE user_id = $1
+                    AND active = true
+                ORDER BY due_day ASC
+            `,
+            [
+                TEMP_USER_ID
+            ]
+        )
+
+        const savedBills = result.rows.map((bill) => ({
+            ...bill,
+            expected_amount: Number(bill.expected_amount),
+            minimum_payment:
+                bill.minimum_payment === null
+                ? null
+                : Number(bill.minimum_payment)
+        }))
+
+        response.json(savedBills)
+    } catch (error) {
+        console.error("Failed to load bills", error)
+
+        response.status(500).json({
+            message: "Failed to load bills"
+        })
+    }
+})
+
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`)
 })
