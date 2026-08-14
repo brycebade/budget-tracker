@@ -578,11 +578,18 @@ app.post("/api/bills", async (request, response) => {
         anchorDate
     } = request.body
 
+    const isMonthly = frequency === "monthly"
+
+    const usesAnchorDate = 
+        frequency === "weekly" ||
+        frequency === "biweekly"
+
     if (
         !name ||
         !category ||
         expectedAmount === undefined ||
-        !dueDay
+        (isMonthly && !dueDay) ||
+        (usesAnchorDate && !anchorDate)
     ) {
         return response.status(400).json({
             message: "Name, category, expected amount, and due day are required"
@@ -599,10 +606,12 @@ app.post("/api/bills", async (request, response) => {
                     expected_amount,
                     minimum_payment,
                     due_day,
+                    frequency,
+                    anchor_date
                     funding_account_id,
                     linked_account_id
                 )
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
                 RETURNING
                     id,
                     name,
@@ -610,6 +619,8 @@ app.post("/api/bills", async (request, response) => {
                     expected_amount,
                     minimum_payment,
                     due_day,
+                    frequency,
+                    anchor_date,
                     funding_account_id,
                     linked_account_id,
                     active,
@@ -621,7 +632,9 @@ app.post("/api/bills", async (request, response) => {
                 category,
                 expectedAmount,
                 minimumPayment ?? null,
-                dueDay,
+                dueDay ?? null,
+                frequency,
+                anchorDate ?? null,
                 fundingAccountId ?? null,
                 linkedAccountId ?? null
             ]
