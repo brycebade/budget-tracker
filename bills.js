@@ -111,6 +111,8 @@ const loadBills = async () => {
             getAccounts()
         ])
 
+        console.log(savedBills)
+
         bills.push(...savedBills)
         accounts.push(...savedAccounts)
 

@@ -530,6 +530,8 @@ app.get("/api/bills", async (request, response) => {
                     expected_amount,
                     minimum_payment,
                     due_day,
+                    frequency,
+                    anchor_date,
                     funding_account_id,
                     linked_account_id,
                     active,
@@ -571,7 +573,9 @@ app.post("/api/bills", async (request, response) => {
         minimumPayment,
         dueDay,
         fundingAccountId,
-        linkedAccountId 
+        linkedAccountId,
+        frequency = "monthly",
+        anchorDate
     } = request.body
 
     if (
