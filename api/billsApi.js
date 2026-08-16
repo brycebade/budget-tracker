@@ -1,11 +1,6 @@
-const isCodespaces = window.location.hostname.endsWith(".app.github.dev")
-const isGitHubPages = window.location.hostname.endsWith(".github.io")
+import { API_BASE_URL } from "./apiConfig.js"
 
-const BILLS_URL = isCodespaces
-    ? `https://${window.location.hostname.replace("-5000.", "-3000.")}/api/bills`
-    : isGitHubPages
-        ? "https://budget-tracker-api-i09z.onrender.com/api/bills"
-        : "http://localhost:3000/api/bills"
+const ACCOUNTS_URL = `${API_BASE_URL}/api/bills`
 
 export const getBills = async () => {
     const response = await fetch(BILLS_URL)
