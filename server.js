@@ -529,6 +529,7 @@ app.get("/api/bills", async (request, response) => {
                     category,
                     expected_amount,
                     minimum_payment,
+                    planned_payment,
                     due_day,
                     frequency,
                     anchor_date,
@@ -548,11 +549,21 @@ app.get("/api/bills", async (request, response) => {
 
         const savedBills = result.rows.map((bill) => ({
             ...bill,
-            expected_amount: Number(bill.expected_amount),
+
+            expected_amount: 
+                bill.expected_amount === null
+                ? null
+                : Number(bill.expected_amount),
+
             minimum_payment:
                 bill.minimum_payment === null
-                ? null
-                : Number(bill.minimum_payment)
+                    ? null
+                    : Number(bill.minimum_payment),
+
+            planned_payment:
+                bill.planned_payment === null
+                    ? null
+                    : Number(bill.planned_payment)
         }))
 
         response.json(savedBills)
@@ -571,6 +582,7 @@ app.post("/api/bills", async (request, response) => {
         category,
         expectedAmount,
         minimumPayment,
+        planned_payment,
         dueDay,
         fundingAccountId,
         linkedAccountId,
@@ -605,19 +617,21 @@ app.post("/api/bills", async (request, response) => {
                     category,
                     expected_amount,
                     minimum_payment,
+                    planned_payment
                     due_day,
                     frequency,
                     anchor_date
                     funding_account_id,
                     linked_account_id
                 )
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
                 RETURNING
                     id,
                     name,
                     category,
                     expected_amount,
                     minimum_payment,
+                    planned_payment,
                     due_day,
                     frequency,
                     anchor_date,
@@ -632,6 +646,7 @@ app.post("/api/bills", async (request, response) => {
                 category,
                 expectedAmount,
                 minimumPayment ?? null,
+                planned_payment ?? null,
                 dueDay ?? null,
                 frequency,
                 anchorDate ?? null,
