@@ -1,6 +1,6 @@
 import { API_BASE_URL } from "./apiConfig.js"
 
-const ACCOUNTS_URL = `${API_BASE_URL}/api/bills`
+const BILLS_URL = `${API_BASE_URL}/api/bills`
 
 export const getBills = async () => {
     const response = await fetch(BILLS_URL)

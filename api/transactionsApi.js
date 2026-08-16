@@ -1,6 +1,6 @@
 import { API_BASE_URL } from "./apiConfig.js"
 
-const ACCOUNTS_URL = `${API_BASE_URL}/api/transactions`
+const TRANSACTION_URL = `${API_BASE_URL}/api/transactions`
 
 export const createTransaction = async (transactionData) => {
     const response = await fetch(TRANSACTION_URL, {
