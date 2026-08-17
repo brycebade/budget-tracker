@@ -25,6 +25,11 @@ const accounts = []
 const openBillModal = () => {
     const modal = renderBillModal()
 
+    console.log("modal:", modal)
+    console.log("billDueDay:", document.getElementById("billDueDay"))
+    console.log("dueDayField", document.getElementById("dueDayField"))
+    console.log("anchorDateField", document.getElementById("anchorDateField"))
+
     const cancelButton = document.getElementById("cancelBillButton")
     const fundingAccountSelect = document.getElementById("billFundingAccount")
     const linkedAccountSelect = document.getElementById("billLinkedAccount")
@@ -36,6 +41,9 @@ const openBillModal = () => {
     const dueDayInput = document.getElementById("billDueDay")
     const plannedPaymentInput = document.getElementById("billPlannedPayment")
     const frequencySelect = document.getElementById("billFrequency")
+    const dueDayField = document.getElementById("dueDayField")
+    const anchorDateField = document.getElementById("anchorDateField")
+    const anchorDateInput = document.getElementById("billAnchorDate")
 
     const numberOrNull = (input) => {
         return input.value === ""
@@ -69,6 +77,24 @@ const openBillModal = () => {
 
     cancelButton.addEventListener("click", () => {
         modal.close()
+    })
+
+    frequencySelect.addEventListener("change", () => {
+        const isMonthly = frequencySelect.value === "monthly"
+
+        if (isMonthly) {
+            dueDayField.hidden = false
+            anchorDateField.hidden = true
+
+            dueDayInput.required = true
+            anchorDateInput.required = false
+        } else {
+            dueDayField.hidden = true
+            anchorDateField.hidden = false
+
+            dueDayInput.required = false
+            anchorDateInput.required = true
+        }
     })
 
     form.addEventListener("submit", async (event) => {

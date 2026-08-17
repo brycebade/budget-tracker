@@ -20,7 +20,7 @@ export const renderBillModal = () => {
 
             <div class="form-control">
                 <label class="label" for="billCategory">
-                    <span class="label-text">Category</label>
+                    <span class="label-text">Category</span>
                 </label>
 
                 <input
@@ -61,7 +61,7 @@ export const renderBillModal = () => {
             </div>
 
             <div class="form-control">
-                <label class="label" for=:billPlannedAmount">
+                <label class="label" for="billPlannedAmount">
                     <span class="label-text">Planned Payment</span>
                 </label>
 
@@ -70,8 +70,9 @@ export const renderBillModal = () => {
                     type="number"
                     min="0"
                     step="0.01"
-                    class="input input=bordered w-full"
+                    class="input input-bordered w-full"
                     placeholder="0.00"
+                >
 
             <div id="dueDayField" class="form-control">
                 <label class="label" for="billDueDay">
@@ -88,7 +89,7 @@ export const renderBillModal = () => {
                 >
             </div>
 
-            <div id="anchorDateField class="form control hidden">
+            <div id="anchorDateField" class="form-control" hidden>
                 <label class="label" for="billAnchorDate">
                     <span class="label-text">First Due Date</span>
                 </label>
@@ -101,7 +102,7 @@ export const renderBillModal = () => {
             </div>
 
             <div class="form-control">
-                <label class="label" for="billFrequency>
+                <label class="label" for="billFrequency">
                     <span class="label-text">Frequency</span>
                 </label>
 
