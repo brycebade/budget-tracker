@@ -43,7 +43,6 @@ export const renderBillModal = () => {
                     type="number"
                     min="0"
                     step="0.01"
-                    required
                 >
             </div>
 
@@ -60,6 +59,19 @@ export const renderBillModal = () => {
                     step="0.01"
                 >
             </div>
+
+            <div>
+                <label class="label" for=:billPlannedAmount">
+                    <span class="label-text">Planned Payment</span>
+                </label>
+
+                <input
+                    id="billPlannedPayment"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    class="input input=bordered w-full"
+                    placeholder="0.00"
 
             <div>
                 <label class="label" for="billDueDay">

@@ -582,7 +582,7 @@ app.post("/api/bills", async (request, response) => {
         category,
         expectedAmount,
         minimumPayment,
-        planned_payment,
+        plannedPayment,
         dueDay,
         fundingAccountId,
         linkedAccountId,
@@ -596,10 +596,15 @@ app.post("/api/bills", async (request, response) => {
         frequency === "weekly" ||
         frequency === "biweekly"
 
+    const hasBillAmount = 
+        expectedAmount != null ||
+        minimumPayment != null ||
+        plannedPayment != null
+
     if (
         !name ||
         !category ||
-        expectedAmount === undefined ||
+        !hasBillAmount ||
         (isMonthly && !dueDay) ||
         (usesAnchorDate && !anchorDate)
     ) {
@@ -617,10 +622,10 @@ app.post("/api/bills", async (request, response) => {
                     category,
                     expected_amount,
                     minimum_payment,
-                    planned_payment
+                    planned_payment,
                     due_day,
                     frequency,
-                    anchor_date
+                    anchor_date,
                     funding_account_id,
                     linked_account_id
                 )
@@ -646,7 +651,7 @@ app.post("/api/bills", async (request, response) => {
                 category,
                 expectedAmount,
                 minimumPayment ?? null,
-                planned_payment ?? null,
+                plannedPayment ?? null,
                 dueDay ?? null,
                 frequency,
                 anchorDate ?? null,
@@ -659,11 +664,21 @@ app.post("/api/bills", async (request, response) => {
 
         response.status(201).json({
             ...savedBill,
-            expected_amount: Number(savedBill.expected_amount),
+
+            expected_amount: 
+                savedBill.expected_amount === null
+                    ? null
+                    : Number(savedBill.expected_amount),
+
             minimum_payment:
                 savedBill.minimum_payment === null
                     ? null
-                    : Number(savedBill.minimum_payment)
+                    : Number(savedBill.minimum_payment),
+
+            planned_payment:
+                savedBill.planned_payment === null
+                    ? null
+                    : Number(savedBill.planned_payment)
         })
     } catch (error) {
         console.error("Failed to create bill:", error)

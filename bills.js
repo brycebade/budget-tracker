@@ -34,6 +34,7 @@ const openBillModal = () => {
     const expectedAmountInput = document.getElementById("billExpectedAmount")
     const minimumPaymentInput = document.getElementById("billMinimumPayment")
     const dueDayInput = document.getElementById("billDueDay")
+    const plannedPaymentInput = document.getElementById("billPlannedPayment")
 
     const numberOrNull = (input) => {
         return input.value === ""
@@ -75,8 +76,9 @@ const openBillModal = () => {
         const billData = {
             name: nameInput.value,
             category: categoryInput.value,
-            expectedAmount: Number(expectedAmountInput.value),
+            expectedAmount: numberOrNull(expectedAmountInput),
             minimumPayment: numberOrNull(minimumPaymentInput),
+            plannedPayment: numberOrNull(plannedPaymentInput),
             dueDay: Number(dueDayInput.value),
             fundingAccountId: fundingAccountSelect.value || null,
             linkedAccountId: linkedAccountSelect.value || null
@@ -110,8 +112,6 @@ const loadBills = async () => {
             getBills(),
             getAccounts()
         ])
-
-        console.log(savedBills)
 
         bills.push(...savedBills)
         accounts.push(...savedAccounts)
@@ -149,6 +149,17 @@ const renderBills = () => {
             return account.id === bill.linked_account_id
         })
 
+        const displayAmount = 
+            bill.planned_payment ??
+            bill.expected_amount ??
+            bill.minimum_payment
+
+        const extraPayment = 
+            bill.minimum_payment != null &&
+            bill.planned_payment != null
+                ? bill.planned_payment - bill.minimum_payment
+                : null
+
         billsContainer.innerHTML += `
             <div class="card bg-base-100 border border-base-300">
                 <div class="card-body">
@@ -160,8 +171,12 @@ const renderBills = () => {
                         ${bill.category}
                     </p>
 
+                    <p class="text-sm text-base-content/60">
+                        Planned Payment
+                    </p>
+
                     <p class="text-2xl font-bold">
-                        ${formatCurrency(bill.expected_amount)}
+                        ${formatCurrency(displayAmount)}
                     </p>
 
                     <p class="text-sm text-base-content/70">
@@ -178,6 +193,19 @@ const renderBills = () => {
                             }
                         </span>
                     </p>
+
+                    ${
+                        extraPayment > 0
+                            ? `
+                                <p class="text-sm text-base-content/70">
+                                    Extra Payment:
+                                    <span class="font-medium text-success">
+                                        ${formatCurrency(extraPayment)}
+                                    </span>
+                                </p>
+                            `
+                            : ""
+                    }
 
                     <p class="text-sm text-base-content/70">
                         Paid From:
