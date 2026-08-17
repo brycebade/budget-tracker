@@ -35,6 +35,7 @@ const openBillModal = () => {
     const minimumPaymentInput = document.getElementById("billMinimumPayment")
     const dueDayInput = document.getElementById("billDueDay")
     const plannedPaymentInput = document.getElementById("billPlannedPayment")
+    const frequencySelect = document.getElementById("billFrequency")
 
     const numberOrNull = (input) => {
         return input.value === ""
@@ -80,6 +81,7 @@ const openBillModal = () => {
             minimumPayment: numberOrNull(minimumPaymentInput),
             plannedPayment: numberOrNull(plannedPaymentInput),
             dueDay: Number(dueDayInput.value),
+            frequency: frequencySelect.value,
             fundingAccountId: fundingAccountSelect.value || null,
             linkedAccountId: linkedAccountSelect.value || null
         }

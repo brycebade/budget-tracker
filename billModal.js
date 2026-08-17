@@ -4,7 +4,7 @@ export const renderBillModal = () => {
     const content = `
         <form id="billForm" class="mt-4 space-y-4">
 
-            <div>
+            <div class="form-control">
                 <label class="label" for="billName">
                     <span class="label-text">Bill Name</span>
                 </label>
@@ -18,7 +18,7 @@ export const renderBillModal = () => {
                 >
             </div>
 
-            <div>
+            <div class="form-control">
                 <label class="label" for="billCategory">
                     <span class="label-text">Category</label>
                 </label>
@@ -32,7 +32,7 @@ export const renderBillModal = () => {
                 >
             </div>
 
-            <div>
+            <div class="form-control">
                 <label class="label" for="billExpectedAmount">
                     <span class="label-text">Expected Amount</span>
                 </label>
@@ -46,7 +46,7 @@ export const renderBillModal = () => {
                 >
             </div>
 
-            <div>
+            <div class="form-control">
                 <label class="label" for="billMinimumPayment">
                     <span class="label-text">Minimum Payment</span>
                 </label>
@@ -60,7 +60,7 @@ export const renderBillModal = () => {
                 >
             </div>
 
-            <div>
+            <div class="form-control">
                 <label class="label" for=:billPlannedAmount">
                     <span class="label-text">Planned Payment</span>
                 </label>
@@ -73,7 +73,7 @@ export const renderBillModal = () => {
                     class="input input=bordered w-full"
                     placeholder="0.00"
 
-            <div>
+            <div id="dueDayField" class="form-control">
                 <label class="label" for="billDueDay">
                     <span class="label-text">Due Day</span>
                 </label>
@@ -88,7 +88,34 @@ export const renderBillModal = () => {
                 >
             </div>
 
-            <div>
+            <div id="anchorDateField class="form control hidden">
+                <label class="label" for="billAnchorDate">
+                    <span class="label-text">First Due Date</span>
+                </label>
+
+                <input
+                    id="billAnchorDate"
+                    type="date"
+                    class="input input-bordered w-full"
+                >
+            </div>
+
+            <div class="form-control">
+                <label class="label" for="billFrequency>
+                    <span class="label-text">Frequency</span>
+                </label>
+
+                <select
+                    id="billFrequency"
+                    class="select select-bordered w-full"
+                >
+                    <option value="monthly">Monthly</option>
+                    <option value="biweekly">Biweekly</option>
+                    <option value="weekly">Weekly</option>
+                </select>
+            </div>
+
+            <div class="form-control">
                 <label class="label" for="billFundingAccount">
                     <span class="label-text">Paid From</span>
                 </label>
@@ -101,7 +128,7 @@ export const renderBillModal = () => {
                 </select>
             </div>
 
-            <div>
+            <div class="form-control">
                 <label class="label" for="billLinkedAccount">
                     <span class="label-text">Linked Debt Account</span>
                 </label>
