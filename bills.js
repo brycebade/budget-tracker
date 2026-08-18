@@ -25,11 +25,6 @@ const accounts = []
 const openBillModal = () => {
     const modal = renderBillModal()
 
-    console.log("modal:", modal)
-    console.log("billDueDay:", document.getElementById("billDueDay"))
-    console.log("dueDayField", document.getElementById("dueDayField"))
-    console.log("anchorDateField", document.getElementById("anchorDateField"))
-
     const cancelButton = document.getElementById("cancelBillButton")
     const fundingAccountSelect = document.getElementById("billFundingAccount")
     const linkedAccountSelect = document.getElementById("billLinkedAccount")
@@ -100,14 +95,17 @@ const openBillModal = () => {
     form.addEventListener("submit", async (event) => {
         event.preventDefault()
 
+        const isMonthly = frequencySelect.value === "monthly"
+
         const billData = {
             name: nameInput.value,
             category: categoryInput.value,
             expectedAmount: numberOrNull(expectedAmountInput),
             minimumPayment: numberOrNull(minimumPaymentInput),
             plannedPayment: numberOrNull(plannedPaymentInput),
-            dueDay: Number(dueDayInput.value),
+            dueDay: isMonthly ? Number(dueDayInput.value) : null,
             frequency: frequencySelect.value,
+            anchorDate: isMonthly ? null : anchorDateInput.value,
             fundingAccountId: fundingAccountSelect.value || null,
             linkedAccountId: linkedAccountSelect.value || null
         }
@@ -177,6 +175,10 @@ const renderBills = () => {
             return account.id === bill.linked_account_id
         })
 
+        const dueText = bill.frequency === "monthly"
+            ? `Due Day ${bill.due_day}`
+            : `First Due Date ${bill.anchor_date?.split("T")[0]}`
+
         const displayAmount = 
             bill.planned_payment ??
             bill.expected_amount ??
@@ -208,7 +210,11 @@ const renderBills = () => {
                     </p>
 
                     <p class="text-sm text-base-content/70">
-                        Due Day ${bill.due_day}
+                        ${dueText}
+                    </p>
+
+                    <p class="text-sm capitalize text-base-content/70">
+                        Frequency: ${bill.frequency}
                     </p>
 
                     <p class="text-sm text-base-content/70">
