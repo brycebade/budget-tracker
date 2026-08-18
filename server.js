@@ -696,7 +696,7 @@ app.get("/api/bill-payments", async (request, response) => {
                 SELECT
                     id,
                     bill_id,
-                    due_date::text AS payment_date,
+                    due_date::text AS due_date,
                     amount,
                     payment_date::text AS payment_date,
                     created_at

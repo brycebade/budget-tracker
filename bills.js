@@ -206,7 +206,28 @@ const renderBills = () => {
             )
         })
 
-        console.log(bill.name, paymentsForCurrentBill)
+        const paidSoFar = paymentsForCurrentBill.reduce(
+            (total, payment) => {
+                return total + payment.amount
+            },
+            0
+        )
+
+        const plannedAmount = 
+            bill.planned_payment ??
+            bill.expected_amount ??
+            bill.minimum_payment ??
+            0
+
+        const remainingAmount = 
+            Math.max(plannedAmount - paidSoFar, 0)
+
+        console.log(
+            bill.name,
+            "planned:", plannedAmount,
+            "paid:", paidSoFar,
+            "remaining:", remainingAmount
+        )
 
         const dueText = bill.frequency === "monthly"
             ? `Due Day ${bill.due_day}`
@@ -222,6 +243,13 @@ const renderBills = () => {
             bill.planned_payment != null
                 ? bill.planned_payment - bill.minimum_payment
                 : null
+
+        const paymentStatus = 
+            remainingAmount === 0
+                ? "Paid"
+                : paidSoFar > 0
+                    ? "Partial"
+                    : "Upcoming"
 
         billsContainer.innerHTML += `
             <div class="card bg-base-100 border border-base-300">
@@ -258,6 +286,27 @@ const renderBills = () => {
                                     ? "Not set"
                                     : formatCurrency(bill.minimum_payment)
                             }
+                        </span>
+                    </p>
+
+                    <p class="text-sm text-base-content/70">
+                        Paid So Far:
+                        <span class="font-medium text-base-content">
+                            ${formatCurrency(paidSoFar)}
+                        </span>
+                    </p>
+
+                    <p class="text-sm text-base-content/70">
+                        Remaining:
+                        <span class="font-medium text-base-content">
+                            ${formatCurrency(remainingAmount)}
+                        </span>
+                    </p>
+
+                    <p class="text-sm text-base-content/70">
+                        Status:
+                        <span class="font-medium text-base-content">
+                            ${paymentStatus}
                         </span>
                     </p>
 
