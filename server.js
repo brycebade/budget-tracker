@@ -1,5 +1,5 @@
 import "dotenv/config"
-import express from "express"
+import express, { request } from "express"
 import pg from "pg"
 import cors from "cors"
 
@@ -685,6 +685,103 @@ app.post("/api/bills", async (request, response) => {
 
         response.status(500).json({
             message: "Failed to create bill"
+        })
+    }
+})
+
+app.get("/api/bill-payments", async (request, response) => {
+    try {
+        const result = await pool.query(
+            `
+                SELECT
+                    id,
+                    bill_id,
+                    due_date::text AS payment_date,
+                    amount,
+                    payment_date::text AS payment_date,
+                    created_at
+                FROM bill_payments
+                WHERE user_id = $1
+                ORDER BY bill_payments.payment_date DESC, created_at DESC
+            `,
+            [
+                TEMP_USER_ID
+            ]
+        )
+
+         const savedPayments = result.rows.map((payment) => ({
+            ...payment,
+            amount: Number(payment.amount)
+        }))
+
+        response.json(savedPayments)
+    } catch (error) {
+        console.error("Failed to load bill payments:", error)
+
+        response.status(500).json({
+            message: "Failed to load bill payments"
+        })
+    }
+})
+
+app.post("/api/bill-payments", async (request, response) => {
+    const {
+        billId,
+        dueDate,
+        amount,
+        paymentDate
+    } = request.body
+
+    if (
+        !billId ||
+        !dueDate ||
+        amount === undefined ||
+        !paymentDate
+    ) {
+        return response.status(400).json({
+            message: "Bill, due date, amount, and payment date are required"
+        })
+    }
+
+    try {
+        const result = await pool.query(
+            `
+                INSERT INTO bill_payments (
+                    user_id,
+                    bill_id,
+                    due_date,
+                    amount,
+                    payment_date
+                )
+                VALUES ($1, $2, $3, $4, $5)
+                RETURNING
+                    id,
+                    bill_id,
+                    due_date::text AS due_date,
+                    amount,
+                    payment_date::text AS payment_date,
+                    created_at
+            `,
+            [
+                TEMP_USER_ID,
+                billId,
+                dueDate,
+                amount,
+                paymentDate
+            ]
+        )
+
+        const savedPayment = {
+            ...result.rows[0],
+            amount: Number(result.rows[0].amount)
+        }
+
+        response.status(201).json(savedPayment)
+    } catch (error) {
+        console.error("Failed to create bill payment:", error)
+
+        response.status(500).json({
+            message: "Failed to create bill payment"
         })
     }
 })
