@@ -2,6 +2,7 @@ import { renderLayout } from "./components/layout.js"
 import { getBills, createBill } from "./api/billsApi.js"
 import { getAccounts } from "./api/accountsApi.js"
 import { renderBillModal } from "./billModal.js"
+import { getNextBillDueDate } from "./utils/billCalculations.js"
 
 renderLayout({
     title: "Bills",
@@ -13,6 +14,14 @@ const formatCurrency = (amount) => {
     return amount.toLocaleString("en-US", {
         style: "currency",
         currency: "USD"
+    })
+}
+
+const formatDate = (date) => {
+    return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
     })
 }
 
@@ -175,6 +184,8 @@ const renderBills = () => {
             return account.id === bill.linked_account_id
         })
 
+        const nextDueDate = getNextBillDueDate(bill)
+
         const dueText = bill.frequency === "monthly"
             ? `Due Day ${bill.due_day}`
             : `First Due Date ${bill.anchor_date?.split("T")[0]}`
@@ -210,7 +221,7 @@ const renderBills = () => {
                     </p>
 
                     <p class="text-sm text-base-content/70">
-                        ${dueText}
+                        Next Due: ${formatDate(nextDueDate)}
                     </p>
 
                     <p class="text-sm capitalize text-base-content/70">

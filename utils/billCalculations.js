@@ -51,11 +51,11 @@ export const getNextBillDueDate = (bill) => {
         today.setHours(0, 0, 0, 0)
 
         if (anchorDate >= today) {
-            return AnchorDate
+            return anchorDate
+        }
 
         const millisecondsPerDay = 
             1000 * 60 * 60 * 24
-        }
 
         const daysSinceAnchor = Math.floor(
             (today - anchorDate) / millisecondsPerDay
