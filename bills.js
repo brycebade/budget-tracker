@@ -26,6 +26,14 @@ const formatDate = (date) => {
     })
 }
 
+const formatDateKey = (date) => {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, "0")
+    const day = String(date.getDate()).padStart(2, "0")
+
+    return `${year}-${month}-${day}`
+}
+
 const actionButton = document.getElementById("pageActionButton")
 const billsContainer = document.getElementById("billsContainer")
 
@@ -189,6 +197,16 @@ const renderBills = () => {
         })
 
         const nextDueDate = getNextBillDueDate(bill)
+        const dueDateKey = formatDateKey(nextDueDate)
+
+        const paymentsForCurrentBill = billPayments.filter((payment) => {
+            return (
+                payment.bill_id === bill.id &&
+                payment.due_date === dueDateKey
+            )
+        })
+
+        console.log(bill.name, paymentsForCurrentBill)
 
         const dueText = bill.frequency === "monthly"
             ? `Due Day ${bill.due_day}`
