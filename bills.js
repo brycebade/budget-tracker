@@ -3,6 +3,7 @@ import { getBills, createBill } from "./api/billsApi.js"
 import { getAccounts } from "./api/accountsApi.js"
 import { renderBillModal } from "./billModal.js"
 import { getNextBillDueDate } from "./utils/billCalculations.js"
+import { getBillPayments } from "./api/billPaymentsApi.js"
 
 renderLayout({
     title: "Bills",
@@ -30,6 +31,7 @@ const billsContainer = document.getElementById("billsContainer")
 
 const bills = []
 const accounts = []
+const billPayments = []
 
 const openBillModal = () => {
     const modal = renderBillModal()
@@ -143,13 +145,15 @@ actionButton.addEventListener("click", () => {
 
 const loadBills = async () => {
     try {
-        const [savedBills, savedAccounts] = await Promise.all([
+        const [savedBills, savedAccounts, savedBillPayments] = await Promise.all([
             getBills(),
-            getAccounts()
+            getAccounts(),
+            getBillPayments()
         ])
 
         bills.push(...savedBills)
         accounts.push(...savedAccounts)
+        billPayments.push(...savedBillPayments)
 
         renderBills()
 
