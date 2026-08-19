@@ -27,12 +27,12 @@ export const renderBillPaymentModal = () => {
                 <input
                     id="billPaymentDate"
                     type="date"
-                    class="input input-bordered" w-full"
+                    class="input input-bordered w-full"
                     required
                 >
             </div>
 
-            <div class="modal-action>
+            <div class="modal-action">
                 <button
                     id="cancelBillPaymentButton"
                     type="button"

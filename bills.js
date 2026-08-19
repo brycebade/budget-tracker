@@ -4,6 +4,7 @@ import { getAccounts } from "./api/accountsApi.js"
 import { renderBillModal } from "./billModal.js"
 import { getNextBillDueDate } from "./utils/billCalculations.js"
 import { getBillPayments } from "./api/billPaymentsApi.js"
+import { renderBillPaymentModal } from "./billPaymentsModal.js"
 
 renderLayout({
     title: "Bills",
@@ -222,13 +223,6 @@ const renderBills = () => {
         const remainingAmount = 
             Math.max(plannedAmount - paidSoFar, 0)
 
-        console.log(
-            bill.name,
-            "planned:", plannedAmount,
-            "paid:", paidSoFar,
-            "remaining:", remainingAmount
-        )
-
         const dueText = bill.frequency === "monthly"
             ? `Due Day ${bill.due_day}`
             : `First Due Date ${bill.anchor_date?.split("T")[0]}`
@@ -335,10 +329,57 @@ const renderBills = () => {
                         <span class="font-medium text-base-content">
                             ${linkedAccount?.name || "None"}
                         </span>
-                    </p>      
+                    </p>
+              
+                    ${
+                        remainingAmount > 0
+                            ? `
+                                <button
+                                    class="btn btn-sm btn-primary mt-3 recordPaymentButton"
+                                    data-bill-id="${bill.id}"
+                                >
+                                    Record Payment
+                                </button>
+                            `
+                            : ""
+                    }
                 </div>
-            </div>
+            </div>   
         `
+    })
+
+    const recordPaymentButtons = document.querySelectorAll(".recordPaymentButton")
+
+    recordPaymentButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const billId = button.dataset.billId
+
+            const selectedBill = bills.find((bill) => {
+                return bill.id === billId
+            })
+
+            const modal = renderBillPaymentModal()
+
+            const amountInput = document.getElementById("billPaymentAmount")
+            const paymentDateInput = document.getElementById("billPaymentDate")
+            const cancelButton = document.getElementById("cancelBillPaymentButton")
+
+            const plannedAmount = 
+                selectedBill.planned_payment ??
+                selectedBill.expected_amount ??
+                selectedBill.minimum_payment ??
+                0
+
+            amountInput.value = plannedAmount
+
+            paymentDateInput.value = new Date().toISOString().split("T")[0]
+
+            cancelButton.addEventListener("click", () => {
+                modal.close()
+            })
+
+            modal.showModal()
+        })
     })
 }
 
