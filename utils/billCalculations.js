@@ -77,3 +77,63 @@ export const getNextBillDueDate = (bill) => {
 
     return null
 }
+
+export const getPreviousBillDueDate = (bill) => {
+    if (bill.frequency === "monthly") {
+        const today = new Date()
+
+        today.setHours(0, 0, 0, 0)
+
+        const dueDay = bill.due_day
+
+        let previousDueDate = new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            dueDay
+        )
+
+        if (previousDueDate > today) {
+            previousDueDate = new Date(
+                today.getFullYear(),
+                today.getMonth() - 1,
+                dueDay
+            )
+        }
+
+        return previousDueDate
+    }
+
+    if (
+        bill.frequency === "weekly" ||
+        bill.frequency === "biweekly"
+    ) {
+        const intervalDays =
+            bill.frequency === "weekly"
+                ? 7
+                : 14
+
+        const [year, month, day] =
+            bill.anchor_date   
+                .split("T")[0]
+                .split("-")
+                .map(Number)
+
+        const anchorDate = new Date(
+            year,
+            month - 1,
+            day
+        )
+
+        anchorDate.setHours(0, 0, 0, 0)
+
+        const today = new Date()
+
+        today.setHours(0, 0, 0, 0)
+
+        if (anchorDate > today) {
+            return null
+        }
+    }
+    
+    return null
+}

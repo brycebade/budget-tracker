@@ -368,13 +368,29 @@ const renderBills = () => {
             const nextDueDate = getNextBillDueDate(selectedBill)
             const dueDateKey = formatDateKey(nextDueDate)
 
+            const paymentsForBill = billPayments.filter((payment) => {
+                return (
+                    payment.bill_id === selectedBill.id &&
+                    payment.due_date === dueDateKey
+                )
+            })
+
+            const paidSoFar = paymentsForBill.reduce(
+                (total, payment) => {
+                    return total + payment.amount
+                },
+                0
+            )
+
             const plannedAmount = 
                 selectedBill.planned_payment ??
                 selectedBill.expected_amount ??
                 selectedBill.minimum_payment ??
                 0
 
-            amountInput.value = plannedAmount
+            const remainingAmount = Math.max(plannedAmount - paidSoFar, 0)
+
+            amountInput.value = remainingAmount
 
             paymentDateInput.value = new Date().toISOString().split("T")[0]
 
