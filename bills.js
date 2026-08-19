@@ -3,7 +3,7 @@ import { getBills, createBill } from "./api/billsApi.js"
 import { getAccounts } from "./api/accountsApi.js"
 import { renderBillModal } from "./billModal.js"
 import { getNextBillDueDate } from "./utils/billCalculations.js"
-import { getBillPayments } from "./api/billPaymentsApi.js"
+import { getBillPayments, createBillPayment } from "./api/billPaymentsApi.js"
 import { renderBillPaymentModal } from "./billPaymentsModal.js"
 
 renderLayout({
@@ -363,6 +363,10 @@ const renderBills = () => {
             const amountInput = document.getElementById("billPaymentAmount")
             const paymentDateInput = document.getElementById("billPaymentDate")
             const cancelButton = document.getElementById("cancelBillPaymentButton")
+            const form = document.getElementById("billPaymentForm")
+
+            const nextDueDate = getNextBillDueDate(selectedBill)
+            const dueDateKey = formatDateKey(nextDueDate)
 
             const plannedAmount = 
                 selectedBill.planned_payment ??
@@ -376,6 +380,28 @@ const renderBills = () => {
 
             cancelButton.addEventListener("click", () => {
                 modal.close()
+            })
+
+            form.addEventListener("submit", async (event) => {
+                event.preventDefault()
+
+                const paymentData = {
+                    billId: selectedBill.id,
+                    dueDate: dueDateKey,
+                    amount: Number(amountInput.value),
+                    paymentDate: paymentDateInput.value
+                }
+
+                try {
+                    const savedPayment = await createBillPayment(paymentData)
+
+                    billPayments.push(savedPayment)
+
+                    modal.close()
+                    renderBills()
+                } catch (error) {
+                    console.error("Bill payment could not be saved:", error)
+                }
             })
 
             modal.showModal()
