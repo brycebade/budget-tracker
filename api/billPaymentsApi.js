@@ -11,3 +11,19 @@ export const getBillPayments = async () => {
 
     return response.json()
 }
+
+export const createBillPayment = async (paymentData) => {
+    const response = await fetch(BILL_PAYMENTS_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(paymentData)
+    })
+
+    if (!response.ok) {
+        throw new Error("Failed to create bill payment")
+    }
+
+    return response.json()
+}
