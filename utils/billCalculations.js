@@ -133,6 +133,17 @@ export const getPreviousBillDueDate = (bill) => {
         if (anchorDate > today) {
             return null
         }
+
+        const millisecondsPerDay = 1000 * 60 * 60 * 24
+        const daysSinceAnchor = Math.floor((today - anchorDate) / millisecondsPerDay)
+        const intervalsSinceAnchor = Math.floor(daysSinceAnchor / intervalDays)
+        const previousDueDate = new Date(anchorDate)
+
+        previousDueDate.setDate(
+            anchorDate.getDate() + (intervalsSinceAnchor * intervalDays)
+        )
+
+        return previousDueDate
     }
     
     return null
