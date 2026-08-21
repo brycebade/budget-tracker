@@ -1,181 +1,174 @@
-import { renderLayout } from "./components/layout.js"
-import { getBills, createBill } from "./api/billsApi.js"
-import { getAccounts } from "./api/accountsApi.js"
-import { renderBillModal } from "./billModal.js"
-import { getNextBillDueDate, getPreviousBillDueDate, getCurrentMonthBillDueDate } from "./utils/billCalculations.js"
-import { getBillPayments, createBillPayment } from "./api/billPaymentsApi.js"
-import { renderBillPaymentModal } from "./billPaymentsModal.js"
+import { renderLayout } from "./components/layout.js";
+import { getBills, createBill } from "./api/billsApi.js";
+import { getAccounts } from "./api/accountsApi.js";
+import { renderBillModal } from "./billModal.js";
+import {
+  getNextBillDueDate,
+  getPreviousBillDueDate,
+  getCurrentMonthBillDueDate,
+} from "./utils/billCalculations.js";
+import { getBillPayments, createBillPayment } from "./api/billPaymentsApi.js";
+import { renderBillPaymentModal } from "./billPaymentsModal.js";
 
 renderLayout({
-    title: "Bills",
-    activePage: "bills",
-    actionLabel: "Add New Bill +"
-})
+  title: "Bills",
+  activePage: "bills",
+  actionLabel: "Add New Bill +",
+});
 
 const formatCurrency = (amount) => {
-    return amount.toLocaleString("en-US", {
-        style: "currency",
-        currency: "USD"
-    })
-}
+  return amount.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+  });
+};
 
 const formatDate = (date) => {
-    return date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric"
-    })
-}
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
 
 const formatDateKey = (date) => {
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, "0")
-    const day = String(date.getDate()).padStart(2, "0")
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
 
-    return `${year}-${month}-${day}`
-}
+  return `${year}-${month}-${day}`;
+};
 
-const actionButton = document.getElementById("pageActionButton")
-const billsContainer = document.getElementById("billsContainer")
+const actionButton = document.getElementById("pageActionButton");
+const billsContainer = document.getElementById("billsContainer");
 
-const bills = []
-const accounts = []
-const billPayments = []
+const bills = [];
+const accounts = [];
+const billPayments = [];
 
 const openBillModal = () => {
-    const modal = renderBillModal()
+  const modal = renderBillModal();
 
-    const cancelButton = document.getElementById("cancelBillButton")
-    const fundingAccountSelect = document.getElementById("billFundingAccount")
-    const linkedAccountSelect = document.getElementById("billLinkedAccount")
-    const form = document.getElementById("billForm")
-    const nameInput = document.getElementById("billName")
-    const categoryInput = document.getElementById("billCategory")
-    const expectedAmountInput = document.getElementById("billExpectedAmount")
-    const minimumPaymentInput = document.getElementById("billMinimumPayment")
-    const dueDayInput = document.getElementById("billDueDay")
-    const plannedPaymentInput = document.getElementById("billPlannedPayment")
-    const frequencySelect = document.getElementById("billFrequency")
-    const dueDayField = document.getElementById("dueDayField")
-    const anchorDateField = document.getElementById("anchorDateField")
-    const anchorDateInput = document.getElementById("billAnchorDate")
+  const cancelButton = document.getElementById("cancelBillButton");
+  const fundingAccountSelect = document.getElementById("billFundingAccount");
+  const linkedAccountSelect = document.getElementById("billLinkedAccount");
+  const form = document.getElementById("billForm");
+  const nameInput = document.getElementById("billName");
+  const categoryInput = document.getElementById("billCategory");
+  const expectedAmountInput = document.getElementById("billExpectedAmount");
+  const minimumPaymentInput = document.getElementById("billMinimumPayment");
+  const dueDayInput = document.getElementById("billDueDay");
+  const plannedPaymentInput = document.getElementById("billPlannedPayment");
+  const frequencySelect = document.getElementById("billFrequency");
+  const dueDayField = document.getElementById("dueDayField");
+  const anchorDateField = document.getElementById("anchorDateField");
+  const anchorDateInput = document.getElementById("billAnchorDate");
 
-    const numberOrNull = (input) => {
-        return input.value === ""
-        ? null
-        : Number(input.value)
+  const numberOrNull = (input) => {
+    return input.value === "" ? null : Number(input.value);
+  };
+
+  accounts.forEach((account) => {
+    if (account.type === "checking" || account.type === "savings") {
+      fundingAccountSelect.innerHTML += `
+                <option value="${account.id}">
+                    ${account.name}
+                </option>
+            `;
     }
 
-    accounts.forEach((account) => {
-        if (
-            account.type === "checking" ||
-            account.type === "savings"
-        ) {
-            fundingAccountSelect.innerHTML += `
+    if (account.type === "credit_card" || account.type === "loan") {
+      linkedAccountSelect.innerHTML += `
                 <option value="${account.id}">
                     ${account.name}
                 </option>
-            `
-        }
+            `;
+    }
+  });
 
-        if (
-            account.type === "credit_card" ||
-            account.type === "loan"
-        ) {
-            linkedAccountSelect.innerHTML += `
-                <option value="${account.id}">
-                    ${account.name}
-                </option>
-            `
-        }
-    })
+  cancelButton.addEventListener("click", () => {
+    modal.close();
+  });
 
-    cancelButton.addEventListener("click", () => {
-        modal.close()
-    })
+  frequencySelect.addEventListener("change", () => {
+    const isMonthly = frequencySelect.value === "monthly";
 
-    frequencySelect.addEventListener("change", () => {
-        const isMonthly = frequencySelect.value === "monthly"
+    if (isMonthly) {
+      dueDayField.hidden = false;
+      anchorDateField.hidden = true;
 
-        if (isMonthly) {
-            dueDayField.hidden = false
-            anchorDateField.hidden = true
+      dueDayInput.required = true;
+      anchorDateInput.required = false;
+    } else {
+      dueDayField.hidden = true;
+      anchorDateField.hidden = false;
 
-            dueDayInput.required = true
-            anchorDateInput.required = false
-        } else {
-            dueDayField.hidden = true
-            anchorDateField.hidden = false
+      dueDayInput.required = false;
+      anchorDateInput.required = true;
+    }
+  });
 
-            dueDayInput.required = false
-            anchorDateInput.required = true
-        }
-    })
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-    form.addEventListener("submit", async (event) => {
-        event.preventDefault()
+    const isMonthly = frequencySelect.value === "monthly";
 
-        const isMonthly = frequencySelect.value === "monthly"
+    const billData = {
+      name: nameInput.value,
+      category: categoryInput.value,
+      expectedAmount: numberOrNull(expectedAmountInput),
+      minimumPayment: numberOrNull(minimumPaymentInput),
+      plannedPayment: numberOrNull(plannedPaymentInput),
+      dueDay: isMonthly ? Number(dueDayInput.value) : null,
+      frequency: frequencySelect.value,
+      anchorDate: isMonthly ? null : anchorDateInput.value,
+      fundingAccountId: fundingAccountSelect.value || null,
+      linkedAccountId: linkedAccountSelect.value || null,
+    };
 
-        const billData = {
-            name: nameInput.value,
-            category: categoryInput.value,
-            expectedAmount: numberOrNull(expectedAmountInput),
-            minimumPayment: numberOrNull(minimumPaymentInput),
-            plannedPayment: numberOrNull(plannedPaymentInput),
-            dueDay: isMonthly ? Number(dueDayInput.value) : null,
-            frequency: frequencySelect.value,
-            anchorDate: isMonthly ? null : anchorDateInput.value,
-            fundingAccountId: fundingAccountSelect.value || null,
-            linkedAccountId: linkedAccountSelect.value || null
-        }
+    try {
+      const savedBill = await createBill(billData);
 
-        try {
-            const savedBill = await createBill(billData)
-            
-            bills.push(savedBill)
+      bills.push(savedBill);
 
-            renderBills()
+      renderBills();
 
-            modal.close()
-        } catch (error) {
-            console.error("Bill could not be saved:", error)
-        }
+      modal.close();
+    } catch (error) {
+      console.error("Bill could not be saved:", error);
+    }
+  });
 
-        
-    })
-
-    modal.showModal()
-}
+  modal.showModal();
+};
 
 actionButton.addEventListener("click", () => {
-    openBillModal()
-})
+  openBillModal();
+});
 
 const loadBills = async () => {
-    try {
-        const [savedBills, savedAccounts, savedBillPayments] = await Promise.all([
-            getBills(),
-            getAccounts(),
-            getBillPayments()
-        ])
+  try {
+    const [savedBills, savedAccounts, savedBillPayments] = await Promise.all([
+      getBills(),
+      getAccounts(),
+      getBillPayments(),
+    ]);
 
-        bills.push(...savedBills)
-        accounts.push(...savedAccounts)
-        billPayments.push(...savedBillPayments)
+    bills.push(...savedBills);
+    accounts.push(...savedAccounts);
+    billPayments.push(...savedBillPayments);
 
-        renderBills()
-
-    } catch (error) {
-        console.error("Bills could not be loaded:", error)
-    }
-}
+    renderBills();
+  } catch (error) {
+    console.error("Bills could not be loaded:", error);
+  }
+};
 
 const renderBills = () => {
-    billsContainer.innerHTML = ""
+  billsContainer.innerHTML = "";
 
-    if (bills.length === 0) {
-        billsContainer.innerHTML = `
+  if (bills.length === 0) {
+    billsContainer.innerHTML = `
             <div class="card bg-base-100 border border-base-300">
                 <div class="card-body">
                     <p class="text-base-content/60">
@@ -183,140 +176,155 @@ const renderBills = () => {
                     </p>
                 </div>
             </div>
-        `
+        `;
 
-        return
+    return;
+  }
+
+  bills.forEach((bill) => {
+    const fundingAccount = accounts.find((account) => {
+      return account.id === bill.funding_account_id;
+    });
+
+    const linkedAccount = accounts.find((account) => {
+      return account.id === bill.linked_account_id;
+    });
+
+    const previousDueDate = getPreviousBillDueDate(bill);
+    const nextDueDate = getNextBillDueDate(bill);
+    const currentMonthDueDate = getCurrentMonthBillDueDate(bill);
+
+    if (bill.name === "Apple One") {
+      console.log(
+        "Current Month:",
+        currentMonthDueDate,
+        "Previous:",
+        previousDueDate,
+        "Next:",
+        nextDueDate,
+      );
     }
 
-    bills.forEach((bill) => {
-        const fundingAccount = accounts.find((account) => {
-            return account.id === bill.funding_account_id
-        })
+    const trackingStartDate = new Date(bill.created_at);
 
-        const linkedAccount = accounts.find((account) => {
-            return account.id === bill.linked_account_id
-        })
+    trackingStartDate.setHours(0, 0, 0, 0);
 
-        const previousDueDate = getPreviousBillDueDate(bill)
-        const nextDueDate = getNextBillDueDate(bill)
-        const currentMonthDueDate = getCurrentMonthBillDueDate(bill)
+    const shouldCheckPreviousOccurence =
+      previousDueDate !== null && previousDueDate >= trackingStartDate;
 
-        if(bill.name === "Apple One") {
-            console.log(
-                "Current Month:",
-                currentMonthDueDate,
-                "Previous:",
-                previousDueDate,
-                "Next:",
-                nextDueDate
-            )
-        }
+    const plannedAmount =
+      bill.planned_payment ?? bill.expected_amount ?? bill.minimum_payment ?? 0;
 
-        const trackingStartDate = new Date(bill.created_at)
+    const previousDueDateKey = previousDueDate
+      ? formatDateKey(previousDueDate)
+      : null;
 
-        trackingStartDate.setHours(0, 0, 0, 0)
+    const paymentsForPreviousBill = billPayments.filter((payment) => {
+      return (
+        payment.bill_id === bill.id && payment.due_date === previousDueDate
+      );
+    });
 
-        const shouldCheckPreviousOccurence = 
-            previousDueDate !== null &&
-            previousDueDate >= trackingStartDate
+    const previousPaidSoFar = paymentsForPreviousBill.reduce(
+      (total, payment) => {
+        return total + payment.amount;
+      },
+      0,
+    );
 
-        const plannedAmount = 
-            bill.planned_payment ??
-            bill.expected_amount ??
-            bill.minimum_payment ??
-            0
+    const previousRemainingAmount = Math.max(
+      plannedAmount - previousPaidSoFar,
+      0,
+    );
 
-        const previousDueDateKey = previousDueDate
-            ? formatDateKey(previousDueDate)
-            : null
+    const hasUnpaidPreviousOccurence =
+      shouldCheckPreviousOccurence && previousRemainingAmount > 0;
 
-        const paymentsForPreviousBill = billPayments.filter((payment) => {
-            return (
-                payment.bill_id === bill.id &&
-                payment.due_date === previousDueDate
-            )
-        })
+    const activeDueDate =
+      bill.frequency === "monthly"
+        ? hasUnpaidPreviousOccurence
+          ? previousDueDate
+          : currentMonthDueDate
+        : hasUnpaidPreviousOccurence
+          ? previousDueDate
+          : nextDueDate;
 
-        const previousPaidSoFar = paymentsForPreviousBill.reduce(
-            (total, payment) => {
-                return total + payment.amount
-            },
-            0
-        )
+    const today = new Date();
 
-        const previousRemainingAmount = Math.max(
-            plannedAmount - previousPaidSoFar,
-            0
-        )
+    today.setHours(0, 0, 0, 0);
 
-        const hasUnpaidPreviousOccurence =
-            shouldCheckPreviousOccurence && 
-            previousRemainingAmount > 0
+    const isOverdue = activeDueDate < today;
+    const isDueToday = activeDueDate.getTime() === today.getTime();
 
-        const activeDueDate =
-            hasUnpaidPreviousOccurence
-                ? previousDueDate
-                : nextDueDate
+    const dueDateKey = formatDateKey(activeDueDate);
 
-        const today = new Date()
+    if (bill.due_day === 14) {
+      console.log("Previous:", previousDueDate);
+      console.log("Next:", nextDueDate);
+    }
 
-        today.setHours(0, 0, 0, 0)
+    const paymentsForCurrentBill = billPayments.filter((payment) => {
+      return payment.bill_id === bill.id && payment.due_date === dueDateKey;
+    });
 
-        const isOverdue = activeDueDate < today
-        const isDueToday = activeDueDate.getTime() === today.getTime()
+    const paidSoFar = paymentsForCurrentBill.reduce((total, payment) => {
+      return total + payment.amount;
+    }, 0);
 
-        const dueDateKey = formatDateKey(activeDueDate)
+    const remainingAmount = Math.max(plannedAmount - paidSoFar, 0);
 
-        if (bill.due_day === 14) {
-            console.log("Previous:", previousDueDate)
-            console.log("Next:", nextDueDate)
-        }
+    const dueText =
+      bill.frequency === "monthly"
+        ? `Due Day ${bill.due_day}`
+        : `First Due Date ${bill.anchor_date?.split("T")[0]}`;
 
-        const paymentsForCurrentBill = billPayments.filter((payment) => {
-            return (
-                payment.bill_id === bill.id &&
-                payment.due_date === dueDateKey
-            )
-        })
+    const displayAmount =
+      bill.planned_payment ?? bill.expected_amount ?? bill.minimum_payment;
 
-        const paidSoFar = paymentsForCurrentBill.reduce(
-            (total, payment) => {
-                return total + payment.amount
-            },
-            0
-        )    
+    const extraPayment =
+      bill.minimum_payment != null && bill.planned_payment != null
+        ? bill.planned_payment - bill.minimum_payment
+        : null;
 
-        const remainingAmount = 
-            Math.max(plannedAmount - paidSoFar, 0)
+    const paymentStatus =
+      remainingAmount === 0
+        ? "Paid"
+        : isOverdue
+          ? "Overdue"
+          : paidSoFar > 0
+            ? "Partial"
+            : isDueToday
+              ? "Due Today"
+              : "Upcoming";
 
-        const dueText = bill.frequency === "monthly"
-            ? `Due Day ${bill.due_day}`
-            : `First Due Date ${bill.anchor_date?.split("T")[0]}`
+    const statusStamp =
+      paymentStatus === "Paid"
+        ? {
+            text: "PAID",
+            classes: "border-success text-success",
+          }
+        : paymentStatus === "Overdue"
+          ? {
+              text: "OVERDUE",
+              classes: "border-error text-error",
+            }
+          : null;
 
-        const displayAmount = 
-            bill.planned_payment ??
-            bill.expected_amount ??
-            bill.minimum_payment
+    billsContainer.innerHTML += `
+            <div class="card relative overflow-hidden bg-base-100 border border-base-300">
+                
+            ${
+              statusStamp
+                ? `
+                        <div class="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+                            <span class="rotate-12 rounded border-4 px-6 py-2 text-4xl font-black tracking-widest opacity-30 ${statusStamp.classes}">
+                                ${statusStamp.text}
+                            </span>
+                        </div>
+                    `
+                : ""
+            }
 
-        const extraPayment = 
-            bill.minimum_payment != null &&
-            bill.planned_payment != null
-                ? bill.planned_payment - bill.minimum_payment
-                : null
-
-        const paymentStatus = 
-            remainingAmount === 0
-                ? "Paid"
-                : isOverdue
-                    ? "Overdue"
-                    : paidSoFar > 0
-                        ? "Partial"
-                        : isDueToday
-                            ? "Due Today"
-                            : "Upcoming"
-
-        billsContainer.innerHTML += `
-            <div class="card bg-base-100 border border-base-300">
                 <div class="card-body">
                     <h2 class="card-title">
                         ${bill.name}
@@ -346,9 +354,9 @@ const renderBills = () => {
                         Minimum Payment:
                         <span class="font-medium text-base-content">
                             ${
-                                bill.minimum_payment == null    
-                                    ? "Not set"
-                                    : formatCurrency(bill.minimum_payment)
+                              bill.minimum_payment == null
+                                ? "Not set"
+                                : formatCurrency(bill.minimum_payment)
                             }
                         </span>
                     </p>
@@ -375,8 +383,8 @@ const renderBills = () => {
                     </p>
 
                     ${
-                        extraPayment > 0
-                            ? `
+                      extraPayment > 0
+                        ? `
                                 <p class="text-sm text-base-content/70">
                                     Extra Payment:
                                     <span class="font-medium text-success">
@@ -384,7 +392,7 @@ const renderBills = () => {
                                     </span>
                                 </p>
                             `
-                            : ""
+                        : ""
                     }
 
                     <p class="text-sm text-base-content/70">
@@ -402,8 +410,8 @@ const renderBills = () => {
                     </p>
               
                     ${
-                        remainingAmount > 0
-                            ? `
+                      remainingAmount > 0
+                        ? `
                                 <button
                                     class="btn btn-sm btn-primary mt-3 recordPaymentButton"
                                     data-bill-id="${bill.id}"
@@ -411,88 +419,86 @@ const renderBills = () => {
                                     Record Payment
                                 </button>
                             `
-                            : ""
+                        : ""
                     }
                 </div>
             </div>   
-        `
-    })
+        `;
+  });
 
-    const recordPaymentButtons = document.querySelectorAll(".recordPaymentButton")
+  const recordPaymentButtons = document.querySelectorAll(
+    ".recordPaymentButton",
+  );
 
-    recordPaymentButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-            const billId = button.dataset.billId
+  recordPaymentButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const billId = button.dataset.billId;
 
-            const selectedBill = bills.find((bill) => {
-                return bill.id === billId
-            })
+      const selectedBill = bills.find((bill) => {
+        return bill.id === billId;
+      });
 
-            const modal = renderBillPaymentModal()
+      const modal = renderBillPaymentModal();
 
-            const amountInput = document.getElementById("billPaymentAmount")
-            const paymentDateInput = document.getElementById("billPaymentDate")
-            const cancelButton = document.getElementById("cancelBillPaymentButton")
-            const form = document.getElementById("billPaymentForm")
+      const amountInput = document.getElementById("billPaymentAmount");
+      const paymentDateInput = document.getElementById("billPaymentDate");
+      const cancelButton = document.getElementById("cancelBillPaymentButton");
+      const form = document.getElementById("billPaymentForm");
 
-            const nextDueDate = getNextBillDueDate(selectedBill)
-            const dueDateKey = formatDateKey(nextDueDate)
+      const nextDueDate = getNextBillDueDate(selectedBill);
+      const dueDateKey = formatDateKey(nextDueDate);
 
-            const paymentsForBill = billPayments.filter((payment) => {
-                return (
-                    payment.bill_id === selectedBill.id &&
-                    payment.due_date === dueDateKey
-                )
-            })
+      const paymentsForBill = billPayments.filter((payment) => {
+        return (
+          payment.bill_id === selectedBill.id && payment.due_date === dueDateKey
+        );
+      });
 
-            const paidSoFar = paymentsForBill.reduce(
-                (total, payment) => {
-                    return total + payment.amount
-                },
-                0
-            )
+      const paidSoFar = paymentsForBill.reduce((total, payment) => {
+        return total + payment.amount;
+      }, 0);
 
-            const plannedAmount = 
-                selectedBill.planned_payment ??
-                selectedBill.expected_amount ??
-                selectedBill.minimum_payment ??
-                0
+      const plannedAmount =
+        selectedBill.planned_payment ??
+        selectedBill.expected_amount ??
+        selectedBill.minimum_payment ??
+        0;
 
-            const remainingAmount = Math.max(plannedAmount - paidSoFar, 0)
+      const remainingAmount = Math.max(plannedAmount - paidSoFar, 0);
 
-            amountInput.value = remainingAmount
+      amountInput.value = remainingAmount;
 
-            paymentDateInput.value = new Date().toISOString().split("T")[0]
+      paymentDateInput.value = new Date().toISOString().split("T")[0];
 
-            cancelButton.addEventListener("click", () => {
-                modal.close()
-            })
+      cancelButton.addEventListener("click", () => {
+        modal.close();
+      });
 
-            form.addEventListener("submit", async (event) => {
-                event.preventDefault()
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
 
-                const paymentData = {
-                    billId: selectedBill.id,
-                    dueDate: dueDateKey,
-                    amount: Number(amountInput.value),
-                    paymentDate: paymentDateInput.value
-                }
+        const paymentData = {
+          billId: selectedBill.id,
+          dueDate: dueDateKey,
+          amount: Number(amountInput.value),
+          paymentDate: paymentDateInput.value,
+        };
 
-                try {
-                    const savedPayment = await createBillPayment(paymentData)
+        try {
+          const savedPayment = await createBillPayment(paymentData);
 
-                    billPayments.push(savedPayment)
+          billPayments.push(savedPayment);
 
-                    modal.close()
-                    renderBills()
-                } catch (error) {
-                    console.error("Bill payment could not be saved:", error)
-                }
-            })
+          modal.close();
+          renderBills();
+        } catch (error) {
+          console.error("Bill payment could not be saved:", error);
+        }
+      });
 
-            modal.showModal()
-        })
-    })
-}
+      modal.showModal();
+    });
+  });
+};
 
-loadBills()
+loadBills();
