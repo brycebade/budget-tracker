@@ -2,7 +2,7 @@ import { renderLayout } from "./components/layout.js"
 import { getBills, createBill } from "./api/billsApi.js"
 import { getAccounts } from "./api/accountsApi.js"
 import { renderBillModal } from "./billModal.js"
-import { getNextBillDueDate, getPreviousBillDueDate } from "./utils/billCalculations.js"
+import { getNextBillDueDate, getPreviousBillDueDate, getCurrentMonthBillDueDate } from "./utils/billCalculations.js"
 import { getBillPayments, createBillPayment } from "./api/billPaymentsApi.js"
 import { renderBillPaymentModal } from "./billPaymentsModal.js"
 
@@ -199,6 +199,18 @@ const renderBills = () => {
 
         const previousDueDate = getPreviousBillDueDate(bill)
         const nextDueDate = getNextBillDueDate(bill)
+        const currentMonthDueDate = getCurrentMonthBillDueDate(bill)
+
+        if(bill.name === "Apple One") {
+            console.log(
+                "Current Month:",
+                currentMonthDueDate,
+                "Previous:",
+                previousDueDate,
+                "Next:",
+                nextDueDate
+            )
+        }
 
         const trackingStartDate = new Date(bill.created_at)
 

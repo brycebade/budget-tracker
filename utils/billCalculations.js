@@ -148,3 +148,21 @@ export const getPreviousBillDueDate = (bill) => {
     
     return null
 }
+
+export const getCurrentMonthBillDueDate = (bill) => {
+    if (bill.frequency !== "monthly") {
+        return null
+    }
+
+    const today = new Date()
+
+    today.setHours(0, 0, 0, 0)
+
+    const currentMonthDueDate = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        bill.due_day
+    )
+
+    return currentMonthDueDate
+}
