@@ -1,6 +1,6 @@
-export const getNextBillDueDate = (bill) => {
+export const getNextBillDueDate = (bill, referenceDate = new Date()) => {
     if (bill.frequency === "monthly") {
-        const today = new Date()
+        const today = new Date(referenceDate)
 
         today.setHours(0, 0, 0, 0)
 
@@ -78,9 +78,9 @@ export const getNextBillDueDate = (bill) => {
     return null
 }
 
-export const getPreviousBillDueDate = (bill) => {
+export const getPreviousBillDueDate = (bill, referenceDate = new Date()) => {
     if (bill.frequency === "monthly") {
-        const today = new Date()
+        const today = new Date(referenceDate)
 
         today.setHours(0, 0, 0, 0)
 
@@ -149,12 +149,12 @@ export const getPreviousBillDueDate = (bill) => {
     return null
 }
 
-export const getCurrentMonthBillDueDate = (bill) => {
+export const getCurrentMonthBillDueDate = (bill, referenceDate = new Date()) => {
     if (bill.frequency !== "monthly") {
         return null
     }
 
-    const today = new Date()
+    const today = new Date(referenceDate)
 
     today.setHours(0, 0, 0, 0)
 
