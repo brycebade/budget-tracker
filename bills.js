@@ -86,6 +86,21 @@ const openBillModal = () => {
     }
   });
 
+  const getBillState = (bill) => {
+    const plannedAmount =
+      bill.planned_payment ?? bill.expected_amount ?? bill.minimum_payment ?? 0;
+    const previousDate = getPreviousBillDueDate(bill);
+    const nextDueDate = getNextBillDueDate(bill);
+    const currentMonthDueDate = getCurrentMonthBillDueDate(bill);
+
+    return {
+      plannedAmount,
+      previousDueDate,
+      nextDueDate,
+      currentMonthDueDate,
+    };
+  };
+
   cancelButton.addEventListener("click", () => {
     modal.close();
   });
@@ -190,10 +205,6 @@ const renderBills = () => {
       return account.id === bill.linked_account_id;
     });
 
-    const previousDueDate = getPreviousBillDueDate(bill);
-    const nextDueDate = getNextBillDueDate(bill);
-    const currentMonthDueDate = getCurrentMonthBillDueDate(bill);
-
     const trackingStartDate = new Date(bill.created_at);
 
     trackingStartDate.setHours(0, 0, 0, 0);
@@ -201,8 +212,12 @@ const renderBills = () => {
     const shouldCheckPreviousOccurence =
       previousDueDate !== null && previousDueDate >= trackingStartDate;
 
-    const plannedAmount =
-      bill.planned_payment ?? bill.expected_amount ?? bill.minimum_payment ?? 0;
+    const billState = getBillState(bill);
+
+    const plannedAmount = billState.plannedAmount;
+    const previousDueDate = billState.previousDueDate;
+    const nextDueDate = billState.nextDueDate;
+    const currentMonthDueDate = billState.currentMonthDueDate;
 
     const previousDueDateKey = previousDueDate
       ? formatDateKey(previousDueDate)
@@ -210,8 +225,7 @@ const renderBills = () => {
 
     const paymentsForPreviousBill = billPayments.filter((payment) => {
       return (
-        payment.bill_id === bill.id && 
-        payment.due_date === previousDueDateKey
+        payment.bill_id === bill.id && payment.due_date === previousDueDateKey
       );
     });
 
@@ -290,7 +304,7 @@ const renderBills = () => {
             textClass: "text-success",
             widthClass: "w-48",
             textSizeClass: "text-4xl",
-            rotateClass: "-rotate-12"
+            rotateClass: "-rotate-12",
           }
         : paymentStatus === "Overdue"
           ? {
@@ -299,7 +313,7 @@ const renderBills = () => {
               textClass: "text-error",
               widthClass: "w-64",
               textSizeClass: "text-3xl",
-              rotateClass: "-rotate-12"
+              rotateClass: "-rotate-12",
             }
           : null;
 
@@ -430,8 +444,8 @@ const renderBills = () => {
   recordPaymentButtons.forEach((button) => {
     button.addEventListener("click", () => {
       const billId = button.dataset.billId;
-      const dueDateKey = button.dataset.dueDate
-      const remainingAmount = Number(button.dataset.remainingAmount)
+      const dueDateKey = button.dataset.dueDate;
+      const remainingAmount = Number(button.dataset.remainingAmount);
 
       const selectedBill = bills.find((bill) => {
         return bill.id === billId;
@@ -460,7 +474,7 @@ const renderBills = () => {
           dueDate: dueDateKey,
           amount: Number(amountInput.value),
           paymentDate: paymentDateInput.value,
-        }
+        };
 
         try {
           const savedPayment = await createBillPayment(paymentData);
