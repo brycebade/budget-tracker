@@ -86,24 +86,6 @@ const openBillModal = () => {
         }
     })
 
-    const getBillState = (bill) => {
-        const plannedAmount =
-            bill.planned_payment ??
-            bill.expected_amount ??
-            bill.minimum_payment ??
-            0
-        const previousDate = getPreviousBillDueDate(bill)
-        const nextDueDate = getNextBillDueDate(bill)
-        const currentMonthDueDate = getCurrentMonthBillDueDate(bill)
-
-        return {
-            plannedAmount,
-            previousDueDate,
-            nextDueDate,
-            currentMonthDueDate,
-        }
-    }
-
     cancelButton.addEventListener("click", () => {
         modal.close()
     })
@@ -179,6 +161,124 @@ const loadBills = async () => {
     }
 }
 
+    const getBillState = (bill) => {
+        const plannedAmount =
+            bill.planned_payment ??
+            bill.expected_amount ??
+            bill.minimum_payment ??
+            0
+
+        const previousDueDate = getPreviousBillDueDate(bill)
+        const nextDueDate = getNextBillDueDate(bill)
+        const currentMonthDueDate = getCurrentMonthBillDueDate(bill)
+
+        const trackingStartDate = new Date(bill.created_at)
+
+        trackingStartDate.setHours(0, 0, 0, 0)
+
+        const shouldCheckPreviousOccurrence = 
+            previousDueDate !== null &&
+            previousDueDate >= trackingStartDate
+
+        const previousDueDateKey = previousDueDate
+            ? formatDateKey(previousDueDate)
+            : null
+
+        const paymentsForPreviousBill = billPayments.filter((payment) => {
+            return (
+                payment.bill_id === bill.id &&
+                payment.due_date === previousDueDateKey
+            )
+        })
+
+        const previousPaidSoFar = paymentsForPreviousBill.reduce(
+            (total, payment) => {
+                return total + payment.amount
+            },
+            0
+        )
+
+        const previousRemainingAmount = Math.max(
+            plannedAmount - previousPaidSoFar,
+            0
+        )
+
+        const hasUnpaidPreviousOccurrence = 
+            shouldCheckPreviousOccurrence && 
+            previousRemainingAmount > 0
+
+        const activeDueDate = 
+            bill.frequency === "monthly"
+                ? hasUnpaidPreviousOccurrence
+                    ? previousDueDate
+                    : currentMonthDueDate
+                : hasUnpaidPreviousOccurrence
+                    ? previousDueDate
+                    : nextDueDate
+        
+        const dueDateKey = formatDateKey(activeDueDate)
+
+        const paymentsForCurrentBill = billPayments.filter((payment) => {
+            return (
+                payment.bill_id === bill.id &&
+                payment.due_date === dueDateKey
+            )
+        })
+
+        const paidSoFar = paymentsForCurrentBill.reduce(
+            (total, payment) => {
+                return total + payment.amount
+            },
+            0
+        )
+
+        const remainingAmount = Math.max(
+            plannedAmount - paidSoFar,
+            0
+        )
+
+        const today = new Date()
+
+        today.setHours(0, 0, 0, 0)
+
+        const isOverdue = activeDueDate < today
+        const isDueToday = activeDueDate.getTime() === today.getTime()
+
+        const paymentStatus =
+            remainingAmount === 0
+                ? "Paid"
+                : isOverdue
+                    ? "Overdue"
+                    : paidSoFar > 0
+                        ? "Partial"
+                        : isDueToday
+                            ? "Due Today"
+                            : "Upcoming"
+
+        return {
+            plannedAmount,
+            previousDueDate,
+            nextDueDate,
+            currentMonthDueDate,
+            trackingStartDate,
+            shouldCheckPreviousOccurrence,
+            previousDueDateKey,
+            paymentsForPreviousBill,
+            previousPaidSoFar,
+            previousRemainingAmount,
+            hasUnpaidPreviousOccurrence,
+            activeDueDate,
+            dueDateKey,
+            paymentsForCurrentBill,
+            paidSoFar,
+            remainingAmount,
+            today,
+            isOverdue,
+            isDueToday,
+            paymentStatus
+        }
+    }
+
 const renderBills = () => {
     billsContainer.innerHTML = ""
 
@@ -196,7 +296,51 @@ const renderBills = () => {
         return
     }
 
-    bills.forEach((bill) => {
+    const sortedBills = [...bills].sort((billA, billB) => {
+        const stateA = getBillState(billA)
+        const stateB = getBillState(billB)
+
+        const statusPriority = {
+            Overdue: 1,
+            "Due Today": 2,
+            Partial: 3,
+            Upcoming: 4,
+            Paid: 5
+        }
+
+        const priorityA = statusPriority[stateA.paymentStatus]
+        const priorityB = statusPriority[stateB.paymentStatus]
+
+        if (priorityA !== priorityB) {
+            return priorityA - priorityB
+        }
+
+        return stateA.activeDueDate - stateB.activeDueDate
+    })
+
+    sortedBills.forEach((bill) => {
+        const billState = getBillState(bill)
+
+        const plannedAmount = billState.plannedAmount
+        const previousDueDate = billState.previousDueDate
+        const nextDueDate = billState.nextDueDate
+        const currentMonthDueDate = billState.currentMonthDueDate
+        const trackingStartDate = billState.trackingStartDate
+        const shouldCheckPreviousOccurrence = billState.shouldCheckPreviousOccurrence
+        const previousDueDateKey = billState.previousDueDateKey
+        const paymentsForPreviousBill = billState.paymentsForPreviousBill
+        const previousPaidSoFar = billState.previousPaidSoFar
+        const previousRemainingAmount = billState.previousRemainingAmount
+        const hasUnpaidPreviousOccurrence = billState.hasUnpaidPreviousOccurrence
+        const activeDueDate = billState.activeDueDate
+        const dueDateKey = billState.dueDateKey
+        const paymentsForCurrentBill = billState.paymentsForCurrentBill
+        const paidSoFar = billState.paidSoFar
+        const remainingAmount = billState.remainingAmount
+        const isOverdue = billState.isOverdue
+        const isDueToday = billState.isDueToday
+        const paymentStatus = billState.paymentStatus
+
         const fundingAccount = accounts.find((account) => {
             return account.id === bill.funding_account_id
         })
@@ -204,76 +348,6 @@ const renderBills = () => {
         const linkedAccount = accounts.find((account) => {
             return account.id === bill.linked_account_id
         })
-
-        const trackingStartDate = new Date(bill.created_at)
-
-        trackingStartDate.setHours(0, 0, 0, 0)
-
-        const shouldCheckPreviousOccurence =
-            previousDueDate !== null && previousDueDate >= trackingStartDate
-
-        const billState = getBillState(bill)
-
-        const plannedAmount = billState.plannedAmount
-        const previousDueDate = billState.previousDueDate
-        const nextDueDate = billState.nextDueDate
-        const currentMonthDueDate = billState.currentMonthDueDate
-
-        const previousDueDateKey = previousDueDate
-            ? formatDateKey(previousDueDate)
-            : null
-
-        const paymentsForPreviousBill = billPayments.filter((payment) => {
-            return (
-                payment.bill_id === bill.id &&
-                payment.due_date === previousDueDateKey
-            )
-        })
-
-        const previousPaidSoFar = paymentsForPreviousBill.reduce(
-            (total, payment) => {
-                return total + payment.amount
-            },
-            0,
-        )
-
-        const previousRemainingAmount = Math.max(
-            plannedAmount - previousPaidSoFar,
-            0,
-        )
-
-        const hasUnpaidPreviousOccurence =
-            shouldCheckPreviousOccurence && previousRemainingAmount > 0
-
-        const activeDueDate =
-            bill.frequency === "monthly"
-                ? hasUnpaidPreviousOccurence
-                    ? previousDueDate
-                    : currentMonthDueDate
-                : hasUnpaidPreviousOccurence
-                  ? previousDueDate
-                  : nextDueDate
-
-        const today = new Date()
-
-        today.setHours(0, 0, 0, 0)
-
-        const isOverdue = activeDueDate < today
-        const isDueToday = activeDueDate.getTime() === today.getTime()
-
-        const dueDateKey = formatDateKey(activeDueDate)
-
-        const paymentsForCurrentBill = billPayments.filter((payment) => {
-            return (
-                payment.bill_id === bill.id && payment.due_date === dueDateKey
-            )
-        })
-
-        const paidSoFar = paymentsForCurrentBill.reduce((total, payment) => {
-            return total + payment.amount
-        }, 0)
-
-        const remainingAmount = Math.max(plannedAmount - paidSoFar, 0)
 
         const dueText =
             bill.frequency === "monthly"
@@ -287,17 +361,6 @@ const renderBills = () => {
             bill.minimum_payment != null && bill.planned_payment != null
                 ? bill.planned_payment - bill.minimum_payment
                 : null
-
-        const paymentStatus =
-            remainingAmount === 0
-                ? "Paid"
-                : isOverdue
-                  ? "Overdue"
-                  : paidSoFar > 0
-                    ? "Partial"
-                    : isDueToday
-                      ? "Due Today"
-                      : "Upcoming"
 
         const stampConfig =
             paymentStatus === "Paid"
