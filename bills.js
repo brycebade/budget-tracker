@@ -64,6 +64,38 @@ const openBillModal = (bill = null) => {
     const anchorDateField = document.getElementById("anchorDateField")
     const anchorDateInput = document.getElementById("billAnchorDate")
 
+    const updateFrequencyFields = () => {
+        const isMonthly = frequencySelect.value === "monthly"
+
+        if (isMonthly) {
+            dueDayField.hidden = false
+            anchorDateField.hidden = true
+
+            dueDayInput.required = true
+            anchorDateInput.required = false
+        } else {
+            dueDayField.hidden = true
+            anchorDateField.hidden = false
+
+            dueDayInput.required = false
+            anchorDateInput.required = true
+        }
+    }
+
+    if (bill) {
+        nameInput.value = bill.name
+        categoryInput.value = bill.category
+        expectedAmountInput.value = bill.expected_amount ?? ""
+        minimumPaymentInput.value = bill.minimum_payment ?? ""
+        plannedPaymentInput.value = bill.planned_payment ?? ""
+        frequencySelect.value = bill.frequency
+        dueDayInput.value = bill.due_day ?? ""
+        anchorDateInput.value = bill.anchor_date
+            ? bill.anchor_date.split("T")[0] : ""
+    }
+
+    updateFrequencyFields()
+
     const numberOrNull = (input) => {
         return input.value === "" ? null : Number(input.value)
     }
@@ -90,23 +122,7 @@ const openBillModal = (bill = null) => {
         modal.close()
     })
 
-    frequencySelect.addEventListener("change", () => {
-        const isMonthly = frequencySelect.value === "monthly"
-
-        if (isMonthly) {
-            dueDayField.hidden = false
-            anchorDateField.hidden = true
-
-            dueDayInput.required = true
-            anchorDateInput.required = false
-        } else {
-            dueDayField.hidden = true
-            anchorDateField.hidden = false
-
-            dueDayInput.required = false
-            anchorDateInput.required = true
-        }
-    })
+    frequencySelect.addEventListener("change", updateFrequencyFields)
 
     form.addEventListener("submit", async (event) => {
         event.preventDefault()
