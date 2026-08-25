@@ -46,8 +46,8 @@ const bills = []
 const accounts = []
 const billPayments = []
 
-const openBillModal = () => {
-    const modal = renderBillModal()
+const openBillModal = (bill = null) => {
+    const modal = renderBillModal(bill)
 
     const cancelButton = document.getElementById("cancelBillButton")
     const fundingAccountSelect = document.getElementById("billFundingAccount")
@@ -494,7 +494,7 @@ const renderBills = () => {
                 return bill.id === billId
             })
 
-            console.log("Selected Bill:", selectedBill)
+            openBillModal(selectedBill)
         })
     })
 
