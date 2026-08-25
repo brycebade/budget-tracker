@@ -1,6 +1,6 @@
 import { renderModal } from "./components/modal.js"
 
-export const renderBillModal = () => {
+export const renderBillModal = (bill = null) => {
     const content = `
         <form id="billForm" class="mt-4 space-y-4">
 
@@ -73,6 +73,7 @@ export const renderBillModal = () => {
                     class="input input-bordered w-full"
                     placeholder="0.00"
                 >
+            </div>
 
             <div id="dueDayField" class="form-control">
                 <label class="label" for="billDueDay">
@@ -166,7 +167,7 @@ export const renderBillModal = () => {
     return renderModal({
         containerId: "modalRoot",
         modalId: "billModal",
-        title: "Add Bill",
+        title: bill ? "Edit Bill" : "Add Bill",
         content
     })
 }
