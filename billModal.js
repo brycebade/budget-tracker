@@ -157,7 +157,7 @@ export const renderBillModal = (bill = null) => {
                     class="btn btn-primary"
                     type="submit"
                 >
-                    Save Bill
+                    ${bill ? "Update Bill" : "Save Bill"}
                 </button>
             </div>
 
