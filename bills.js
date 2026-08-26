@@ -500,6 +500,13 @@ const renderBills = () => {
                     >
                         Edit Bill
                     </button>
+
+                    <button
+                        class="btn btn-sm btn-outline mt-3 deactivateBillButton"
+                        data-bill-id="${bill.id}"
+                    >
+                        Deactivate
+                    </button>
               
                     ${
                         remainingAmount > 0
@@ -522,6 +529,19 @@ const renderBills = () => {
 
     const recordPaymentButtons = document.querySelectorAll(".recordPaymentButton")
     const editBillButtons = document.querySelectorAll(".editBillButton")
+    const deactivateBillButtons = document.querySelectorAll(".deactivateBillButton")
+
+    deactivateBillButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const billId = button.dataset.billId
+
+            const selectedBill = bills.find((bill) => {
+                return bill.id === billId
+            })
+
+            console.log("Deactivate Bill:", selectedBill)
+        })
+    })
 
     editBillButtons.forEach((button) => {
         button.addEventListener("click", () => {

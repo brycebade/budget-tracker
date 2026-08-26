@@ -806,6 +806,72 @@ app.put("/api/bills/:id", async (request, response) => {
     }
 })
 
+app.put("/api/bills/:id/deactivate", async (request, response) => {
+    const billId = request.params.id
+
+    try {
+        const result = await pool.query(
+            `
+                UPDATE bills
+                SET active = false
+                WHERE id = $1
+                    AND user_id = $2
+                RETURNING
+                    id,
+                    name,
+                    category,
+                    expected_amount,
+                    minimum_payment,
+                    planned_payment,
+                    due_day,
+                    frequency,
+                    anchor_date,
+                    funding_account_id,
+                    linked_account_id,
+                    active,
+                    created_at
+            `,
+            [
+                billId,
+                TEMP_USER_ID
+            ]
+        )
+
+        if (result.rows.length === 0) {
+            return response.status(404).json({
+                message: "Bill not found"
+            })
+        }
+
+        const savedBill = result.row[0]
+
+        response.json({
+            ...savedBill,
+
+            expected_amount:
+                savedBill.expected_amount === null
+                    ? null
+                    : Number(savedBill.expected_amount),
+
+            minimum_payment:
+                savedBill.minimum_payment === null
+                    ? null
+                    : Number(savedBill.minimum_payment),
+
+            planned_payment:
+                savedBill.planned_payment === null
+                    ? null
+                    : Number(savedBill.planned_payment)
+        })
+    } catch (error) {
+        console.error("Failed to deactivate bill:", error)
+
+        response.status(500).json({
+            message: "Failed to deactivate bill"
+        })
+    }
+})
+
 app.get("/api/bill-payments", async (request, response) => {
     try {
         const result = await pool.query(
