@@ -689,6 +689,123 @@ app.post("/api/bills", async (request, response) => {
     }
 })
 
+app.put("/api/bills/:id", async (request, response) => {
+    const billId = request.params.id
+    
+    const {
+        name,
+        category,
+        expectedAmount,
+        minimumPayment,
+        plannedPayment,
+        dueDay,
+        fundingAccountId,
+        linkedAccountId,
+        frequency = "monthly",
+        anchorDate
+    } = request.body
+
+    const isMonthly = frequency === "monthly"
+    const usesAnchorDate = frequency === "weekly" || frequency === "biweekly"
+    const hasBillAmount = 
+        expectedAmount != null ||
+        minimumPayment != null ||
+        plannedPayment != null
+
+    if (
+        !name ||
+        !category ||
+        !hasBillAmount ||
+        (!isMonthly && !anchorDate)
+    ) {
+        return response.status(400).json({
+            message: "Name, category, amount, and recurrence information are required"
+        })
+    }
+
+    try {
+        const result = await pool.query(
+            `
+                UPDATE bills
+                SET
+                    name = $1,
+                    category = $2,
+                    expected_amount = $3,
+                    minimum_payment = $4,
+                    planned_payment = $5,
+                    due_day = $6,
+                    frequency = $7,
+                    anchor_date = $8,
+                    funding_account_id = $9,
+                    linked_account_id = $10
+                WHERE id = $11
+                    AND user_id = $12
+                RETURNING
+                    id,
+                    name,
+                    category,
+                    expected_amount,
+                    minimum_payment,
+                    planned_payment,
+                    due_day,
+                    frequency,
+                    anchor_date,
+                    funding_account_id,
+                    linked_account_id,
+                    active,
+                    created_at
+            `,
+            [
+                name,
+                category,
+                expectedAmount ?? null,
+                minimumPayment ?? null,
+                plannedPayment ?? null,
+                dueDay ?? null,
+                frequency,
+                anchorDate ?? null,
+                fundingAccountId ?? null,
+                linkedAccountId ?? null,
+                billId,
+                TEMP_USER_ID
+            ]
+        )
+
+        if (result.rows.length === 0) {
+            return response.status(404).json({
+                message: "Bill not found"
+            })
+        }
+
+        const savedBill = result.rows[0]
+
+        response.json({
+            ...savedBill,
+
+            expected_amount:
+                savedBill.expected_amount === null
+                    ? null
+                    : Number(savedBill.expected_amount),
+
+                minimum_payment:
+                    savedBill.minimum_payment === null
+                        ? null
+                        : Number(savedBill.minimum_payment),
+
+                planned_payment:
+                    savedBill.planned_payment === null
+                        ? null
+                        : Number(savedBill.planned_payment)
+        })
+    } catch (error) {
+        console.error("Failed to update bill:", error)
+
+        response.status(500).json({
+            message: "Failed to update bill"
+        })
+    }
+})
+
 app.get("/api/bill-payments", async (request, response) => {
     try {
         const result = await pool.query(

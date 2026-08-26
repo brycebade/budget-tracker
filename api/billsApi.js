@@ -27,3 +27,19 @@ export const createBill = async (billData) => {
 
     return response.json()
 }
+
+export const updateBill = async (billId, billData) => {
+    const response = await fetch(`${BILLS_URL}/${billId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(billData)
+    })
+
+    if (!response.ok) {
+        throw new Error("Failed to update bill")
+    }
+
+    return response.json()
+}

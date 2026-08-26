@@ -1,5 +1,9 @@
 import { renderLayout } from "./components/layout.js"
-import { getBills, createBill } from "./api/billsApi.js"
+import { 
+    getBills, 
+    createBill, 
+    updateBill 
+} from "./api/billsApi.js"
 import { getAccounts } from "./api/accountsApi.js"
 import { renderBillModal } from "./billModal.js"
 import {
@@ -116,6 +120,12 @@ const openBillModal = (bill = null) => {
                 </option>
             `
         }
+
+    if (bill) {
+        fundingAccountSelect.value = bill.funding_account_id ?? ""
+        linkedAccountSelect.value = bill.linked_account_id ?? ""
+    }
+
     })
 
     cancelButton.addEventListener("click", () => {
@@ -143,12 +153,23 @@ const openBillModal = (bill = null) => {
         }
 
         try {
-            const savedBill = await createBill(billData)
+            let savedBill
 
-            bills.push(savedBill)
+            if (bill) {
+                savedBill = await updateBill(bill.id, billData)
+
+                const billIndex = bills.findIndex((existingBill) => {
+                    return existingBill.id === bill.id
+                })
+
+                bills[billIndex] = savedBill
+            } else {
+                savedBill = await createBill(billData)
+
+                bills.push(savedBill)
+            }
 
             renderBills()
-
             modal.close()
         } catch (error) {
             console.error("Bill could not be saved:", error)
