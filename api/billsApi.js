@@ -43,3 +43,18 @@ export const updateBill = async (billId, billData) => {
 
     return response.json()
 }
+
+export const deactivateBill = async (billId) => {
+    const response = await fetch(
+        `${BILLS_URL}/${billId}/deactivate`,
+        {
+            method: "PUT"
+        }
+    )
+
+    if (!response.ok) {
+        throw new Error("Failed to deactivate bill")
+    }
+
+    return response.json()
+}
