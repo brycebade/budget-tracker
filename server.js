@@ -843,7 +843,7 @@ app.put("/api/bills/:id/deactivate", async (request, response) => {
             })
         }
 
-        const savedBill = result.row[0]
+        const savedBill = result.rows[0]
 
         response.json({
             ...savedBill,

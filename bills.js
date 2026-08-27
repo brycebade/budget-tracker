@@ -2,7 +2,8 @@ import { renderLayout } from "./components/layout.js"
 import { 
     getBills, 
     createBill, 
-    updateBill 
+    updateBill,
+    deactivateBill 
 } from "./api/billsApi.js"
 import { getAccounts } from "./api/accountsApi.js"
 import { renderBillModal } from "./billModal.js"
@@ -532,14 +533,26 @@ const renderBills = () => {
     const deactivateBillButtons = document.querySelectorAll(".deactivateBillButton")
 
     deactivateBillButtons.forEach((button) => {
-        button.addEventListener("click", () => {
+        button.addEventListener("click", async () => {
             const billId = button.dataset.billId
 
             const selectedBill = bills.find((bill) => {
                 return bill.id === billId
             })
 
-            console.log("Deactivate Bill:", selectedBill)
+            try {
+                const updateBill = await deactivateBill(selectedBill.id)
+
+                const billIndex = bills.findIndex((bill) => {
+                    return bill.id === selectedBill.id
+                })
+
+                bills[billIndex] = updateBill
+
+                renderBills()
+            } catch (error) {
+                console.error("Bill could not be deactivated:", error)
+            }
         })
     })
 
