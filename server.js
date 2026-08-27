@@ -539,7 +539,6 @@ app.get("/api/bills", async (request, response) => {
                     created_at
                 FROM bills
                 WHERE user_id = $1
-                    AND active = true
                 ORDER BY due_day ASC
             `,
             [

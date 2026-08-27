@@ -324,6 +324,12 @@ const renderBills = () => {
         return bill.active === true
     })
 
+    const inactiveBills = bills.filter((bill) => {
+        return bill.active === false
+    })
+
+    console.log("Inactive Bills:", inactiveBills)
+
     const sortedBills = [...activeBills].sort((billA, billB) => {
         const stateA = getBillState(billA)
         const stateB = getBillState(billB)
