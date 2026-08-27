@@ -320,7 +320,11 @@ const renderBills = () => {
         return
     }
 
-    const sortedBills = [...bills].sort((billA, billB) => {
+    const activeBills = bills.filter((bill) => {
+        return bill.active === true
+    })
+
+    const sortedBills = [...activeBills].sort((billA, billB) => {
         const stateA = getBillState(billA)
         const stateB = getBillState(billB)
 
@@ -539,6 +543,14 @@ const renderBills = () => {
             const selectedBill = bills.find((bill) => {
                 return bill.id === billId
             })
+
+            const confirmed = window.confirm(
+                `Deactivate ${selectedBill.name}?`
+            )
+
+            if (!confirmed) {
+                return
+            }
 
             try {
                 const updateBill = await deactivateBill(selectedBill.id)
