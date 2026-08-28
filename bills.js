@@ -3,7 +3,8 @@ import {
     getBills, 
     createBill, 
     updateBill,
-    deactivateBill 
+    deactivateBill,
+    reactivateBill
 } from "./api/billsApi.js"
 import { getAccounts } from "./api/accountsApi.js"
 import { renderBillModal } from "./billModal.js"
@@ -46,10 +47,24 @@ const formatDateKey = (date) => {
 
 const actionButton = document.getElementById("pageActionButton")
 const billsContainer = document.getElementById("billsContainer")
+const inactiveBillsButton = document.getElementById("inactiveBillsButton")
+
+let showingInactiveBills = false
 
 const bills = []
 const accounts = []
 const billPayments = []
+
+inactiveBillsButton.addEventListener("click", () => {
+    showingInactiveBills = !showingInactiveBills
+
+    inactiveBillsButton.textContent = 
+        showingInactiveBills
+            ? "View Active Bills"
+            : "View Inactive Bills"
+
+    renderBills()
+})
 
 const openBillModal = (bill = null) => {
     const modal = renderBillModal(bill)
@@ -328,9 +343,11 @@ const renderBills = () => {
         return bill.active === false
     })
 
-    console.log("Inactive Bills:", inactiveBills)
+    const billsToDisplay = showingInactiveBills
+        ? inactiveBills 
+        : activeBills
 
-    const sortedBills = [...activeBills].sort((billA, billB) => {
+    const sortedBills = [...billsToDisplay].sort((billA, billB) => {
         const stateA = getBillState(billA)
         const stateB = getBillState(billB)
 
@@ -512,12 +529,25 @@ const renderBills = () => {
                         Edit Bill
                     </button>
 
-                    <button
-                        class="btn btn-sm btn-outline mt-3 deactivateBillButton"
-                        data-bill-id="${bill.id}"
-                    >
-                        Deactivate
-                    </button>
+                    ${
+                        bill.active
+                            ? `
+                                <button
+                                    class="btn btn-sm btn-outline mt-3 deactivateBillButton"
+                                    data-bill-id=${bill.id}
+                                >
+                                    Deactivate
+                                </button>
+                            `
+                            : `
+                                <button 
+                                    class="btn btn-sm btn-outline mt-3 reactivateBillButton"
+                                    data-bill-id=${bill.id}
+                                >
+                                    Reactivate
+                                </button>
+                            `
+                    }
               
                     ${
                         remainingAmount > 0
@@ -541,6 +571,7 @@ const renderBills = () => {
     const recordPaymentButtons = document.querySelectorAll(".recordPaymentButton")
     const editBillButtons = document.querySelectorAll(".editBillButton")
     const deactivateBillButtons = document.querySelectorAll(".deactivateBillButton")
+    const reactivateBillButtons = document.querySelectorAll(".reactivateBillButton")
 
     deactivateBillButtons.forEach((button) => {
         button.addEventListener("click", async () => {
@@ -570,6 +601,30 @@ const renderBills = () => {
                 renderBills()
             } catch (error) {
                 console.error("Bill could not be deactivated:", error)
+            }
+        })
+    })
+
+    reactivateBillButtons.forEach((button) => {
+        button.addEventListener("click", async () => {
+            const billId = button.dataset.billId
+
+            const selectedBill = bills.find((bill) => {
+                return bill.id === billId
+            })
+
+            try {
+                const updatedBill = await reactivateBill(selectedBill.id)
+
+                const billIndex = bills.findIndex((bill) => {
+                    return bill.id === selectedBill.id
+                })
+
+                bills[billIndex] = updatedBill
+
+                renderBills()
+            } catch (error) {
+                console.error("Bill could not be reactivated:", error)
             }
         })
     })
