@@ -522,12 +522,18 @@ const renderBills = () => {
                         </span>
                     </p>
 
-                    <button 
-                        class="btn btn-sm btn-outline mt-3 editBillButton"
-                        data-bill-id="${bill.id}"
-                    >
-                        Edit Bill
-                    </button>
+                    ${
+                        bill.active
+                            ? `
+                                <button
+                                    class="btn btn-sm btn-outline mt-3 editBillButton"
+                                    data-bill-id="${bill.id}"
+                                >
+                                    Edit Bill
+                                </button>
+                            `
+                            : ""
+                    }
 
                     ${
                         bill.active
@@ -550,7 +556,7 @@ const renderBills = () => {
                     }
               
                     ${
-                        remainingAmount > 0
+                        bill.active && remainingAmount > 0
                             ? `
                                 <button
                                     class="btn btn-sm btn-primary mt-3 recordPaymentButton"
