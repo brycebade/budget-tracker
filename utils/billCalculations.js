@@ -166,3 +166,33 @@ export const getCurrentMonthBillDueDate = (bill, referenceDate = new Date()) => 
 
     return currentMonthDueDate
 }
+
+export const getFollowingBillDueDate = (bill, dueDate) => {
+    const followingDueDate = new Date(dueDate)
+
+    if (bill.frequency === "monthly") {
+        followingDueDate.setMonth(
+            followingDueDate.getMonth() + 1
+        )
+
+        return followingDueDate
+    }
+
+    if (bill.frequency === "weekly") {
+        followingDueDate.setDate(
+            followingDueDate.getDate() + 7
+        )
+
+        return followingDueDate
+    }
+
+    if (bill.frequency === "biweekly") {
+        followingDueDate.setDate(
+            followingDueDate.getDate() + 14
+        )
+
+        return followingDueDate
+    }
+
+    return followingDueDate
+}
