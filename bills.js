@@ -237,6 +237,25 @@ const getBillState = (bill) => {
         ? formatDateKey(previousDueDate)
         : null
 
+    const paymentsForBill = billPayments.filter((payment) => {
+        return payment.bill_id === bill.id
+    })
+
+    const lastPayment = paymentsForBill.reduce(
+        (latestPayment, payment) => {
+            if (latestPayment === null) {
+                return payment
+            }
+
+            if (payment.payment_date > latestPayment.payment_date) {
+                return payment
+            }
+
+            return latestPayment
+        },
+        null
+    )
+
     const paymentsForPreviousBill = billPayments.filter((payment) => {
         return (
             payment.bill_id === bill.id &&
@@ -314,7 +333,8 @@ const getBillState = (bill) => {
         dueDateKey,
         paidSoFar,
         remainingAmount,
-        paymentStatus
+        paymentStatus,
+        lastPayment
     }
 }
 
@@ -382,6 +402,7 @@ const renderBills = () => {
         const paidSoFar = billState.paidSoFar
         const remainingAmount = billState.remainingAmount
         const paymentStatus = billState.paymentStatus
+        const lastPayment = billState.lastPayment
 
         const fundingAccount = accounts.find((account) => {
             return account.id === bill.funding_account_id
@@ -482,6 +503,17 @@ const renderBills = () => {
                         Paid So Far:
                         <span class="font-medium text-base-content">
                             ${formatCurrency(paidSoFar)}
+                        </span>
+                    </p>
+
+                    <p class="text-sm text-base-content/70">
+                        Last Payment:
+                        <span class="font-medium text-base-content">
+                            ${
+                                lastPayment
+                                    ? `${formatDate(new Date(`${lastPayment.payment_date}T00:00:00`))} — ${formatCurrency(lastPayment.amount)}`
+                                    : "None"
+                            }
                         </span>
                     </p>
 
