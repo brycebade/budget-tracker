@@ -4,6 +4,14 @@ export const renderBillPaymentModal = () => {
     const content = `
         <form id="billPaymentForm" class="mt-4 space-y-4">
 
+            <p class="text-sm" text-base-content/70">
+                Applying To:
+                <span
+                    id="billPaymentDueDate"
+                    class="font-medium text-base-content"
+                ></span>
+            </p>
+
             <div class="form-control">
                 <label class="label" for="billPaymentAmount">
                     <span class="label-text">Payment Amount</span>

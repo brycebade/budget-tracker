@@ -12,6 +12,7 @@ import {
     getNextBillDueDate,
     getPreviousBillDueDate,
     getCurrentMonthBillDueDate,
+    getFollowingBillDueDate
 } from "./utils/billCalculations.js"
 import { getBillPayments, createBillPayment } from "./api/billPaymentsApi.js"
 import { renderBillPaymentModal } from "./billPaymentsModal.js"
@@ -309,6 +310,33 @@ const getBillState = (bill) => {
         0
     )
 
+    const paymentTargetDueDate = 
+        remainingAmount === 0
+            ? getFollowingBillDueDate(bill, activeDueDate)
+            : activeDueDate
+
+    const paymentTargetDueDateKey =
+        formatDateKey(paymentTargetDueDate)
+
+    const paymentsForTargetBill = billPayments.filter((payment) => {
+        return (
+            payment.bill_id === bill.id &&
+            payment.due_date === paymentTargetDueDateKey
+        )
+    })
+
+    const targetPaidSoFar = paymentsForTargetBill.reduce(
+        (total, payment) => {
+            return total + payment.amount
+        },
+        0
+    )
+
+    const targetRemainingAmount = Math.max(
+        plannedAmount - targetPaidSoFar,
+        0
+    )
+    
     const today = new Date()
 
     today.setHours(0, 0, 0, 0)
@@ -334,7 +362,10 @@ const getBillState = (bill) => {
         paidSoFar,
         remainingAmount,
         paymentStatus,
-        lastPayment
+        lastPayment,
+        paymentTargetDueDate,
+        paymentTargetDueDateKey,
+        targetRemainingAmount
     }
 }
 
@@ -403,6 +434,8 @@ const renderBills = () => {
         const remainingAmount = billState.remainingAmount
         const paymentStatus = billState.paymentStatus
         const lastPayment = billState.lastPayment
+        const paymentTargetDueDateKey = billState.paymentTargetDueDateKey
+        const targetRemainingAmount = billState.targetRemainingAmount
 
         const fundingAccount = accounts.find((account) => {
             return account.id === bill.funding_account_id
@@ -592,15 +625,19 @@ const renderBills = () => {
                     }
               
                     ${
-                        bill.active && remainingAmount > 0
+                        bill.active && targetRemainingAmount > 0
                             ? `
                                 <button
                                     class="btn btn-sm btn-primary mt-3 recordPaymentButton"
                                     data-bill-id="${bill.id}"
-                                    data-due-date="${dueDateKey}"
-                                    data-remaining-amount="${remainingAmount}"
+                                    data-due-date="${paymentTargetDueDateKey}"
+                                    data-remaining-amount="${targetRemainingAmount}"
                                 >
-                                    Record Payment
+                                    ${
+                                        remainingAmount === 0
+                                            ? "Record Next Payment"
+                                            : "Record Payment"
+                                    }
                                 </button>
                             `
                             : ""
@@ -697,14 +734,15 @@ const renderBills = () => {
 
             const amountInput = document.getElementById("billPaymentAmount")
             const paymentDateInput = document.getElementById("billPaymentDate")
-            const cancelButton = document.getElementById(
-                "cancelBillPaymentButton",
-            )
+            const dueDateDisplay = document.getElementById("billPaymentDueDate")
+            const cancelButton = document.getElementById("cancelBillPaymentButton")
             const form = document.getElementById("billPaymentForm")
 
             amountInput.value = remainingAmount
 
             paymentDateInput.value = new Date().toISOString().split("T")[0]
+
+            dueDateDisplay.textContent = formatDate(new Date(`${dueDateKey}T00:00:00`))
 
             cancelButton.addEventListener("click", () => {
                 modal.close()
