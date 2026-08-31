@@ -321,20 +321,6 @@ const getBillState = (bill) => {
 const renderBills = () => {
     billsContainer.innerHTML = ""
 
-    if (bills.length === 0) {
-        billsContainer.innerHTML = `
-            <div class="card bg-base-100 border border-base-300">
-                <div class="card-body">
-                    <p class="text-base-content/60">
-                        No bills to display.
-                    </p>
-                </div>
-            </div>
-        `
-
-        return
-    }
-
     const activeBills = bills.filter((bill) => {
         return bill.active === true
     })
@@ -346,6 +332,24 @@ const renderBills = () => {
     const billsToDisplay = showingInactiveBills
         ? inactiveBills 
         : activeBills
+
+    if (billsToDisplay.length === 0) {
+        billsContainer.innerHTML = `
+            <div class="card bg-base-100 border border-base-300">
+                <div class="card-body">
+                    <p class="text-base-content/60">
+                        ${
+                            showingInactiveBills
+                                ? "No inactive bills."
+                                : "No active bills."
+                        }
+                    </p>
+                </div>
+            </div>
+        `
+
+        return
+    }
 
     const sortedBills = [...billsToDisplay].sort((billA, billB) => {
         const stateA = getBillState(billA)
