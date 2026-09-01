@@ -207,3 +207,30 @@ const loadDashboardData = async () => {
 }
 
 loadDashboardData()
+
+const testChartElement = document.getElementById("test-chart")
+
+const testChart = echarts.init(testChartElement)
+const testChartOptions = {
+    xAxis: {
+        type: "category",
+        data: ["Mon", "Tues", "Wed", "Thu", "Fri"]
+    },
+
+    yAxis: {
+        type: "value"
+    },
+
+    series: [
+        {
+            type: "line",
+            data: [1200, 1350, 1280, 1425, 1510]
+        }
+    ]
+}
+
+testChart.setOption(testChartOptions)
+
+window.addEventListener("resize", () => {
+    testChart.resize()
+})

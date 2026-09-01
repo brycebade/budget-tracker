@@ -5,6 +5,7 @@ export const renderLayout = ({
 }) => {
     const navbar = document.getElementById("navbar")
     const sidebar = document.getElementById("sidebar")
+    const menuButton = document.getElementById("button")
 
     let actionButton = ""
 
@@ -16,19 +17,28 @@ export const renderLayout = ({
         `
     }
 
+    menuButton.className = "lg:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-base-300 transition"
+
+    menuButton.innerHTML = `
+            <span class="text-2xl">☰</span>
+        `
+
     navbar.className = 
         "navbar fixed top-0 left-0 z-20 h-16 bg-base-200 border-b border-base-300"
 
     sidebar.className =
-        "fixed top-16 left-0 bottom-0 z-10 w-64 bg-base-200 border-r border-base-300"
+        "hidden lg:block fixed top-16 left-0 bottom-0 z-10 w-64 bg-base-200 border-r border-base-300"
 
     navbar.innerHTML = `
         <div class="navbar-start px-4">
+
+        navbar.appendChild(menuButton)
+        
             <a 
                 href="./index.html"
                 class="text-xl font-bold tracking-tight"
             >
-                Financial Planner
+                Lumicairn | Financial Planner
             </a>
         </div>
 
