@@ -5,7 +5,9 @@ export const renderLayout = ({
 }) => {
     const navbar = document.getElementById("navbar")
     const sidebar = document.getElementById("sidebar")
-    const menuButton = document.getElementById("button")
+    const sidebarBackdrop = document.createElement("div")
+    sidebarBackdrop.id = "sidebarBackdrop"
+    const menuButton = document.createElement("button")
 
     let actionButton = ""
 
@@ -17,7 +19,8 @@ export const renderLayout = ({
         `
     }
 
-    menuButton.className = "lg:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-base-300 transition"
+    menuButton.className = 
+        "lg:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-base-300 transition"
 
     menuButton.innerHTML = `
             <span class="text-2xl">☰</span>
@@ -29,11 +32,12 @@ export const renderLayout = ({
     sidebar.className =
         "hidden lg:block fixed top-16 left-0 bottom-0 z-10 w-64 bg-base-200 border-r border-base-300"
 
-    navbar.innerHTML = `
-        <div class="navbar-start px-4">
+    sidebarBackdrop.className = 
+        "hidden fixed inset-0 z-[9] bg-black/70 lg:hidden"
 
-        navbar.appendChild(menuButton)
-        
+    navbar.innerHTML = `
+        <div class="navbar-start px-4" id="navbarStart">
+
             <a 
                 href="./index.html"
                 class="text-xl font-bold tracking-tight"
@@ -46,6 +50,21 @@ export const renderLayout = ({
             ${actionButton}
         </div>
     `
+
+    const navbarStart = navbar.querySelector("#navbarStart")
+    
+    navbarStart.prepend(menuButton)
+    document.body.appendChild(sidebarBackdrop)
+
+    menuButton.addEventListener("click", () => {
+        sidebar.classList.toggle("hidden")
+        sidebarBackdrop.classList.toggle("hidden")
+    })
+
+    sidebarBackdrop.addEventListener("click", () => {
+        sidebar.classList.add("hidden")
+        sidebarBackdrop.classList.add("hidden")
+    })
 
     sidebar.innerHTML = `
         <nav class="p-4">
