@@ -2077,6 +2077,9 @@
   .hidden {
     display: none;
   }
+  .inline-block {
+    display: inline-block;
+  }
   @layer daisyui.l1.l2 {
     .btn-circle {
       border-radius: calc(infinity * 1px);
@@ -2091,11 +2094,17 @@
   .h-16 {
     height: calc(var(--spacing) * 16);
   }
+  .h-\[2px\] {
+    height: 2px;
+  }
   .h-\[320px\] {
     height: 320px;
   }
   .min-h-screen {
     min-height: 100vh;
+  }
+  .w-6 {
+    width: calc(var(--spacing) * 6);
   }
   .w-10 {
     width: calc(var(--spacing) * 10);
@@ -2153,6 +2162,9 @@
   }
   .grid-cols-\[minmax\(0\,1fr\)_160px_120px_120px_120px_140px\] {
     grid-template-columns: minmax(0,1fr) 160px 120px 120px 120px 140px;
+  }
+  .flex-wrap {
+    flex-wrap: wrap;
   }
   .items-center {
     align-items: center;
@@ -2212,6 +2224,10 @@
     border-top-style: var(--tw-border-style);
     border-top-width: 1px;
   }
+  .border-t-2 {
+    border-top-style: var(--tw-border-style);
+    border-top-width: 2px;
+  }
   .border-r {
     border-right-style: var(--tw-border-style);
     border-right-width: 1px;
@@ -2219,6 +2235,13 @@
   .border-b {
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 1px;
+  }
+  .border-dashed {
+    --tw-border-style: dashed;
+    border-style: dashed;
+  }
+  .border-accent {
+    border-color: var(--color-accent);
   }
   .border-base-300 {
     border-color: var(--color-base-300);
@@ -2228,6 +2251,9 @@
   }
   .border-success {
     border-color: var(--color-success);
+  }
+  .bg-accent {
+    background-color: var(--color-accent);
   }
   .bg-base-100 {
     background-color: var(--color-base-100);

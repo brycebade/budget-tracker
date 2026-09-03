@@ -227,7 +227,7 @@ const financialPathOptions = {
     xAxis: {
         type: "category",
         boundaryGap: false,
-        data: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+        data: ["Mon", "Tue", "Today", "Thu", "Fri"],
         axisLine: {
             lineStyle: {
                 color: "#3b424c"
@@ -262,6 +262,7 @@ const financialPathOptions = {
 
     series: [
         {
+            name: "Actual",
             type: "line",
             smooth: true,
             symbol: "circle",
@@ -276,6 +277,42 @@ const financialPathOptions = {
             },
             areaStyle: {
                 color: "rgba(139, 158, 183, 0.08)"
+            },
+            markLine: {
+                silent: true,
+                symbol: "none",
+                label: {
+                    show: true,
+                    formatter: "Today",
+                    color: "#8b9eb7"
+                },
+                lineStyle: {
+                    color: "#8b9eb7",
+                    type: "dashed",
+                    opacity: 0.6
+                },
+                data: [
+                    {
+                        xAxis: "Today"
+                    }
+                ]
+            }
+        },
+
+        {
+            name: "Projected",
+            type: "line",
+            smooth: true,
+            symbol: "circle",
+            symbolSize: 7,
+            data: [null, null, 1280, 1425, 1510],
+            lineStyle: {
+                width: 3,
+                type: "dashed",
+                color: "#8b9eb7"
+            },
+            itemStyle: {
+                color: "#8b9eb7"
             }
         }
     ]
