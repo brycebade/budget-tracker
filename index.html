@@ -17,7 +17,7 @@
                 <h1 class="text-3xl font-bold tracking-tight">Good Morning</h1>
                 <p class="mt-2 text-sm text-base-content/60">Here's Your Financial Position</p>
 
-                <div class="mt-5 flex gap-2 overflow-x-auto pb-2">
+                <div class="mt-5 flex gap-2 overflow-x-auto pb-2 pr-6">
                     <button class="btn btn-sm btn-ghost">Today</button>
                     <button class="btn btn-sm btn-ghost">Payday</button>
                     <button class="btn btn-sm btn-ghost">Month</button>
@@ -70,71 +70,93 @@
                         3 days stronger than last month
                     </p>
                 </div>
-            
+            </div>
 
-            <section class="hidden mt-8 w-full md:w-1/2">
-                <div class="mb-3">
-                    <h2 class="text-xl font-bold">Recent Transactions</h2>
+            <section class="mt-10">
+                <div class="mb-4">
+                    <h2 class="text-xl font-bold">
+                        Your Financial Path
+                    </h2>
+
                     <p class="mt-1 text-sm text-base-content/60">
-                        Your latest account activity.
+                        See where your money has been and where it's heading
                     </p>
                 </div>
 
-                <div 
-                    id="recentTransactionsContainer"
-                    class=" hidden overflow-hidden rounded-box border border-base-300 bg-base-100"
-                >
-                    <div class="p-4 text-base-content/60">
-                        No Recent transactions to display.
-                    </div>
+                <div class="rounded-box border border-base-300 bg-base-100 p-4 lg:p-6">
+                    <div id="financialPathChart" class="h-[320px] w-full lg:h-[380px]"></div>
                 </div>
             </section>
+
         </div>
     </main>
+            
+
+    <section class="hidden mt-8 w-full md:w-1/2">
+        <div class="mb-3">
+            <h2 class="text-xl font-bold">Recent Transactions</h2>
+            <p class="mt-1 text-sm text-base-content/60">
+                Your latest account activity.
+            </p>
+        </div>
+
+        <div 
+            id="recentTransactionsContainer"
+            class=" hidden overflow-hidden rounded-box border border-base-300 bg-base-100"
+        >
+            <div class="p-4 text-base-content/60">
+                No Recent transactions to display.
+            </div>
+        </div>
+    </section>
+    
+    
 
     
-    <div class="hidden card bg-base-100 shadow">
-                    <div class="card-body">
-                        <p class="text-sm text-base-content/70">Net Worth</p>
-                        <p id="netWorthValue" class="text-2xl font-bold">$0.00</p>
-                    </div>
-                </div>
-
-                <div class="card bg-base-100 shadow">
-                    <div class="card-body">
-                        <p class="text-sm text-base-content/70">Available Cash</p>
-                        <p id="availableCashValue" class="text-2xl font-bold">$0.00</p>
-                    </div>
-                </div>
-
-                <div class="card bg-base-100 shadow">
-                    <div class="card-body">
-                        <p class="text-sm text-base-content/70">Total Debt</p>
-                        <p id="totalDebtValue" class="text-2xl font-bold">$0.00</p>
-                    </div>
-                </div>
-
-                <div class="card bg-base-100 shadow">
-                    <div class="card-body">
-                        <p class="text-sm text-base-content/70">Savings</p>
-                        <p id="savingsValue" class="text-2xl font-bold">$0.00</p>
-                    </div>
-                </div>
-
-                <div class="card bg-base-100 shadow">
-                    <div class="card-body">
-                        <p class="text-sm text-base-content/70">Investments</p>
-                        <p id="investmentsValue" class="text-2xl font-bold">$0.00</p>
-                    </div>
-                </div>
-
-                <div class="card bg-base-100 shadow">
-                    <div class="card-body">
-                        <p class="text-sm text-base-content/70">Retirement</p>
-                        <p id="retirementValue" class="text-2xl font-bold">$0.00</p>
-                    </div>
-                </div>
+    <div class="hidden">
+        <div class="card bg-base-100 shadow">
+            <div class="card-body">
+                <p class="text-sm text-base-content/70">Net Worth</p>
+                <p id="netWorthValue" class="text-2xl font-bold">$0.00</p>
             </div>
+        </div>
+
+        <div class="card bg-base-100 shadow">
+            <div class="card-body">
+                <p class="text-sm text-base-content/70">Available Cash</p>
+                <p id="availableCashValue" class="text-2xl font-bold">$0.00</p>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 shadow">
+            <div class="card-body">
+                <p class="text-sm text-base-content/70">Total Debt</p>
+                <p id="totalDebtValue" class="text-2xl font-bold">$0.00</p>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 shadow">
+            <div class="card-body">
+                <p class="text-sm text-base-content/70">Savings</p>
+                <p id="savingsValue" class="text-2xl font-bold">$0.00</p>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 shadow">
+            <div class="card-body">
+                <p class="text-sm text-base-content/70">Investments</p>
+                <p id="investmentsValue" class="text-2xl font-bold">$0.00</p>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 shadow">
+            <div class="card-body">
+                <p class="text-sm text-base-content/70">Retirement</p>
+                <p id="retirementValue" class="text-2xl font-bold">$0.00</p>
+            </div>
+        </div>
+    </div>
+
     
   
     <script src="./vendor/echarts.min.js"></script>

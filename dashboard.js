@@ -207,3 +207,82 @@ const loadDashboardData = async () => {
 }
 
 loadDashboardData()
+
+const financialPathElement = document.getElementById("financialPathChart")
+const financialPathChart = echarts.init(financialPathElement)
+
+const financialPathOptions = {
+    tooltip: {
+        trigger: "axis"
+    },
+
+    grid: {
+        left: 10,
+        right: 10,
+        top: 20,
+        bottom: 10,
+        containLabel: true
+    },
+
+    xAxis: {
+        type: "category",
+        boundaryGap: false,
+        data: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+        axisLine: {
+            lineStyle: {
+                color: "#3b424c"
+            }
+        },
+        axisTick: {
+            show: false
+        },
+        axisLabel: {
+            color: "#8b9eb7"
+        }
+    },
+
+    yAxis: {
+        type: "value",
+        axisLine: {
+            show: false
+        },
+        axisTick: {
+            show: false
+        },
+        axisLabel: {
+            color: "#8b9eb7"
+        },
+        splitLine: {
+            lineStyle: {
+                color: "#3b424c",
+                opacity: 0.35
+            }
+        }
+    },
+
+    series: [
+        {
+            type: "line",
+            smooth: true,
+            symbol: "circle",
+            symbolSize: 7,
+            data: [1200, 1350, 1280, 1425, 1510],
+            lineStyle: {
+                width: 3,
+                color: "#8b9eb7"
+            },
+            itemStyle: {
+                color: "#8b9eb7"
+            },
+            areaStyle: {
+                color: "rgba(139, 158, 183, 0.08)"
+            }
+        }
+    ]
+}
+
+financialPathChart.setOption(financialPathOptions)
+
+window.addEventListener("resize", () => {
+    financialPathChart.resize()
+})
