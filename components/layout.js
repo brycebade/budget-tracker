@@ -40,9 +40,15 @@ export const renderLayout = ({
 
             <a 
                 href="./index.html"
-                class="text-xl font-bold tracking-tight"
+                class="text-xl font-bold tracking-tight whitespace-nowrap"
             >
-                Lumicairn | Financial Planner
+                <span class="sm:hidden">
+                    Lumicairn
+                </span>
+
+                <span class="hidden sm:inline">
+                    Lumicairn | Financial Planner
+                </span>
             </a>
         </div>
 

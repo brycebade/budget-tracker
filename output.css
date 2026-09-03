@@ -2349,6 +2349,9 @@
     --tw-tracking: var(--tracking-tight);
     letter-spacing: var(--tracking-tight);
   }
+  .whitespace-nowrap {
+    white-space: nowrap;
+  }
   .text-base-content {
     color: var(--color-base-content);
   }
@@ -2470,6 +2473,14 @@
     }
     .hover\:bg-base-300:hover {
       background-color: var(--color-base-300);
+    }
+  }
+  @media (width >= 40rem) {
+    .sm\:hidden {
+      display: none;
+    }
+    .sm\:inline {
+      display: inline;
     }
   }
   @media (width >= 48rem) {
