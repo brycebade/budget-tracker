@@ -28,6 +28,8 @@
     --tracking-tight: -0.025em;
     --radius-sm: 0.25rem;
     --radius-lg: 0.5rem;
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
     --default-transition-duration: 150ms;
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     --default-font-family: var(--font-sans);
@@ -2120,6 +2122,15 @@
   }
   .w-64 {
     width: calc(var(--spacing) * 64);
+  }
+  .w-\[24\%\] {
+    width: 24%;
+  }
+  .w-\[28\%\] {
+    width: 28%;
+  }
+  .w-\[34\%\] {
+    width: 34%;
   }
   .w-\[40\%\] {
     width: 40%;
