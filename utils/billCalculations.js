@@ -196,3 +196,32 @@ export const getFollowingBillDueDate = (bill, dueDate) => {
 
     return followingDueDate
 }
+
+export const getBillDueDatesBetween = (bill, startDate, endDate) => {
+    const rangeStart = new Date(startDate)
+    const rangeEnd = new Date(endDate)
+
+    rangeStart.setHours(0, 0, 0, 0)
+    rangeEnd.setHours(0, 0, 0, 0)
+
+    const dueDates = []
+
+    if (bill.frequency === "monthly") {
+        let dueDate = new Date(
+            rangeStart.getFullYear(),
+            rangeStart.getMonth(),
+            bill.due_day
+        )
+        
+        if (dueDate < rangeStart) {
+            dueDate.setMonth(dueDate.getMonth() + 1)
+        }
+
+        while (dueDate <= rangeEnd) {
+            dueDates.push(new Date(dueDate))
+            dueDate.setMonth(dueDate.getMonth() + 1)
+        }
+    }
+
+    return dueDates
+}

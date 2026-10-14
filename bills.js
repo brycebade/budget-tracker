@@ -12,7 +12,8 @@ import {
     getNextBillDueDate,
     getPreviousBillDueDate,
     getCurrentMonthBillDueDate,
-    getFollowingBillDueDate
+    getFollowingBillDueDate,
+    getBillDueDatesBetween
 } from "./utils/billCalculations.js"
 import { getBillPayments, createBillPayment } from "./api/billPaymentsApi.js"
 import { renderBillPaymentModal } from "./billPaymentsModal.js"
@@ -229,6 +230,12 @@ const getBillState = (bill) => {
     const trackingStartDate = new Date(bill.created_at)
 
     trackingStartDate.setHours(0, 0, 0, 0)
+
+    if (bill.frequency === "monthly") {
+        const dueDates = getBillDueDatesBetween(bill, trackingStartDate, currentMonthDueDate)
+
+        console.log(bill.name, dueDates.map((date) => formatDateKey(date)))
+    }
 
     const shouldCheckPreviousOccurrence = 
         previousDueDate !== null &&
