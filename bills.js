@@ -310,32 +310,37 @@ const getBillState = (bill) => {
         0
     )
 
-    const paymentTargetDueDate = 
-        remainingAmount === 0
-            ? getFollowingBillDueDate(bill, activeDueDate)
-            : activeDueDate
+    let paymentTargetDueDate = activeDueDate
+    let paymentTargetDueDateKey = dueDateKey
+    let targetRemainingAmount = remainingAmount
 
-    const paymentTargetDueDateKey =
-        formatDateKey(paymentTargetDueDate)
+    if (remainingAmount === 0 && plannedAmount > 0) {
+        paymentTargetDueDate = getFollowingBillDueDate(bill, activeDueDate)
+        paymentTargetDueDateKey = formatDateKey(paymentTargetDueDate)
 
-    const paymentsForTargetBill = billPayments.filter((payment) => {
-        return (
-            payment.bill_id === bill.id &&
-            payment.due_date === paymentTargetDueDateKey
-        )
-    })
+        let targetIsPaid = true
 
-    const targetPaidSoFar = paymentsForTargetBill.reduce(
-        (total, payment) => {
-            return total + payment.amount
-        },
-        0
-    )
+        while (targetIsPaid) {
+            const paymentsForTargetBill = paymentsForBill.filter((payment) => {
+                return payment.due_date === paymentTargetDueDateKey
+            })
 
-    const targetRemainingAmount = Math.max(
-        plannedAmount - targetPaidSoFar,
-        0
-    )
+            const targetPaidSoFar = paymentsForTargetBill.reduce((total, payment) => {
+                return total + payment.amount
+            },
+            0
+            )
+
+            targetRemainingAmount = Math.max(plannedAmount - targetPaidSoFar, 0)
+
+            if (targetRemainingAmount > 0) {
+                targetIsPaid = false
+            } else {
+                paymentTargetDueDate = getFollowingBillDueDate(bill, paymentTargetDueDate)
+                paymentTargetDueDateKey = formatDateKey(paymentTargetDueDate)
+            }
+        }
+    }
     
     const today = new Date()
 
