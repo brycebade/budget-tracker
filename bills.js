@@ -231,12 +231,6 @@ const getBillState = (bill) => {
 
     trackingStartDate.setHours(0, 0, 0, 0)
 
-    if (bill.frequency === "monthly") {
-        const dueDates = getBillDueDatesBetween(bill, trackingStartDate, currentMonthDueDate)
-
-        console.log(bill.name, dueDates.map((date) => formatDateKey(date)))
-    }
-
     const shouldCheckPreviousOccurrence = 
         previousDueDate !== null &&
         previousDueDate >= trackingStartDate
@@ -249,6 +243,49 @@ const getBillState = (bill) => {
         return payment.bill_id === bill.id
     })
 
+    const dueDates = bill.frequency === "monthly"
+        ? getBillDueDatesBetween(bill, trackingStartDate, currentMonthDueDate) : []
+
+    const occurrences = dueDates.map((dueDate) => {
+        const dueDateKey = formatDateKey(dueDate)
+
+        const paymentsForOccurrence = paymentsForBill.filter((payment) => {
+            return payment.due_date === dueDateKey
+        })
+
+        const paidSoFar = paymentsForOccurrence.reduce((total, payment) => {
+            return total + payment.amount
+        }, 0)
+
+        const remainingAmount = Math.max(plannedAmount - paidSoFar, 0)
+
+        return {
+            dueDate,
+            dueDateKey,
+            paidSoFar,
+            remainingAmount
+        }
+    })
+
+    const pastDueAmount = occurrences.filter((occurrence) => {
+        return occurrence.dueDate < currentMonthDueDate
+    })
+        .reduce((total, occurrence) => {
+            return total + occurrence.remainingAmount
+    }, 0)
+
+    const hasPastDue = pastDueAmount > 0
+
+    const currentDueDateKey = formatDateKey(currentMonthDueDate)
+
+    const currentOccurrence = occurrences.find((occurrence) => {
+        return occurrence.dueDateKey === currentDueDateKey
+    })
+
+    const currentDueAmount = currentOccurrence ? currentOccurrence.remainingAmount : 0
+
+    const totalDueAmount = pastDueAmount + currentDueAmount
+    
     const lastPayment = paymentsForBill.reduce(
         (latestPayment, payment) => {
             if (latestPayment === null) {
@@ -289,9 +326,7 @@ const getBillState = (bill) => {
 
     const activeDueDate = 
         bill.frequency === "monthly"
-            ? hasUnpaidPreviousOccurrence
-                ? previousDueDate
-                : currentMonthDueDate
+            ? currentMonthDueDate
             : hasUnpaidPreviousOccurrence
                 ? previousDueDate
                 : nextDueDate
@@ -357,15 +392,17 @@ const getBillState = (bill) => {
     const isDueToday = activeDueDate.getTime() === today.getTime()
 
     const paymentStatus =
-        remainingAmount === 0
-            ? "Paid"
-            : isOverdue
-                ? "Overdue"
-                : paidSoFar > 0
-                    ? "Partial"
-                    : isDueToday
-                        ? "Due Today"
-                        : "Upcoming"
+        hasPastDue
+            ? "Overdue"
+            : remainingAmount === 0
+                ? "Paid"
+                : isOverdue
+                    ? "Overdue"
+                    : paidSoFar > 0
+                        ? "Partial"
+                        : isDueToday
+                            ? "Due Today"
+                            : "Upcoming"
 
     return {
         plannedAmount,
@@ -377,7 +414,10 @@ const getBillState = (bill) => {
         lastPayment,
         paymentTargetDueDate,
         paymentTargetDueDateKey,
-        targetRemainingAmount
+        targetRemainingAmount,
+        pastDueAmount,
+        currentDueAmount,
+        totalDueAmount
     }
 }
 
@@ -448,6 +488,9 @@ const renderBills = () => {
         const lastPayment = billState.lastPayment
         const paymentTargetDueDateKey = billState.paymentTargetDueDateKey
         const targetRemainingAmount = billState.targetRemainingAmount
+        const pastDueAmount = billState.pastDueAmount
+        const currentDueAmount = billState.currentDueAmount
+        const totalDueAmount = billState.totalDueAmount
 
         const fundingAccount = accounts.find((account) => {
             return account.id === bill.funding_account_id
@@ -470,43 +513,18 @@ const renderBills = () => {
                 ? bill.planned_payment - bill.minimum_payment
                 : null
 
-        const stampConfig =
-            paymentStatus === "Paid"
-                ? {
-                      text: "PAID",
-                      borderClass: "border-success",
-                      textClass: "text-success",
-                      widthClass: "w-48",
-                      textSizeClass: "text-4xl",
-                      rotateClass: "-rotate-12",
-                  }
-                : paymentStatus === "Overdue"
-                  ? {
-                        text: "OVERDUE",
-                        borderClass: "border-error",
-                        textClass: "text-error",
-                        widthClass: "w-64",
-                        textSizeClass: "text-3xl",
-                        rotateClass: "-rotate-12",
-                    }
-                  : null
+        const statusClass = 
+            paymentStatus === "Overdue"
+                ? "text-error"
+                : paymentStatus === "Paid"
+                    ? "text-success"
+                    : paymentStatus === "Due Today" ||
+                      paymentStatus === "Partial"
+                        ? "text-warning"
+                        : "text-base-content"
 
         billsContainer.innerHTML += `
-            <div class="card relative overflow-hidden bg-base-100 border border-base-300">
-                
-            ${
-                stampConfig
-                    ? `
-                        <div class="pointer-events-none absolute inset-0 flex items-center justify-center">
-                            <div class="${stampConfig.widthClass} ${stampConfig.rotateClass}">
-                                <div class="rounded-sm border-4 py-2 text-center font-black uppercase tracking-[0.18em] opacity-65 ${stampConfig.borderClass} ${stampConfig.textClass} ${stampConfig.textSizeClass}">
-                                    ${stampConfig.text}
-                                </div>
-                            </div>
-                        </div>
-                    `
-                    : ""
-            }
+            <div class="card bg-base-100 border border-base-300">
 
                 <div class="card-body">
                     <h2 class="card-title">
@@ -563,15 +581,29 @@ const renderBills = () => {
                     </p>
 
                     <p class="text-sm text-base-content/70">
-                        Remaining:
+                        Past Due:
+                        <span class="font-medium ${pastDueAmount > 0 ? "text-error" : "text-base-content"}">
+                            ${formatCurrency(pastDueAmount)}
+                        </span>
+                    </p>
+
+                    <p class="text-sm text-base-content/70">
+                        Current Due:
                         <span class="font-medium text-base-content">
-                            ${formatCurrency(remainingAmount)}
+                            ${formatCurrency(currentDueAmount)}
+                        </span>
+                    </p>
+
+                    <p class="text-sm text-base-content/70">
+                        Total Due: 
+                        <span class="font-semibold text-base-content">
+                            ${formatCurrency(totalDueAmount)}
                         </span>
                     </p>
 
                     <p class="text-sm text-base-content/70">
                         Status:
-                        <span class="font-medium text-base-content">
+                        <span class="font-semibold ${statusClass}">
                             ${paymentStatus}
                         </span>
                     </p>
