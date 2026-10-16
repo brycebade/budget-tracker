@@ -271,10 +271,6 @@ const getBillState = (bill) => {
         return occurrence.remainingAmount > 0
     })
 
-    if (bill.name === "Apple One") {
-        console.log("Oldest unpaid:", oldestUnpaidOccurrence)
-    }
-
     const pastDueAmount = occurrences.filter((occurrence) => {
         return occurrence.dueDate < currentMonthDueDate
     })
@@ -405,8 +401,35 @@ const getBillState = (bill) => {
         targetRemainingAmount,
         pastDueAmount,
         currentDueAmount,
-        totalDueAmount
+        totalDueAmount,
+        occurrences
     }
+}
+
+const buildPaymentAllocations = (occurrences, paymentAmount) => {
+    let amountLeft = paymentAmount
+    const allocations = []
+
+    occurrences.forEach((occurrence) => {
+        if (amountLeft <= 0) {
+            return
+        }
+
+        if (occurrence.remainingAmount <= 0) {
+            return
+        }
+
+        const amountForOccurrence = Math.min(amountLeft, occurrence.remainingAmount)
+
+        allocations.push({
+            dueDate: occurrence.dueDateKey,
+            amount: amountForOccurrence
+        })
+
+        amountLeft -= amountForOccurrence
+    })
+
+    return allocations
 }
 
 const renderBills = () => {
@@ -479,6 +502,11 @@ const renderBills = () => {
         const pastDueAmount = billState.pastDueAmount
         const currentDueAmount = billState.currentDueAmount
         const totalDueAmount = billState.totalDueAmount
+
+        const suggestedPaymentAmount = 
+        pastDueAmount > 0 
+            ? totalDueAmount 
+            : targetRemainingAmount
 
         const fundingAccount = accounts.find((account) => {
             return account.id === bill.funding_account_id
@@ -663,7 +691,7 @@ const renderBills = () => {
                                     class="btn btn-sm btn-primary mt-3 recordPaymentButton"
                                     data-bill-id="${bill.id}"
                                     data-due-date="${paymentTargetDueDateKey}"
-                                    data-remaining-amount="${targetRemainingAmount}"
+                                    data-remaining-amount="${suggestedPaymentAmount}"
                                 >
                                     ${
                                         remainingAmount === 0
@@ -761,6 +789,13 @@ const renderBills = () => {
             const selectedBill = bills.find((bill) => {
                 return bill.id === billId
             })
+
+            const billState = getBillState(selectedBill)
+
+            const allocations = buildPaymentAllocations(
+                billState.occurrences,
+                remainingAmount
+            )
 
             const modal = renderBillPaymentModal()
 
