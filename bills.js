@@ -267,6 +267,14 @@ const getBillState = (bill) => {
         }
     })
 
+    const oldestUnpaidOccurrence = occurrences.find((occurrence) => {
+        return occurrence.remainingAmount > 0
+    })
+
+    if (bill.name === "Apple One") {
+        console.log("Oldest unpaid:", oldestUnpaidOccurrence)
+    }
+
     const pastDueAmount = occurrences.filter((occurrence) => {
         return occurrence.dueDate < currentMonthDueDate
     })
@@ -352,36 +360,16 @@ const getBillState = (bill) => {
         0
     )
 
-    let paymentTargetDueDate = activeDueDate
-    let paymentTargetDueDateKey = dueDateKey
-    let targetRemainingAmount = remainingAmount
+    let paymentTargetDueDate
+    let paymentTargetDueDateKey
+    let targetRemainingAmount
 
-    if (remainingAmount === 0 && plannedAmount > 0) {
+    if (oldestUnpaidOccurrence) {
+        paymentTargetDueDate = oldestUnpaidOccurrence.dueDate
+        paymentTargetDueDateKey = oldestUnpaidOccurrence.dueDateKey
+        targetRemainingAmount = oldestUnpaidOccurrence.remainingAmount
+    } else {
         paymentTargetDueDate = getFollowingBillDueDate(bill, activeDueDate)
-        paymentTargetDueDateKey = formatDateKey(paymentTargetDueDate)
-
-        let targetIsPaid = true
-
-        while (targetIsPaid) {
-            const paymentsForTargetBill = paymentsForBill.filter((payment) => {
-                return payment.due_date === paymentTargetDueDateKey
-            })
-
-            const targetPaidSoFar = paymentsForTargetBill.reduce((total, payment) => {
-                return total + payment.amount
-            },
-            0
-            )
-
-            targetRemainingAmount = Math.max(plannedAmount - targetPaidSoFar, 0)
-
-            if (targetRemainingAmount > 0) {
-                targetIsPaid = false
-            } else {
-                paymentTargetDueDate = getFollowingBillDueDate(bill, paymentTargetDueDate)
-                paymentTargetDueDateKey = formatDateKey(paymentTargetDueDate)
-            }
-        }
     }
     
     const today = new Date()
