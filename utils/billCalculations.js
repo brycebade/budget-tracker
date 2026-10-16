@@ -1,3 +1,10 @@
+const getMonthlyDueDate = (year, monthIndex, dueDay) => {
+    const lastDayOfMonth = new Date(year, monthIndex + 1, 0).getDate()
+    const actualDueDay = Math.min(dueDay, lastDayOfMonth)
+
+    return new Date(year, monthIndex, actualDueDay)
+}
+
 export const getNextBillDueDate = (bill, referenceDate = new Date()) => {
     if (bill.frequency === "monthly") {
         const today = new Date(referenceDate)
@@ -207,21 +214,23 @@ export const getBillDueDatesBetween = (bill, startDate, endDate) => {
     const dueDates = []
 
     if (bill.frequency === "monthly") {
-        let dueDate = new Date(
-            rangeStart.getFullYear(),
-            rangeStart.getMonth(),
-            bill.due_day
-        )
-        
+        let year = rangeStart.getFullYear()
+        let monthIndex = rangeStart.getMonth()
+        let dueDate = getMonthlyDueDate(year, monthIndex, bill.due_day)
+
         if (dueDate < rangeStart) {
-            dueDate.setMonth(dueDate.getMonth() + 1)
+            monthIndex += 1
+
+            dueDate = getMonthlyDueDate(year, monthIndex, bill.due_day)
         }
 
         while (dueDate <= rangeEnd) {
             dueDates.push(new Date(dueDate))
-            dueDate.setMonth(dueDate.getMonth() + 1)
+
+            monthIndex += 1
+
+            dueDate = getMonthlyDueDate(year, monthIndex, bill.due_day)
         }
     }
-
     return dueDates
 }
