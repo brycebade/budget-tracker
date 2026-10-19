@@ -790,13 +790,6 @@ const renderBills = () => {
                 return bill.id === billId
             })
 
-            const billState = getBillState(selectedBill)
-
-            const allocations = buildPaymentAllocations(
-                billState.occurrences,
-                remainingAmount
-            )
-
             const modal = renderBillPaymentModal()
 
             const amountInput = document.getElementById("billPaymentAmount")
@@ -818,17 +811,44 @@ const renderBills = () => {
             form.addEventListener("submit", async (event) => {
                 event.preventDefault()
 
-                const paymentData = {
-                    billId: selectedBill.id,
-                    dueDate: dueDateKey,
-                    amount: Number(amountInput.value),
-                    paymentDate: paymentDateInput.value,
+                const paymentAmount = Number(amountInput.value)
+                const currentBillState = getBillState(selectedBill)
+
+                let paymentAllocations
+
+                if (currentBillState.totalDueAmount > 0) {
+                    paymentAllocations = buildPaymentAllocations(
+                        currentBillState.occurrences,
+                        paymentAmount
+                    )
+                } else {
+                    paymentAllocations = [
+                        {
+                            dueDate: dueDateKey,
+                            amount: paymentAmount
+                        }
+                    ]
                 }
 
-                try {
-                    const savedPayment = await createBillPayment(paymentData)
+                console.log("Submit Allocations:", paymentAllocations)
 
-                    billPayments.push(savedPayment)
+                try {
+                    const savedPayments = []
+
+                    for (const allocation of paymentAllocations) {
+                        const paymentData = {
+                            billId: selectedBill.id,
+                            dueDate: allocation.dueDate,
+                            amount: allocation.amount,
+                            paymentDate: paymentDateInput.value
+                        }
+
+                        const savedPayment = await createBillPayment(paymentData)
+
+                        savedPayments.push(savedPayment)
+                    }
+
+                    billPayments.push(...savedPayments)
 
                     modal.close()
                     renderBills()
