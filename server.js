@@ -943,6 +943,7 @@ app.get("/api/bill-payments", async (request, response) => {
             `
                 SELECT
                     id,
+                    payment_group_id,
                     bill_id,
                     due_date::text AS due_date,
                     amount,
@@ -974,6 +975,7 @@ app.get("/api/bill-payments", async (request, response) => {
 
 app.post("/api/bill-payments", async (request, response) => {
     const {
+        paymentGroupId,
         billId,
         dueDate,
         amount,
@@ -981,13 +983,14 @@ app.post("/api/bill-payments", async (request, response) => {
     } = request.body
 
     if (
+        !paymentGroupId ||
         !billId ||
         !dueDate ||
         amount === undefined ||
         !paymentDate
     ) {
         return response.status(400).json({
-            message: "Bill, due date, amount, and payment date are required"
+            message: "Paymentg group, bill, due date, amount, and payment date are required"
         })
     }
 
@@ -996,14 +999,16 @@ app.post("/api/bill-payments", async (request, response) => {
             `
                 INSERT INTO bill_payments (
                     user_id,
+                    payment_group_id,
                     bill_id,
                     due_date,
                     amount,
                     payment_date
                 )
-                VALUES ($1, $2, $3, $4, $5)
+                VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING
                     id,
+                    payment_group_id,
                     bill_id,
                     due_date::text AS due_date,
                     amount,
@@ -1012,6 +1017,7 @@ app.post("/api/bill-payments", async (request, response) => {
             `,
             [
                 TEMP_USER_ID,
+                paymentGroupId,
                 billId,
                 dueDate,
                 amount,
