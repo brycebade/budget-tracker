@@ -280,28 +280,53 @@ const getBillState = (bill) => {
 
     const hasPastDue = pastDueAmount > 0
 
-    const currentDueDateKey = formatDateKey(currentMonthDueDate)
+    const currentDueDateKey = currentMonthDueDate ? formatDateKey(currentMonthDueDate) : null
 
-    const currentOccurrence = occurrences.find((occurrence) => {
+    const currentOccurrence = currentDueDateKey ? occurrences.find((occurrence) => {
         return occurrence.dueDateKey === currentDueDateKey
     })
+    : null
 
     const currentDueAmount = currentOccurrence ? currentOccurrence.remainingAmount : 0
 
     const totalDueAmount = pastDueAmount + currentDueAmount
     
-    const lastPayment = paymentsForBill.reduce(
-        (latestPayment, payment) => {
+    const paymentGroups = []
+
+    paymentsForBill.forEach((payment) => {
+        const existingGroup = paymentGroups.find((group) => {
+            return group.payment_group_id === payment.payment_group_id
+        })
+
+        if (existingGroup) {
+            existingGroup.amount += payment.amount
+        } else {
+            paymentGroups.push({
+                payment_group_id: payment.payment_group_id,
+                payment_date: payment.payment_date,
+                amount: payment.amount,
+                created_at: payment.created_at
+            })
+        }
+    })
+
+    const lastPayment = paymentGroups.reduce(
+        (latestPayment, paymentGroup) => {
             if (latestPayment === null) {
-                return payment
-            }
+                return paymentGroup
+        }
 
-            if (payment.payment_date > latestPayment.payment_date) {
-                return payment
-            }
-
+        if (
+            paymentGroup.payment_date > latestPayment.payment_date ||
+            (
+                paymentGroup.payment_date === latestPayment.payment_date &&
+                paymentGroup.created_at > latestPayment.created_at
+            )
+        ) {
+            return paymentGroup
+        }
             return latestPayment
-        },
+        }, 
         null
     )
 
@@ -366,6 +391,29 @@ const getBillState = (bill) => {
         targetRemainingAmount = oldestUnpaidOccurrence.remainingAmount
     } else {
         paymentTargetDueDate = getFollowingBillDueDate(bill, activeDueDate)
+        paymentTargetDueDateKey = formatDateKey(paymentTargetDueDate)
+
+        let targetIsPaid = true
+
+        while (targetIsPaid) {
+            const paymentsForTargetBill = paymentsForBill.filter((payment) => {
+                return payment.due_date === paymentTargetDueDateKey
+            })
+            const targetPaidSoFar = paymentsForTargetBill.reduce((total, payment) => {
+                return total + payment.amount
+            },
+            0
+        )
+
+        targetRemainingAmount = Math.max(plannedAmount - targetPaidSoFar, 0)
+
+        if (targetRemainingAmount > 0) {
+            targetIsPaid = false
+        } else {
+            paymentTargetDueDate = getFollowingBillDueDate(bill, paymentTargetDueDate)
+            paymentTargetDueDateKey = formatDateKey(paymentTargetDueDate)
+        }
+        }
     }
     
     const today = new Date()
@@ -813,6 +861,7 @@ const renderBills = () => {
 
                 const paymentAmount = Number(amountInput.value)
                 const currentBillState = getBillState(selectedBill)
+                const paymentGroupId = crypto.randomUUID()
 
                 let paymentAllocations
 
@@ -830,13 +879,12 @@ const renderBills = () => {
                     ]
                 }
 
-                console.log("Submit Allocations:", paymentAllocations)
-
                 try {
                     const savedPayments = []
 
                     for (const allocation of paymentAllocations) {
                         const paymentData = {
+                            paymentGroupId,
                             billId: selectedBill.id,
                             dueDate: allocation.dueDate,
                             amount: allocation.amount,
