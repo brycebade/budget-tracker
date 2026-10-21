@@ -1040,6 +1040,122 @@ app.post("/api/bill-payments", async (request, response) => {
     }
 })
 
+app.post("/api/income-sources", async (request, response) => {
+    const {
+        name,
+        payType,
+        frequency,
+        anchorDate,
+        payDay1,
+        payDay2,
+        depositAccountId
+    } = request.body
+
+    const usesAnchorDate =
+        frequency === "weekly" ||
+        frequency === "biweekly"
+
+    const usesOnePayDay =
+        frequency === "monthly"
+
+    const usesTwoPayDays = 
+        frequency === "semimonthly"
+
+    if (
+        !name ||
+        !payType ||
+        !frequency ||
+        (usesAnchorDate && !anchorDate) ||
+        (usesOnePayDay && !payDay1) ||
+        (usesTwoPayDays && (!payDay1 || !payDay2))
+    ) {
+        return response.status(400).json({
+            message: "Required income source information missing"
+        })
+    }
+
+    try {
+        const result = await pool.query(
+            `
+                INSERT INTO income_sources (
+                    user_id,
+                    name,
+                    pay_type,
+                    frequency,
+                    anchor_date,
+                    pay_day_1,
+                    pay_day_2,
+                    deposit_account_id    
+                )
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                RETURNING
+                    id,
+                    name,
+                    pay_type,
+                    frequency,
+                    anchor_date,
+                    pay_day_1,
+                    pay_day_2,
+                    deposit_account_id,
+                    active,
+                    created_at
+            `,
+            [
+                TEMP_USER_ID,
+                name,
+                payType,
+                frequency,
+                anchorDate ?? null,
+                payDay1 ?? null,
+                payDay2 ?? null,
+                depositAccountId ?? null
+            ]
+        )
+
+        response.status(201).json(result.rows[0])
+    } catch (error) {
+        console.error("Failed to create income source:", error)
+
+        response.status(500).json({
+            message: "Failed to create income source"
+        })
+    }
+})
+
+app.get("/api/income-sources", async (request, response) => {
+    try {
+        const result = await pool.query(
+            `
+                SELECT
+                    id,
+                    name,
+                    pay_type,
+                    frequency,
+                    anchor_date,
+                    pay_day_1,
+                    pay_day_2,
+                    deposit_account_id,
+                    active,
+                    created_at
+                FROM income_sources
+                WHERE user_id = $1
+                ORDER BY created_at ASC
+            `,
+            [
+                TEMP_USER_ID
+            ]
+        )
+
+        response.json(result.rows)
+    } catch (error) {
+        console.error("Failed to load income sources:", error)
+
+        response.status(500).json({
+            message: "Failed to load income sources"
+        })
+    }
+})
+
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running at http://localhost:${PORT}`)
 })
