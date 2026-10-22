@@ -13,7 +13,7 @@ export const getIncomeSources = async () => {
     return response.json()
 }
 
-export const createdIncomeSource = async (incomeSourceData) => {
+export const createIncomeSource = async (incomeSourceData) => {
     const response = await fetch(INCOME_SOURCES_URL, {
         method: "POST",
         headers: {
