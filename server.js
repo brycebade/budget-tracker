@@ -1156,6 +1156,97 @@ app.get("/api/income-sources", async (request, response) => {
     }
 })
 
+app.put("/api/income-sources/:id", async (request, response) => {
+    const { id } = request.params
+
+    const {
+        name,
+        payType,
+        frequency,
+        anchorDate,
+        payDay1,
+        payDay2,
+        depositAccountId
+    } = request.body
+
+    const validPayTypes = ["hourly", "salary", "fixed"]
+
+    const validFrequencies = [
+        "weekly",
+        "biweekly",
+        "semimonthly",
+        "monthly"
+    ]
+
+    const usesAnchorDate = frequency === "weekly" || frequency === "biweekly"
+    const usesPayDay1 = frequency === "monthly" || frequency === "semimonthly"
+    const usesPayDay2 = frequency === "semimonthly"
+
+    const validPayDay = (day) => {
+        return Number.isInteger(day) && day >= 1 && day <= 31
+    }
+
+    if (
+        !name?.trim() ||
+        !validPayTypes.includes(payType) ||
+        !validFrequencies.includes(frequency) ||
+        (usesAnchorDate && !anchorDate) ||
+        (usesPayDay1 && !validPayDay(payDay1)) ||
+        (usesPayDay2 && (
+            !validPayDay(payDay2) ||
+            payDay1 === payDay2
+        ))
+    ) {
+        return reponse.status(400).json({
+            message: "Invalid income source information"
+        })
+    }
+
+    try {
+        const result = await pool.query(
+            `
+                UPDATE income_sources
+                SET
+                    name = $1,
+                    pay_type = $2,
+                    frequency = $3,
+                    anchor_date = $4,
+                    pay_day_1 = $5,
+                    pay_day_2 = $6,
+                    deposit_account_id = $7
+                WHERE id = $8
+                    AND user_id = $9
+                RETURNING *
+            `,
+            [
+                name.trim(),
+                payType,
+                frequency,
+                usesAnchorDate ? anchorDate : null,
+                usesPayDay1 ? payDay1 : null,
+                usesPayDay2 ? payDay2 : null,
+                depositAccountId || null,
+                id,
+                TEMP_USER_ID
+            ]
+        )
+
+        if (result.rows.length === 0) {
+            return response.status(404).json({
+                message: "Income source not found"
+            })
+        }
+
+        response.json(result.rows[0])
+    } catch (error) {
+        console.error("Failed to update income source:", error)
+
+        response.status(500).json({
+            message: "Failed to update income source"
+        })
+    }
+})
+
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running at http://localhost:${PORT}`)
 })

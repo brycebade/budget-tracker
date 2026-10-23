@@ -1,5 +1,5 @@
 import { renderLayout } from "./components/layout.js"
-import { getIncomeSources, createIncomeSource } from "./api/incomeSourcesApi.js"
+import { getIncomeSources, createIncomeSource, updateIncomeSource } from "./api/incomeSourcesApi.js"
 import { renderIncomeSourceModal } from "./incomeSourceModal.js"
 import { getAccounts } from "./api/accountsApi.js"
 
@@ -47,6 +47,12 @@ const renderIncomeSources = () => {
                     <p class="capitalize text-base-content/70">
                         ${incomeSource.frequency}
                     </p>
+                    <button
+                        class="btn btn-sm btn-outline mt-3 self-start editIncomeSourceButton"
+                        data-income-id="${incomeSource.id}"
+                    >
+                        Edit Income Source
+                    </button>
                 </div>
             </div>
         `
@@ -70,8 +76,8 @@ const loadIncomeSources = async () => {
     }
 }
 
-actionButton.addEventListener("click", () => {
-    const modal = renderIncomeSourceModal()
+const openIncomeSourceModal = (incomeSource = null) => {
+    const modal = renderIncomeSourceModal(incomeSource)
 
     const cancelButton = document.getElementById("cancelIncomeSourceButton")
     const frequencySelect = document.getElementById("incomeFrequency")
@@ -96,6 +102,10 @@ actionButton.addEventListener("click", () => {
             depositAccountSelect.appendChild(option)
         }
     })
+
+    if (incomeSource) {
+        depositAccountSelect.value = incomeSource.deposit_account_id ?? ""
+    }
 
     const updateScheduleFields = () => {
         const frequency = frequencySelect.value
@@ -134,9 +144,21 @@ actionButton.addEventListener("click", () => {
         }
 
         try {
-            const savedIncomeSource = await createIncomeSource(incomeSourceData)
+            let savedIncomeSource
 
-            incomeSources.push(savedIncomeSource)
+            if (incomeSource) {
+                savedIncomeSource = await updateIncomeSource(incomeSource.id, incomeSourceData)
+
+                const incomeSourceIndex = incomeSources.findIndex((source) => {
+                    return source.id === incomeSource.id
+                })
+
+                incomeSources[incomeSourceIndex] = savedIncomeSource
+            } else {
+                savedIncomeSource = await createIncomeSource(incomeSourceData)
+                
+                incomeSources.push(savedIncomeSource)
+            }
 
             renderIncomeSources()
             modal.close()
@@ -150,6 +172,30 @@ actionButton.addEventListener("click", () => {
     })
 
     modal.showModal()
+}
+
+incomeSourcesContainer.addEventListener("click", (event) => {
+    const editButton = event.target.closest(".editIncomeSourceButton")
+
+    if (!editButton) {
+        return
+    }
+
+    const incomeSourceId = editButton.dataset.incomeId
+
+    const selectedIncomeSource = incomeSources.find((incomeSource) => {
+        return incomeSource.id === incomeSourceId
+    })
+
+    if (!selectedIncomeSource) {
+        return
+    }
+
+    openIncomeSourceModal(selectedIncomeSource)
+})
+
+actionButton.addEventListener("click", () => {
+    openIncomeSourceModal()
 })
 
 loadIncomeSources()

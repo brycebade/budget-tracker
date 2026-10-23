@@ -13,6 +13,22 @@ export const getIncomeSources = async () => {
     return response.json()
 }
 
+export const updateIncomeSource = async (id, incomeSourceData) => {
+    const response = await fetch(`${INCOME_SOURCES_URL}/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(incomeSourceData)
+    })
+
+    if (!response.ok) {
+        throw new Error("Failed to update income source")
+    }
+
+    return response.json()
+}
+
 export const createIncomeSource = async (incomeSourceData) => {
     const response = await fetch(INCOME_SOURCES_URL, {
         method: "POST",

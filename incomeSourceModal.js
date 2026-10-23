@@ -1,4 +1,4 @@
-export const renderIncomeSourceModal = () => {
+export const renderIncomeSourceModal = (incomeSource = null) => {
     const existingModal = document.getElementById("incomeSourceModal")
 
     if (existingModal) {
@@ -9,7 +9,7 @@ export const renderIncomeSourceModal = () => {
             <dialog id="incomeSourceModal" class="modal">
                 <div class="modal-box">
                     <h3 class="text-lg font-bold mb-4">
-                        Add Income Source
+                        ${incomeSource ? "Edit Income Source" : "Add Income Source"}
                     </h3>
 
                     <form id="incomeSourceForm" class="space-y-4">
@@ -102,7 +102,7 @@ export const renderIncomeSourceModal = () => {
                             </button>
 
                             <button type="submit" class="btn btn-primary">
-                                Save Income Source
+                                ${incomeSource ? "Update Income Source" : "Save Income Source"}
                             </button>
                         </div>
                     </form>
@@ -110,5 +110,16 @@ export const renderIncomeSourceModal = () => {
             </dialog>
         `)
 
-        return document.getElementById("incomeSourceModal")
+        const modal = document.getElementById("incomeSourceModal")
+
+        if (incomeSource) {
+            document.getElementById("incomeName").value = incomeSource.name
+            document.getElementById("incomePayType").value = incomeSource.pay_type
+            document.getElementById("incomeFrequency").value = incomeSource.frequency
+            document.getElementById("incomeAnchorDate").value = incomeSource.anchor_date?.split("T")[0] ?? ""
+            document.getElementById("incomePayDay1").value = incomeSource.pay_day_1 ?? ""
+            document.getElementById("incomePayDay2").value = incomeSource.pay_day_2 ?? ""
+        }
+
+        return modal
 }
