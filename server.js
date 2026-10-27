@@ -990,7 +990,18 @@ app.post("/api/bill-payments", async (request, response) => {
         !paymentDate
     ) {
         return response.status(400).json({
-            message: "Paymentg group, bill, due date, amount, and payment date are required"
+            message: "Payment group, bill, due date, amount, and payment date are required"
+        })
+    }
+
+    const paymentAmount = Number(amount)
+
+    if (
+        !Number.isFinite(paymentAmount) ||
+        paymentAmount <= 0
+    ) {
+        return response.status(400).json({
+            message: "Payment amount must be greater than zero"
         })
     }
 
@@ -1016,8 +1027,79 @@ app.post("/api/bill-payments", async (request, response) => {
         }
 
         const bill = billResult.rows[0]
-        
-        const result = await pool.query(
+
+        if (!bill.funding_account_id) {
+            return response.status(400).json({
+                message: "This bill does not have a funding account assigned"
+            })
+        }
+
+        const accountResult = await pool.query(
+            `
+                SELECT id, name, type
+                FROM accounts
+                WHERE id = $1
+                    AND user_id = $2
+            `,
+            [bill.funding_account_id, TEMP_USER_ID]
+        )
+
+        if (accountResult.rows.length === 0) {
+            return response.status(400).json({
+                message: "The bill's funding account could not be found"
+            })
+        }
+
+        const fundingAccount = accountResult.rows[0]
+
+        let linkedAccount = null
+
+        if (bill.linked_account_id) {
+            const linkedAccountResult = await pool.query(
+                `
+                    SELECT id, name, type
+                    FROM accounts
+                    WHERE id = $1
+                        AND user_id = $2
+                `,
+                [bill.linked_account_id, TEMP_USER_ID]
+            )
+
+            if (linkedAccountResult.rows.length === 0) {
+                return response.status(400).json({
+                    message: "The bill's linked account could not be found"
+                })
+            }
+
+            linkedAccount = linkedAccountResult.rows[0]
+
+            if (
+                linkedAccount.type !== "credit_card" &&
+                linkedAccount.type !== "loan"
+            ) {
+                return response.status(400).json({
+                    message: "Linked accounts must be credit cards or loans"
+                })
+            }
+        }
+
+        if (
+            fundingAccount.type !== "checking" &&
+            fundingAccount.type !== "savings"
+        ) {
+            return response.status(400).json({
+                message: "Bill payments must be funded from a checking or savings account"
+            })
+        }
+
+        let result 
+
+        const client = await pool.connect()
+
+        try {
+            await client.query("BEGIN")
+
+            result = await client.query(
             `
                 INSERT INTO bill_payments (
                     user_id,
@@ -1046,6 +1128,68 @@ app.post("/api/bill-payments", async (request, response) => {
                 paymentDate
             ]
         )
+
+            await client.query(
+                `
+                    INSERT INTO transactions (
+                        user_id,
+                        account_id,
+                        description,
+                        amount,
+                        type,
+                        category,
+                        transaction_date,
+                        bill_payment_id
+                    )
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                `,
+                [
+                    TEMP_USER_ID,
+                    fundingAccount.id,
+                    bill.name,
+                    paymentAmount,
+                    "payment",
+                    bill.category,
+                    paymentDate,
+                    result.rows[0].id
+                ]
+            )
+
+            if (linkedAccount) {
+                await client.query(
+                    `
+                        INSERT INTO transactions (
+                            user_id,
+                            account_id,
+                            description,
+                            amount,
+                            type,
+                            category,
+                            transaction_date,
+                            bill_payment_id
+                        )
+                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                    `,
+                    [
+                        TEMP_USER_ID,
+                        linkedAccount.id,
+                        bill.name,
+                        paymentAmount,
+                        "payment",
+                        bill.category,
+                        paymentDate,
+                        result.rows[0].id
+                    ]
+                )
+            }
+
+            await client.query("COMMIT")
+        } catch (error) {
+            await client.query("ROLLBACK")
+            throw error
+        } finally {
+            client.release()
+        }
 
         const savedPayment = {
             ...result.rows[0],
