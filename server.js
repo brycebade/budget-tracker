@@ -995,6 +995,28 @@ app.post("/api/bill-payments", async (request, response) => {
     }
 
     try {
+        const billResult = await pool.query(
+            `
+                SELECT
+                    name,
+                    category,
+                    funding_account_id,
+                    linked_account_id
+                FROM bills
+                WHERE id = $1
+                    AND user_id = $2
+            `,
+            [billId, TEMP_USER_ID]
+        )
+
+        if (billResult.rows.length === 0) {
+            return response.status(404).json({
+                message: "Bill not found"
+            })
+        }
+
+        const bill = billResult.rows[0]
+        
         const result = await pool.query(
             `
                 INSERT INTO bill_payments (
