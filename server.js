@@ -979,7 +979,8 @@ app.post("/api/bill-payments", async (request, response) => {
         billId,
         dueDate,
         amount,
-        paymentDate
+        paymentDate,
+        idempotencyKey
     } = request.body
 
     if (
@@ -987,10 +988,11 @@ app.post("/api/bill-payments", async (request, response) => {
         !billId ||
         !dueDate ||
         amount === undefined ||
-        !paymentDate
+        !paymentDate ||
+        !idempotencyKey
     ) {
         return response.status(400).json({
-            message: "Payment group, bill, due date, amount, and payment date are required"
+            message: "Payment group, bill, due date, amount, payment date, and idempotency key are required"
         })
     }
 
@@ -1002,6 +1004,14 @@ app.post("/api/bill-payments", async (request, response) => {
     ) {
         return response.status(400).json({
             message: "Payment amount must be greater than zero"
+        })
+    }
+
+    const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+
+    if (!uuidPattern.test(idempotencyKey)) {
+        return response.status(400).json({
+            message: "A valid idempotency key is required"
         })
     }
 
@@ -1107,9 +1117,10 @@ app.post("/api/bill-payments", async (request, response) => {
                     bill_id,
                     due_date,
                     amount,
-                    payment_date
+                    payment_date,
+                    idempotency_key
                 )
-                VALUES ($1, $2, $3, $4, $5, $6)
+                VALUES ($1, $2, $3, $4, $5, $6, $7)
                 RETURNING
                     id,
                     payment_group_id,
@@ -1117,6 +1128,7 @@ app.post("/api/bill-payments", async (request, response) => {
                     due_date::text AS due_date,
                     amount,
                     payment_date::text AS payment_date,
+                    idempotency_key,
                     created_at
             `,
             [
@@ -1125,7 +1137,8 @@ app.post("/api/bill-payments", async (request, response) => {
                 billId,
                 dueDate,
                 amount,
-                paymentDate
+                paymentDate,
+                idempotencyKey
             ]
         )
 
@@ -1139,7 +1152,7 @@ app.post("/api/bill-payments", async (request, response) => {
                         type,
                         category,
                         transaction_date,
-                        bill_payment_id
+                        bill_payments_id
                     )
                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
                 `,
@@ -1166,7 +1179,7 @@ app.post("/api/bill-payments", async (request, response) => {
                             type,
                             category,
                             transaction_date,
-                            bill_payment_id
+                            bill_payments_id
                         )
                         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
                     `,
@@ -1198,6 +1211,56 @@ app.post("/api/bill-payments", async (request, response) => {
 
         response.status(201).json(savedPayment)
     } catch (error) {
+        if (
+            error.code === "23505" &&
+            error.constraint === "bill_payments_user_idempotency_key_idx"
+        ) try {
+            const existingResult = await pool.query(
+                `
+                    SELECT
+                        id,
+                        payment_group_id,
+                        bill_id,
+                        due_date::text AS due_date,
+                        amount,
+                        payment_date::text AS payment_date,
+                        idempotency_key,
+                        created_at
+                    FROM bill_payments
+                    WHERE user_id = $1
+                        AND idempotency_key = $2
+                `,
+                [TEMP_USER_ID, idempotencyKey]
+            )
+
+            const existingPayment = existingResult.rows[0]
+
+            if (!existingPayment) {
+                const isSamePayment =
+                    existingPayment.payment_group_id === paymentGroupId &&
+                    existingPayment.bill_id === billId &&
+                    existingPayment.due_date === dueDate &&
+                    Number(existingPayment.amount) === paymentAmount &&
+                    existingPayment.payment_date === paymentDate
+                
+                if (!isSamePayment) {
+                    return response.status(409).json({
+                        message: "This idempotency key belongs to a different payment"
+                    })
+                }
+                
+                return response.status(200).json({
+                    ...existingPayment,
+                    amount: Number(existingPayment.amount)
+                })
+            } 
+        } catch (lookupError) {
+                console.error("Failed to retrieve existing bill payment:", lookupError)
+                return response.status(500).json({
+                    message: "Unable to verify the existing payment"
+                })
+            }
+
         console.error("Failed to create bill payment:", error)
 
         response.status(500).json({
