@@ -846,6 +846,9 @@ const renderBills = () => {
             const cancelButton = document.getElementById("cancelBillPaymentButton")
             const form = document.getElementById("billPaymentForm")
 
+            let pendingPayment = null
+            let isSubmittingPayment = false
+
             amountInput.value = remainingAmount
 
             paymentDateInput.value = new Date().toISOString().split("T")[0]
@@ -858,6 +861,14 @@ const renderBills = () => {
 
             form.addEventListener("submit", async (event) => {
                 event.preventDefault()
+
+                if (isSubmittingPayment) {
+                    return
+                }
+
+                if (pendingPayment) {
+                    return
+                }
 
                 const paymentAmount = Number(amountInput.value)
                 const currentBillState = getBillState(selectedBill)
@@ -877,6 +888,19 @@ const renderBills = () => {
                             amount: paymentAmount
                         }
                     ]
+                }
+
+                pendingPayment = {
+                    paymentGroupId,
+                    billId: selectedBill.id,
+                    paymentDate: paymentDateInput.value,
+                    allocations: paymentAllocations.map((allocation) => {
+                        return {
+                            dueDate: allocation.dueDate,
+                            amount: allocation.amount,
+                            idempotencyKey: crypto.randomUUID
+                        }
+                    })
                 }
 
                 try {
