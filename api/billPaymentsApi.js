@@ -22,7 +22,11 @@ export const createBillPayment = async (paymentData) => {
     })
 
     if (!response.ok) {
-        throw new Error("Failed to create bill payment")
+        const errorData = await response.json().catch(() => null)
+
+        throw new Error(
+            errorData?.message || `Failed to create bill payment (${response.status})`
+        )
     }
 
     return response.json()

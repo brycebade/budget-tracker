@@ -56,6 +56,22 @@ let showingInactiveBills = false
 const bills = []
 const accounts = []
 const billPayments = []
+const PENDING_BILL_PAYMENT_KEY = "lumicairn-pending-bill-payment"
+
+const getStoredPendingPayment = () => {
+    try {
+        const savedPayment = localStorage.getItem(PENDING_BILL_PAYMENT_KEY)
+
+        if (!savedPayment) {
+            return null
+        }
+
+        return JSON.parse(savedPayment)
+    } catch (error) {
+        console.error("Could not read pending bill payment:", error)
+        return null
+    }
+}
 
 inactiveBillsButton.addEventListener("click", () => {
     showingInactiveBills = !showingInactiveBills
@@ -830,6 +846,17 @@ const renderBills = () => {
 
     recordPaymentButtons.forEach((button) => {
         button.addEventListener("click", () => {
+            const storedPayment = getStoredPendingPayment()
+
+            if (storedPayment && storedPayment.billId !== button.dataset.billId) {
+                window.alert(
+                    "An earlier payment for a different bill is still pending. " +
+                    "Open that bill to recover its payment."
+                )
+
+                return
+            }
+
             const billId = button.dataset.billId
             const dueDateKey = button.dataset.dueDate
             const remainingAmount = Number(button.dataset.remainingAmount)
@@ -846,17 +873,55 @@ const renderBills = () => {
             const cancelButton = document.getElementById("cancelBillPaymentButton")
             const form = document.getElementById("billPaymentForm")
 
-            let pendingPayment = null
+            const paymentError = document.createElement("p")
+
+            paymentError.className = "text-error text-sm mt-3"
+            paymentError.setAttribute("role", "alert")
+            paymentError.hidden = true
+
+            form.appendChild(paymentError)
+
+            let pendingPayment = storedPayment?.billId === billId ? storedPayment : null
             let isSubmittingPayment = false
 
             amountInput.value = remainingAmount
 
             paymentDateInput.value = new Date().toISOString().split("T")[0]
 
+            if (pendingPayment) {
+                amountInput.value = pendingPayment.allocations.reduce(
+                    (total, allocation) => total + Number(allocation.amount),
+                    0
+                )
+
+                paymentDateInput.value = pendingPayment.paymentDate
+
+                amountInput.disabled = true
+                paymentDateInput.disabled = true
+            }
+
             dueDateDisplay.textContent = formatDate(new Date(`${dueDateKey}T00:00:00`))
 
             cancelButton.addEventListener("click", () => {
+                if (isSubmittingPayment) {
+                    return
+                }
+
+                if (pendingPayment) {
+                    window.alert(
+                        "This payment may have been partially saved. " +
+                        "Retry the payment before closing this window."
+                    ) 
+                    return
+                }
+
                 modal.close()
+            })
+
+            modal.addEventListener("cancel", (event) => {
+                if (isSubmittingPayment || pendingPayment) {
+                    event.preventDefault()
+                }
             })
 
             form.addEventListener("submit", async (event) => {
@@ -867,52 +932,68 @@ const renderBills = () => {
                 }
 
                 if (pendingPayment) {
-                    return
+                    amountInput.value = pendingPayment.allocations
+                        .reduce((total, allocation) => {
+                            return total + allocation.amount
+                        }, 0)
+
+                    paymentDateInput.value = pendingPayment.paymentDate
                 }
 
-                const paymentAmount = Number(amountInput.value)
-                const currentBillState = getBillState(selectedBill)
-                const paymentGroupId = crypto.randomUUID()
+                if (!pendingPayment) {
+                    const paymentAmount = Number(amountInput.value)
+                    const currentBillState = getBillState(selectedBill)
+                    const paymentGroupId = crypto.randomUUID()
 
-                let paymentAllocations
+                    let paymentAllocations
 
-                if (currentBillState.totalDueAmount > 0) {
-                    paymentAllocations = buildPaymentAllocations(
-                        currentBillState.occurrences,
-                        paymentAmount
-                    )
-                } else {
-                    paymentAllocations = [
-                        {
-                            dueDate: dueDateKey,
-                            amount: paymentAmount
-                        }
-                    ]
+                    if (currentBillState.totalDueAmount > 0) {
+                        paymentAllocations = buildPaymentAllocations(
+                            currentBillState.occurrences,
+                            paymentAmount
+                        )
+                    } else {
+                        paymentAllocations = [
+                            {
+                                dueDate: dueDateKey,
+                                amount: paymentAmount
+                            }
+                        ]
+                    }
+
+                    pendingPayment = {
+                        paymentGroupId,
+                        billId: selectedBill.id,
+                        paymentDate: paymentDateInput.value,
+                        allocations: paymentAllocations.map((allocation) => {
+                            return {
+                                dueDate: allocation.dueDate,
+                                amount: allocation.amount,
+                                idempotencyKey: crypto.randomUUID()
+                            }
+                        })
+                    }
+
+                    localStorage.setItem(PENDING_BILL_PAYMENT_KEY, JSON.stringify(pendingPayment))
                 }
 
-                pendingPayment = {
-                    paymentGroupId,
-                    billId: selectedBill.id,
-                    paymentDate: paymentDateInput.value,
-                    allocations: paymentAllocations.map((allocation) => {
-                        return {
-                            dueDate: allocation.dueDate,
-                            amount: allocation.amount,
-                            idempotencyKey: crypto.randomUUID
-                        }
-                    })
-                }
+                isSubmittingPayment = true
+                amountInput.disabled = true
+                paymentDateInput.disabled = true
+                paymentError.hidden = true
+                paymentError.textContent = ""
 
                 try {
                     const savedPayments = []
 
-                    for (const allocation of paymentAllocations) {
+                    for (const allocation of pendingPayment.allocations) {
                         const paymentData = {
-                            paymentGroupId,
-                            billId: selectedBill.id,
+                            paymentGroupId: pendingPayment.paymentGroupId,
+                            billId: pendingPayment.billId,
                             dueDate: allocation.dueDate,
                             amount: allocation.amount,
-                            paymentDate: paymentDateInput.value
+                            paymentDate: pendingPayment.paymentDate,
+                            idempotencyKey: allocation.idempotencyKey
                         }
 
                         const savedPayment = await createBillPayment(paymentData)
@@ -920,12 +1001,37 @@ const renderBills = () => {
                         savedPayments.push(savedPayment)
                     }
 
-                    billPayments.push(...savedPayments)
+                    savedPayments.forEach((savedPayment) => {
+                        const alreadyExists = billPayments.some((payment) => {
+                            return payment.id === savedPayment.id
+                        })
+
+                        if (!alreadyExists) {
+                            billPayments.push(savedPayment)
+                        }
+                    })
+
+                    localStorage.removeItem(PENDING_BILL_PAYMENT_KEY)
+                    pendingPayment = null
 
                     modal.close()
                     renderBills()
                 } catch (error) {
                     console.error("Bill payment could not be saved:", error)
+
+                    paymentError.textContent = 
+                        `Payment could not be confirmed: ${error.message}. ` +
+                        "Your original payment details have been preserved. " +
+                        "Use the submit button to retry."
+
+                    paymentError.hidden = false
+                } finally {
+                    isSubmittingPayment = false
+
+                    if (!pendingPayment) {
+                        amountInput.disabled = false
+                        paymentDateInput.disabled = false
+                    }
                 }
             })
 
