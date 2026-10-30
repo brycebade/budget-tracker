@@ -33,6 +33,45 @@ app.get("/api/accounts", async (request, response) => {
                     accounts.opening_balance, 
                     accounts.created_at,
 
+                    COALESCE((
+                        SELECT SUM(
+                            CASE
+                                WHEN accounts.type IN ('checking', 'savings') THEN
+                                    CASE
+                                        WHEN t.type IN ('income', 'transfer_in', 'refund')
+                                            THEN t.amount
+                                        WHEN t.type IN ('expense', 'transfer_out', 'payment', 'fee')
+                                            THEN -t.amount
+                                        ELSE 0
+                                    END
+
+                                WHEN accounts.type = 'credit_card' THEN
+                                    CASE
+                                        WHEN t.type IN ('expense', 'interest', 'fee')
+                                            THEN t.amount
+                                        WHEN t.type IN ('payment', 'refund')
+                                            THEN -t.amount
+                                        ELSE 0
+                                    END
+                                
+                                WHEN accounts.type = 'loan' THEN
+                                    CASE
+                                        WHEN t.type IN ('interest', 'fee')
+                                            THEN t.amount
+                                        WHEN t.type = 'payment'
+                                            THEN -t.amount
+                                        ELSE 0
+                                    END
+
+                                ELSE 0
+                            END
+                        )
+                        FROM transactions t
+                        WHERE t.account_id = accounts.id
+                            AND t.user_id = accounts.user_id
+                    
+                    ), 0) + accounts.opening_balance AS current_balance,
+
                     account_terms.account_id AS terms_account_id,
                     account_terms.apr,
                     account_terms.credit_limit,
@@ -91,6 +130,7 @@ app.get("/api/accounts", async (request, response) => {
                 name: account.name,
                 type: account.type,
                 opening_balance: Number(account.opening_balance),
+                current_balance: Number(account.current_balance),
                 created_at: account.created_at,
                 details
             }
@@ -1236,24 +1276,28 @@ app.post("/api/bill-payments", async (request, response) => {
             const existingPayment = existingResult.rows[0]
 
             if (!existingPayment) {
-                const isSamePayment =
-                    existingPayment.payment_group_id === paymentGroupId &&
-                    existingPayment.bill_id === billId &&
-                    existingPayment.due_date === dueDate &&
-                    Number(existingPayment.amount) === paymentAmount &&
-                    existingPayment.payment_date === paymentDate
-                
-                if (!isSamePayment) {
-                    return response.status(409).json({
-                        message: "This idempotency key belongs to a different payment"
-                    })
-                }
-                
-                return response.status(200).json({
-                    ...existingPayment,
-                    amount: Number(existingPayment.amount)
+                return response.status(500).json({
+                    message: "The original payment could not be found"
                 })
-            } 
+            }
+
+            const isSamePayment =
+                existingPayment.payment_group_id === paymentGroupId &&
+                existingPayment.bill_id === billId &&
+                existingPayment.due_date === dueDate &&
+                Number(existingPayment.amount) === paymentAmount &&
+                existingPayment.payment_date === paymentDate
+            
+            if (!isSamePayment) {
+                return response.status(409).json({
+                    message: "This idempotency key belongs to a different payment"
+                })
+            }
+                
+            return response.status(200).json({
+                ...existingPayment,
+                amount: Number(existingPayment.amount)
+            }) 
         } catch (lookupError) {
                 console.error("Failed to retrieve existing bill payment:", lookupError)
                 return response.status(500).json({

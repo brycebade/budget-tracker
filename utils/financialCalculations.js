@@ -55,7 +55,7 @@ export const getTransactionBalanceChange = (account, transaction) => {
 }
 
 export const calculateCurrentBalance = (account, accountTransactions) => {
-    let balance = account.balance
+    let balance = Number(account.opening_balance)
 
     accountTransactions.forEach((transaction) => {
         balance += getTransactionBalanceChange(account, transaction)

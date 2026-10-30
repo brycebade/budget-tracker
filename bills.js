@@ -942,6 +942,21 @@ const renderBills = () => {
 
                 if (!pendingPayment) {
                     const paymentAmount = Number(amountInput.value)
+
+                    if (
+                        amountInput.value.trim() === "" ||
+                        !Number.isFinite(paymentAmount) ||
+                        paymentAmount <= 0 ||
+                        !Number.isInteger(paymentAmount * 100)
+                    ) {
+                        paymentError.textContent =
+                            "Enter a valid payment amount greater than $0, " +
+                            "with no more than two decimal places."
+
+                        paymentError.hidden = false
+                        return
+                    }
+
                     const currentBillState = getBillState(selectedBill)
                     const paymentGroupId = crypto.randomUUID()
 
@@ -960,6 +975,24 @@ const renderBills = () => {
                             }
                         ]
                     }
+
+                    const allocatedTotal = paymentAllocations.reduce(
+                        (total, allocation) => total + allocation.amount,
+                        0
+                    )
+
+                    const requestedCents = Math.round(paymentAmount * 100)
+                    const allocatedCents = Math.round(allocatedTotal * 100)
+
+                    if (paymentAllocations.length === 0 ||
+                        allocatedCents !== requestedCents) {
+                        paymentError.textContent =
+                            "The full payment amount could not be allocated. " +
+                            "Enter an amount no greater than the outstanding balance."
+
+                        paymentError.hidden = false
+                        return
+                        }
 
                     pendingPayment = {
                         paymentGroupId,
