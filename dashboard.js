@@ -21,6 +21,7 @@ const recentTransactionsContainer = document.getElementById("recentTransactionsC
 const dashboardCashBalance = document.getElementById("dashboardCashBalance")
 const dashboardBillsAmount = document.getElementById("dashboardBillsAmount")
 const dashboardBillsSubtitle = document.getElementById("dashboardBillsSubtitle")
+const dashboardUpcomingObligations = document.getElementById("dashboardUpcomingObligations")
 
 const accounts = []
 const transactions = []
@@ -170,6 +171,61 @@ const renderRecentTransactions = () => {
     })
 }
 
+const renderUpcomingObligations = (occurrences) => {
+    dashboardUpcomingObligations.innerHTML = ""
+
+    if (occurrences.length === 0) {
+        dashboardUpcomingObligations.innerHTML = `
+            <p class="p-4 text-sm text-base-content/60">
+                No unpaid obligations for this paycheck period.
+            </p>
+        `
+        return
+    }
+
+    const sortedOccurrences = [...occurrences].sort((a, b) => {
+        return a.dueDate.localeCompare(b.dueDate)
+    })
+
+    sortedOccurrences.forEach((occurrence) => {
+        const [year, month, day] = occurrence.dueDate
+            .split("-")
+            .map(Number)
+
+        const dueDate = new Date(year, month - 1, day)
+
+        const monthLabel = dueDate.toLocaleDateString("en-US", {
+            month: "short"
+        })
+
+        dashboardUpcomingObligations.innerHTML += `
+            <div class="flex items-center gap-4 border-b border-base-300 p-4">
+                <div class="w-12 shrink-0">
+                    <p class="text-xs font-medium uppercase text-base-content/50">
+                        ${monthLabel}
+                    </p>
+                    <p class="text-xl font-bold">
+                        ${day}
+                    </p>
+                </div>
+
+                <div class="min-w-0 flex-1">
+                    <p class="font-medium">
+                        ${occurrence.name}
+                    </p>
+                    <p class="mt-1 text-xs text-base-content/50">
+                        Unpaid
+                    </p>
+                </div>
+
+                <p class="shrink-0 font-semibold">
+                    ${formatCurrency(occurrence.remainingAmount)}
+                </p>
+            </div>
+        `
+    })
+}
+
 const loadDashboardData = async () => {
     try {
         const [
@@ -242,6 +298,8 @@ const loadDashboardData = async () => {
         const unpaidBillOccurrences = upcomingBillOccurrences.filter((occurrence) => {
             return occurrence.remainingAmount > 0
         })
+
+        renderUpcomingObligations(unpaidBillOccurrences)
 
         const billsBeforePayday = unpaidBillOccurrences.reduce((total, occurrence) => {
             return total + occurrence.remainingAmount
