@@ -232,5 +232,65 @@ export const getBillDueDatesBetween = (bill, startDate, endDate) => {
             dueDate = getMonthlyDueDate(year, monthIndex, bill.due_day)
         }
     }
+
+        if (bill.frequency === "weekly" || bill.frequency === "biweekly") {
+            const intervalDays = bill.frequency === "weekly" ? 7 : 14
+
+            const [year, month, day] = bill.anchor_date
+                .split("T")[0]
+                .split("-")
+                .map(Number)
+
+            let dueDate = new Date(year, month - 1, day)
+
+            while (dueDate < rangeStart) {
+                dueDate.setDate(dueDate.getDate() + intervalDays)
+            }
+
+            while (dueDate <= rangeEnd) {
+                dueDates.push(new Date(dueDate))
+
+                dueDate.setDate(dueDate.getDate() + intervalDays)
+            }
+        }
+
     return dueDates
+}
+
+export const getBillOccurrencesBetween = (bill, startDate, endDate, billPayments) => {
+    const dueDates = getBillDueDatesBetween(bill, startDate, endDate)
+    const plannedAmount = Number(
+        bill.planned_payment ??
+        bill.expected_amount ??
+        bill.minimum_payment ??
+        0
+    )
+
+    return dueDates.map((dueDate) => {
+        const year = dueDate.getFullYear()
+        const month = String(dueDate.getMonth() + 1).padStart(2, "0")
+        const day = String(dueDate.getDate()).padStart(2, "0")
+
+        const dueDateKey = `${year}-${month}-${day}`
+
+        const paidAmount = billPayments
+            .filter((payment) => {
+                return (
+                    payment.bill_id === bill.id &&
+                    payment.due_date?.split("T")[0] === dueDateKey
+                )
+            })
+            .reduce((total, payment) => {
+                return total + Number(payment.amount)
+            }, 0)
+
+            return {
+                billId: bill.id,
+                name: bill.name,
+                dueDate: dueDateKey,
+                plannedAmount,
+                paidAmount,
+                remainingAmount: Math.max(plannedAmount - paidAmount, 0)
+            }
+    })
 }

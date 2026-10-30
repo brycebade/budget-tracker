@@ -2,6 +2,9 @@ import { renderLayout } from "./components/layout.js"
 import { getAccounts } from "./api/accountsApi.js"
 import { getTransactions } from "./api/transactionsApi.js"
 import { getTransactionBalanceChange } from "./utils/financialCalculations.js"
+import { getBills } from "./api/billsApi.js"
+import { getBillPayments } from "./api/billPaymentsApi.js"
+import { getBillOccurrencesBetween } from "./utils/billCalculations.js"
 
 renderLayout({
     title: "Dashboard",
@@ -16,9 +19,13 @@ const investmentsValue = document.getElementById("investmentsValue")
 const retirementValue = document.getElementById("retirementValue")
 const recentTransactionsContainer = document.getElementById("recentTransactionsContainer")
 const dashboardCashBalance = document.getElementById("dashboardCashBalance")
+const dashboardBillsAmount = document.getElementById("dashboardBillsAmount")
+const dashboardBillsSubtitle = document.getElementById("dashboardBillsSubtitle")
 
 const accounts = []
 const transactions = []
+const bills = []
+const billPayments = []
 
 const formatCurrency = (amount) => {
     const currency = amount.toLocaleString("en-US", {
@@ -165,16 +172,48 @@ const renderRecentTransactions = () => {
 
 const loadDashboardData = async () => {
     try {
-        const [savedAccounts, savedTransactions] = await Promise.all([
+        const [
+            savedAccounts, 
+            savedTransactions,
+            savedBills,
+            savedBillPayments
+        ] = await Promise.all([
             getAccounts(),
-            getTransactions()
+            getTransactions(),
+            getBills(),
+            getBillPayments()
         ])
 
         accounts.length = 0
         transactions.length = 0
+        bills.length = 0
+        billPayments.length = 0
 
         accounts.push(...savedAccounts)
         transactions.push(...savedTransactions)
+        bills.push(...savedBills)
+        billPayments.push(...savedBillPayments)
+
+        const testStartDate = new Date(2026, 9, 30)
+        const testEndDate = new Date(2026, 10, 12)
+
+        const upcomingBillOccurrences = bills
+            .filter((bill) => bill.active === true)
+            .flatMap((bill) => {
+                return getBillOccurrencesBetween(bill, testStartDate, testEndDate, billPayments)
+            })
+
+        const unpaidBillOccurrences = upcomingBillOccurrences.filter((occurrence) => {
+            return occurrence.remainingAmount > 0
+        })
+
+        const billsBeforePayday = unpaidBillOccurrences.reduce((total, occurrence) => {
+            return total + occurrence.remainingAmount
+        }, 0)
+
+        dashboardBillsAmount.textContent = formatCurrency(billsBeforePayday)
+
+        dashboardBillsSubtitle.textContent = `${unpaidBillOccurrences.length} unpaid obligations • Through Nov 12`
 
         renderDashboard()
 
