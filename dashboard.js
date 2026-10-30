@@ -1,14 +1,12 @@
 import { renderLayout } from "./components/layout.js"
 import { getAccounts } from "./api/accountsApi.js"
 import { getTransactions } from "./api/transactionsApi.js"
-import { calculateCurrentBalance, getTransactionBalanceChange } from "./utils/financialCalculations.js"
+import { getTransactionBalanceChange } from "./utils/financialCalculations.js"
 
 renderLayout({
     title: "Dashboard",
     activePage: "dashboard"
 })
-
-// DOM REFERENCES
 
 const availableCashValue = document.getElementById("availableCashValue")
 const netWorthValue = document.getElementById("netWorthValue")
@@ -18,12 +16,8 @@ const investmentsValue = document.getElementById("investmentsValue")
 const retirementValue = document.getElementById("retirementValue")
 const recentTransactionsContainer = document.getElementById("recentTransactionsContainer")
 
-// STATE
-
 const accounts = []
 const transactions = []
-
-// HELPER FUNCTIONS
 
 const formatCurrency = (amount) => {
     const currency = amount.toLocaleString("en-US", {
@@ -46,8 +40,6 @@ const formatAccountType = (type) => {
     return accountTypeLabels[type]
 }
 
-// BUSINESS LOGIC
-
 const calculateDashboardMetrics = () => {
     const metrics = {
         availableCash: 0,
@@ -59,14 +51,7 @@ const calculateDashboardMetrics = () => {
     }
 
     accounts.forEach((account) => {
-        const accountTransactions = transactions.filter((transaction) => {
-            return transaction.account_id === account.id
-        })
-
-        const balance = calculateCurrentBalance(
-            account,
-            accountTransactions
-        )
+        const balance = Number(account.current_balance)
 
         if (account.type === "checking") {
             metrics.availableCash += balance
@@ -91,8 +76,6 @@ const calculateDashboardMetrics = () => {
 
     return metrics
 }
-
-// RENDER FUNCTIONS
 
 const renderDashboard = () => {
     const metrics = calculateDashboardMetrics()
@@ -178,10 +161,6 @@ const renderRecentTransactions = () => {
     })
 }
 
-// EVENT LISTENERS
-
-// INITIALIZATION
-
 const loadDashboardData = async () => {
     try {
         const [savedAccounts, savedTransactions] = await Promise.all([
@@ -189,14 +168,10 @@ const loadDashboardData = async () => {
             getTransactions()
         ])
 
-        const formattedAccounts = savedAccounts.map((account) => ({
-            id: account.id,
-            name: account.name,
-            type: account.type,
-            balance: Number(account.opening_balance)
-        }))
+        accounts.length = 0
+        transactions.length = 0
 
-        accounts.push(...formattedAccounts)
+        accounts.push(...savedAccounts)
         transactions.push(...savedTransactions)
 
         renderDashboard()
