@@ -15,6 +15,7 @@ const savingsValue = document.getElementById("savingsValue")
 const investmentsValue = document.getElementById("investmentsValue")
 const retirementValue = document.getElementById("retirementValue")
 const recentTransactionsContainer = document.getElementById("recentTransactionsContainer")
+const dashboardCashBalance = document.getElementById("dashboardCashBalance")
 
 const accounts = []
 const transactions = []
@@ -91,6 +92,7 @@ const renderDashboardMetrics = (metrics) => {
     investmentsValue.textContent = formatCurrency(metrics.investments)
     retirementValue.textContent = formatCurrency(metrics.retirement)
     totalDebtValue.textContent = formatCurrency(metrics.totalDebt)
+    dashboardCashBalance.textContent = formatCurrency(metrics.availableCash)
 }
 
 const renderRecentTransactions = () => {
