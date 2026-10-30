@@ -194,8 +194,44 @@ const loadDashboardData = async () => {
         bills.push(...savedBills)
         billPayments.push(...savedBillPayments)
 
-        const testStartDate = new Date(2026, 9, 30)
-        const testEndDate = new Date(2026, 10, 12)
+        const referencePayDay = new Date(2026, 9, 30)
+        const today = new Date()
+
+        referencePayDay.setHours(0, 0, 0, 0)
+        today.setHours(0, 0, 0, 0)
+
+        const millisecondsPerDay = 1000 * 60 * 60 *24
+
+        const daysSinceReference = Math.round(
+            (
+                Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) -
+                Date.UTC(
+                    referencePayDay.getFullYear(),
+                    referencePayDay.getMonth(),
+                    referencePayDay.getDate()
+                )
+            ) / millisecondsPerDay
+        )
+
+        const paycheckPeriodsPassed = Math.floor(daysSinceReference / 14)
+        const testStartDate = new Date(referencePayDay)
+
+        testStartDate.setDate(referencePayDay.getDate() + paycheckPeriodsPassed * 14)
+
+        const testEndDate = new Date(testStartDate)
+        
+        testEndDate.setDate(testStartDate.getDate() + 13)
+
+        const nextPayday = new Date(testStartDate)
+
+        nextPayday.setDate(testStartDate.getDate() + 14)
+
+        const formattedNextPayday = nextPayday.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric"
+        })
+
+        console.log("Paycheck period:", testStartDate, testEndDate)
 
         const upcomingBillOccurrences = bills
             .filter((bill) => bill.active === true)
@@ -213,7 +249,7 @@ const loadDashboardData = async () => {
 
         dashboardBillsAmount.textContent = formatCurrency(billsBeforePayday)
 
-        dashboardBillsSubtitle.textContent = `${unpaidBillOccurrences.length} unpaid obligations • Through Nov 12`
+        dashboardBillsSubtitle.textContent = `${unpaidBillOccurrences.length} unpaid obligations • Next Payday ${formattedNextPayday}`
 
         renderDashboard()
 
