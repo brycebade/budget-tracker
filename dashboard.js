@@ -5,6 +5,7 @@ import { getTransactionBalanceChange } from "./utils/financialCalculations.js"
 import { getBills } from "./api/billsApi.js"
 import { getBillPayments } from "./api/billPaymentsApi.js"
 import { getBillOccurrencesBetween } from "./utils/billCalculations.js"
+import { getPaycheckPeriod } from "./utils/paydayCalculations.js"
 
 renderLayout({
     title: "Dashboard",
@@ -254,33 +255,10 @@ const loadDashboardData = async () => {
         const today = new Date()
 
         referencePayDay.setHours(0, 0, 0, 0)
-        today.setHours(0, 0, 0, 0)
-
-        const millisecondsPerDay = 1000 * 60 * 60 *24
-
-        const daysSinceReference = Math.round(
-            (
-                Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) -
-                Date.UTC(
-                    referencePayDay.getFullYear(),
-                    referencePayDay.getMonth(),
-                    referencePayDay.getDate()
-                )
-            ) / millisecondsPerDay
-        )
-
-        const paycheckPeriodsPassed = Math.floor(daysSinceReference / 14)
-        const testStartDate = new Date(referencePayDay)
-
-        testStartDate.setDate(referencePayDay.getDate() + paycheckPeriodsPassed * 14)
-
-        const testEndDate = new Date(testStartDate)
         
-        testEndDate.setDate(testStartDate.getDate() + 13)
-
-        const nextPayday = new Date(testStartDate)
-
-        nextPayday.setDate(testStartDate.getDate() + 14)
+        const {startDate, endDate, nextPayday} = getPaycheckPeriod(referencePayDay)
+        const testStartDate = startDate
+        const testEndDate = endDate
 
         const formattedNextPayday = nextPayday.toLocaleDateString("en-US", {
             month: "short",
