@@ -199,6 +199,21 @@ const renderUpcomingObligations = (occurrences) => {
             month: "short"
         })
 
+        const bill = bills.find((bill) => {
+            return bill.id === occurrence.billId
+        })
+
+        const fundingAccount = accounts.find((account) => {
+            return account.id === bill?.funding_account_id
+        })
+
+        const category = bill?.category || "Uncategorized"
+        const fundingAccountName = fundingAccount?.name || "No funding account"
+        
+        const paymentStatus = occurrence.paidAmount > 0
+            ? "Partially paid"
+            : "Unpaid"
+
         dashboardUpcomingObligations.innerHTML += `
             <div class="flex items-center gap-4 border-b border-base-300 p-4">
                 <div class="w-12 shrink-0">
@@ -215,7 +230,7 @@ const renderUpcomingObligations = (occurrences) => {
                         ${occurrence.name}
                     </p>
                     <p class="mt-1 text-xs text-base-content/50">
-                        Unpaid
+                        ${category} · ${fundingAccountName} · ${paymentStatus}
                     </p>
                 </div>
 
@@ -264,8 +279,6 @@ const loadDashboardData = async () => {
             month: "short",
             day: "numeric"
         })
-
-        console.log("Paycheck period:", testStartDate, testEndDate)
 
         const upcomingBillOccurrences = bills
             .filter((bill) => bill.active === true)
