@@ -366,6 +366,7 @@ app.get("/api/transactions", async (request, response) => {
                 SELECT
                     id,
                     account_id,
+                    bill_payments_id,
                     description,
                     amount,
                     type,

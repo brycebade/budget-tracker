@@ -275,13 +275,12 @@ const loadDashboardData = async () => {
         transactions.push(...savedTransactions)
 
         console.table(
-            transactions.slice(0, 10).map((transaction) => ({
-                date: transaction.transaction_date,
+            transactions.map((transaction) => ({
                 description: transaction.description,
+                accountId: transaction.account_id,
                 type: transaction.type,
-                category: transaction.category,
                 amount: transaction.amount,
-                accountId: transaction.account_id
+                billPaymentId: transaction.bill_payments_id               
             }))
         )
 
