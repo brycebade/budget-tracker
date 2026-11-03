@@ -173,14 +173,15 @@ const renderRecentTransactions = () => {
 }
 
 const renderUpcomingObligations = (occurrences) => {
-    dashboardUpcomingObligations.innerHTML = ""
+    dashboardUpcomingObligations.replaceChildren()
 
     if (occurrences.length === 0) {
-        dashboardUpcomingObligations.innerHTML = `
-            <p class="p-4 text-sm text-base-content/60">
-                No unpaid obligations for this paycheck period.
-            </p>
-        `
+        const message = document.createElement("p")
+
+        message.className = "p-4 text-sm text-base-content/60"
+        message.textContent = "No upcoming unpaid obligations."
+
+        dashboardUpcomingObligations.appendChild(message)
         return
     }
 
@@ -189,6 +190,19 @@ const renderUpcomingObligations = (occurrences) => {
     })
 
     sortedOccurrences.forEach((occurrence) => {
+        const bill = bills.find((bill) => bill.id === occurrence.billId)
+
+        const fundingAccount = accounts.find((account) => {
+            return account.id === bill?.funding_account_id
+        })
+
+        const category = bill?.category || "Uncategorized"
+        const fundingAccountName = fundingAccount?.name || "No funding account"
+
+        const paymentStatus = occurrence.paidAmount > 0
+            ? "Partially paid"
+            : "Unpaid"
+
         const [year, month, day] = occurrence.dueDate
             .split("-")
             .map(Number)
@@ -199,46 +213,42 @@ const renderUpcomingObligations = (occurrences) => {
             month: "short"
         })
 
-        const bill = bills.find((bill) => {
-            return bill.id === occurrence.billId
-        })
+        const row = document.createElement("div")
+        row.className = "flex items-center gap-4 border-b border-base-300 p-4"
 
-        const fundingAccount = accounts.find((account) => {
-            return account.id === bill?.funding_account_id
-        })
+        const dateContainer = document.createElement("div")
+        dateContainer.className = "w-12 shrink-0"
 
-        const category = bill?.category || "Uncategorized"
-        const fundingAccountName = fundingAccount?.name || "No funding account"
-        
-        const paymentStatus = occurrence.paidAmount > 0
-            ? "Partially paid"
-            : "Unpaid"
+        const monthElement = document.createElement("p")
+        monthElement.className = "text-xs font-medium uppercase text-base-content/50"
+        monthElement.textContent = monthLabel
 
-        dashboardUpcomingObligations.innerHTML += `
-            <div class="flex items-center gap-4 border-b border-base-300 p-4">
-                <div class="w-12 shrink-0">
-                    <p class="text-xs font-medium uppercase text-base-content/50">
-                        ${monthLabel}
-                    </p>
-                    <p class="text-xl font-bold">
-                        ${day}
-                    </p>
-                </div>
+        const dayElement = document.createElement("p")
+        dayElement.className = "text-xl font-bold"
+        dayElement.textContent = day
 
-                <div class="min-w-0 flex-1">
-                    <p class="font-medium">
-                        ${occurrence.name}
-                    </p>
-                    <p class="mt-1 text-xs text-base-content/50">
-                        ${category} · ${fundingAccountName} · ${paymentStatus}
-                    </p>
-                </div>
+        dateContainer.append(monthElement, dayElement)
 
-                <p class="shrink-0 font-semibold">
-                    ${formatCurrency(occurrence.remainingAmount)}
-                </p>
-            </div>
-        `
+        const detailsContainer = document.createElement("div")
+        detailsContainer.className = "min-w-0 flex-1"
+
+        const nameElement = document.createElement("p")
+        nameElement.className = "font-medium"
+        nameElement.textContent = occurrence.name
+
+        const detailsElement = document.createElement("p")
+        detailsElement.className = "mt-1 text-xs text-base-content/50"
+        detailsElement.textContent = `${category} · ${fundingAccountName} · ${paymentStatus}`
+
+        detailsContainer.append(nameElement, detailsElement)
+
+        const amountElement = document.createElement("p")
+        amountElement.className = "shrink-0 font-semibold"
+        amountElement.textContent = formatCurrency(occurrence.remainingAmount)
+
+        row.append(dateContainer, detailsContainer, amountElement)
+
+        dashboardUpcomingObligations.appendChild(row)
     })
 }
 
@@ -263,6 +273,18 @@ const loadDashboardData = async () => {
 
         accounts.push(...savedAccounts)
         transactions.push(...savedTransactions)
+
+        console.table(
+            transactions.slice(0, 10).map((transaction) => ({
+                date: transaction.transaction_date,
+                description: transaction.description,
+                type: transaction.type,
+                category: transaction.category,
+                amount: transaction.amount,
+                accountId: transaction.account_id
+            }))
+        )
+
         bills.push(...savedBills)
         billPayments.push(...savedBillPayments)
 
@@ -286,11 +308,27 @@ const loadDashboardData = async () => {
                 return getBillOccurrencesBetween(bill, testStartDate, testEndDate, billPayments)
             })
 
+        const upcomingWindowEnd = new Date()
+        upcomingWindowEnd.setHours(0, 0, 0, 0)
+        upcomingWindowEnd.setDate(upcomingWindowEnd.getDate() + 30)
+
+        const upcomingWindowStart = new Date()
+        upcomingWindowStart.setHours(0, 0, 0, 0)
+
+        const nextUpcomingOccurrences = bills
+            .filter((bill) => bill.active === true)
+            .flatMap((bill) => {
+                return getBillOccurrencesBetween(bill, upcomingWindowStart, upcomingWindowEnd, billPayments)
+            })
+            .filter((occurrence) => occurrence.remainingAmount > 0)
+            .sort((a, b) => a.dueDate.localeCompare(b.dueDate))
+            .slice(0, 5)
+
         const unpaidBillOccurrences = upcomingBillOccurrences.filter((occurrence) => {
             return occurrence.remainingAmount > 0
         })
 
-        renderUpcomingObligations(unpaidBillOccurrences)
+        renderUpcomingObligations(nextUpcomingOccurrences)
 
         const billsBeforePayday = unpaidBillOccurrences.reduce((total, occurrence) => {
             return total + occurrence.remainingAmount
