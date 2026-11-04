@@ -87,6 +87,115 @@ const calculateDashboardMetrics = () => {
     return metrics
 }
 
+const calculateMoneyFlow = (
+    transactions, 
+    accounts,
+    bills,
+    billPayments,
+    startDate, 
+    endDate
+) => {
+    const accountMap = new Map(
+        accounts.map((account) => [account.id, account])
+    )
+
+    const billMap = new Map(
+        bills.map((bill) => [bill.id, bill])
+    )
+
+    const billPaymentMap = new Map(
+        billPayments.map((payment) => [payment.id, payment])
+    )
+
+    const moneyFlow = {
+        income: 0,
+        purchases: 0,
+        billSpending: 0,
+        unclassifiedPayments: 0,
+        debtRepayments: 0
+    }
+
+    transactions.forEach((transaction) => {
+        const transactionDate = transaction.transaction_date
+
+        if(transaction.description === "Audible") {
+            console.log("Audible transaction:", transaction)
+            console.log("Reporting start:", startDate)
+            console.log("Reporting end:", endDate)
+            console.log("Within reporting period:", 
+                transactionDate >= startDate &&
+                transactionDate <= endDate
+            )
+        }
+
+        if (
+            transactionDate < startDate ||
+            transactionDate > endDate
+        ) {
+            return
+        }
+
+        const account = accountMap.get(transaction.account_id)
+
+        if (!account) {
+            return
+        }
+
+        const amount = Number(transaction.amount)
+
+        if (
+            transaction.type === "income" &&
+            (account.type === "checking" || account.type === "savings")
+        ) {
+            moneyFlow.income += amount
+        }
+
+        if (
+            transaction.type === "expense" &&
+            (
+                account.type === "checking" ||
+                account.type === "savings" ||
+                account.type === "credit_card"
+            )
+        ) {
+            moneyFlow.purchases += amount
+        }
+
+        if (
+            transaction.type === "payment" &&
+            (
+                account.type === "checking" ||
+                account.type === "savings"
+            )
+        ) {
+            const billPayment = billPaymentMap.get(
+                transaction.bill_payments_id
+            )
+
+            const bill = billPayment
+                ? billMap.get(billPayment.bill_id)
+                : null
+
+            if (billPayment && bill) {
+                const linkedAccount = accountMap.get(
+                    bill.linked_account_id
+                )
+
+                if (
+                    linkedAccount?.type === "credit_card" ||
+                    linkedAccount?.type === "loan"
+                ) {
+                    moneyFlow.debtRepayments += amount
+                }
+            } else {
+                moneyFlow.unclassifiedPayments += amount
+            }
+        }
+    })
+
+    return moneyFlow
+}
+
 const renderDashboard = () => {
     const metrics = calculateDashboardMetrics()
 
@@ -273,19 +382,23 @@ const loadDashboardData = async () => {
 
         accounts.push(...savedAccounts)
         transactions.push(...savedTransactions)
-
-        console.table(
-            transactions.map((transaction) => ({
-                description: transaction.description,
-                accountId: transaction.account_id,
-                type: transaction.type,
-                amount: transaction.amount,
-                billPaymentId: transaction.bill_payments_id               
-            }))
-        )
-
         bills.push(...savedBills)
         billPayments.push(...savedBillPayments)
+
+        console.log("Transactions loaded:", transactions.length)
+        console.log("Accounts Loaded:", accounts.length)
+        console.log("Bills loaded:", bills.length)
+        console.log("Bill payments loaded:", billPayments.length)
+
+        const moneyFlowTest = calculateMoneyFlow(
+            transactions, 
+            accounts, 
+            bills,
+            billPayments,
+            "2026-10-01", 
+            "2026-10-31")
+
+        console.log("Money Flow Tests:", moneyFlowTest)
 
         const referencePayDay = new Date(2026, 9, 30)
         const today = new Date()
