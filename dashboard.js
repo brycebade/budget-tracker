@@ -23,6 +23,7 @@ const dashboardCashBalance = document.getElementById("dashboardCashBalance")
 const dashboardBillsAmount = document.getElementById("dashboardBillsAmount")
 const dashboardBillsSubtitle = document.getElementById("dashboardBillsSubtitle")
 const dashboardUpcomingObligations = document.getElementById("dashboardUpcomingObligations")
+const dashboardMonthlyIncome = document.getElementById("dashboardMonthlyIncome")
 
 const accounts = []
 const transactions = []
@@ -118,16 +119,6 @@ const calculateMoneyFlow = (
     transactions.forEach((transaction) => {
         const transactionDate = transaction.transaction_date
 
-        if(transaction.description === "Audible") {
-            console.log("Audible transaction:", transaction)
-            console.log("Reporting start:", startDate)
-            console.log("Reporting end:", endDate)
-            console.log("Within reporting period:", 
-                transactionDate >= startDate &&
-                transactionDate <= endDate
-            )
-        }
-
         if (
             transactionDate < startDate ||
             transactionDate > endDate
@@ -176,12 +167,6 @@ const calculateMoneyFlow = (
                 ? billMap.get(billPayment.bill_id)
                 : null
 
-            if (transaction.description === "Audible") {
-                console.log("Bill found:", bill)
-                console.log("Linked account ID:", bill?.linked_account_id)
-                console.log("Audible bill exists:", billMap.has(billPayment?.bill_id))
-            }
-
             if (billPayment && bill) {
                 const linkedAccount = accountMap.get(
                     bill.linked_account_id
@@ -194,7 +179,6 @@ const calculateMoneyFlow = (
                     moneyFlow.debtRepayments += amount
                 } else {
                     moneyFlow.billSpending += amount
-                    console.log("Bill spending updated:", moneyFlow.billSpending)
                 }
             } else {
                 moneyFlow.unclassifiedPayments += amount
@@ -394,11 +378,6 @@ const loadDashboardData = async () => {
         bills.push(...savedBills)
         billPayments.push(...savedBillPayments)
 
-        console.log("Transactions loaded:", transactions.length)
-        console.log("Accounts Loaded:", accounts.length)
-        console.log("Bills loaded:", bills.length)
-        console.log("Bill payments loaded:", billPayments.length)
-
         const referencePayDay = new Date(2026, 9, 30)
         const today = new Date()
 
@@ -427,6 +406,8 @@ const loadDashboardData = async () => {
             billPayments,
             currentMonthStart, 
             currentMonthEnd)
+
+        dashboardMonthlyIncome.textContent = formatCurrency(moneyFlowTest.income)
 
         console.log("Money Flow Period:", currentMonthStart, currentMonthEnd)
 
