@@ -176,6 +176,12 @@ const calculateMoneyFlow = (
                 ? billMap.get(billPayment.bill_id)
                 : null
 
+            if (transaction.description === "Audible") {
+                console.log("Bill found:", bill)
+                console.log("Linked account ID:", bill?.linked_account_id)
+                console.log("Audible bill exists:", billMap.has(billPayment?.bill_id))
+            }
+
             if (billPayment && bill) {
                 const linkedAccount = accountMap.get(
                     bill.linked_account_id
@@ -186,6 +192,9 @@ const calculateMoneyFlow = (
                     linkedAccount?.type === "loan"
                 ) {
                     moneyFlow.debtRepayments += amount
+                } else {
+                    moneyFlow.billSpending += amount
+                    console.log("Bill spending updated:", moneyFlow.billSpending)
                 }
             } else {
                 moneyFlow.unclassifiedPayments += amount
@@ -390,18 +399,46 @@ const loadDashboardData = async () => {
         console.log("Bills loaded:", bills.length)
         console.log("Bill payments loaded:", billPayments.length)
 
+        const referencePayDay = new Date(2026, 9, 30)
+        const today = new Date()
+
+        const currentMonthStart = [
+            today.getFullYear(),
+            String(today.getMonth() + 1).padStart(2, "0"),
+            "01"
+        ].join("-")
+
+        const lastDayOfMonth = new Date(
+            today.getFullYear(),
+            today.getMonth() + 1,
+            0
+        ).getDate()
+
+        const currentMonthEnd = [
+            today.getFullYear(),
+            String(today.getMonth() + 1).padStart(2, "0"),
+            String(lastDayOfMonth).padStart(2, "0")
+        ].join("-")
+
         const moneyFlowTest = calculateMoneyFlow(
             transactions, 
             accounts, 
             bills,
             billPayments,
-            "2026-10-01", 
-            "2026-10-31")
+            currentMonthStart, 
+            currentMonthEnd)
+
+        console.log("Money Flow Period:", currentMonthStart, currentMonthEnd)
+
+        console.log("Transactions in period:", transactions.filter((transaction) => {
+            return (
+                transaction.transation_date >= currentMonthStart &&
+                transaction.transaction_date <= currentMonthEnd
+            )
+        }).length
+    )
 
         console.log("Money Flow Tests:", moneyFlowTest)
-
-        const referencePayDay = new Date(2026, 9, 30)
-        const today = new Date()
 
         referencePayDay.setHours(0, 0, 0, 0)
         
