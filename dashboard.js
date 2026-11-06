@@ -24,6 +24,7 @@ const dashboardBillsAmount = document.getElementById("dashboardBillsAmount")
 const dashboardBillsSubtitle = document.getElementById("dashboardBillsSubtitle")
 const dashboardUpcomingObligations = document.getElementById("dashboardUpcomingObligations")
 const dashboardMonthlyIncome = document.getElementById("dashboardMonthlyIncome")
+const dashboardMoneyFlowCategories = document.getElementById("dashboardMoneyFlowCategories")
 
 const accounts = []
 const transactions = []
@@ -354,6 +355,61 @@ const renderUpcomingObligations = (occurrences) => {
     })
 }
 
+const renderMoneyFlowCategories = (moneyFlow) => {
+    dashboardMoneyFlowCategories.replaceChildren()
+
+    const categories = [
+        { name: "Purchases", amount: moneyFlow.purchases },
+        { name: "Bills", amount: moneyFlow.billSpending },
+        { name: "Debt Repayments", amount: moneyFlow.debtRepayments },
+        { name: "Unclassified Payments", amount: moneyFlow.unclassifiedPayments }
+    ]
+
+    const totalOutflow = categories.reduce((total, category) => {
+        return total + category.amount
+    }, 0)
+
+    if (totalOutflow === 0) {
+        const message = document.createElement("p")
+
+        message.className = "text-sm text-base-content/60"
+        message.textContent = "No recorded outflows for this period."
+
+        dashboardMoneyFlowCategories.appendChild(message)
+        return
+    }
+
+    categories
+        .filter((category) => category.amount > 0)
+        .forEach((category) => {
+            const percentage = (category.amount / totalOutflow) * 100
+
+            const wrapper = document.createElement("div")
+            const header = document.createElement("div")
+            const nameElement = document.createElement("span")
+            const amountElement = document.createElement("span")
+            const progressTrack = document.createElement("div")
+            const progressBar = document.createElement("div")
+
+
+            header.className = "mb-1 flex items-center justify-between gap-4"
+            nameElement.className = "text-sm font-medium"
+            amountElement.className = "text-sm text-base-content/70"
+            progressTrack.className = "h-2 w-full rounded-full bg-base-300"
+            progressBar.className = "h-2 rounded-full bg-accent"
+
+            nameElement.textContent = category.name
+            amountElement.textContent = formatCurrency(category.amount)
+
+            progressBar.style.width = `${percentage}%`
+
+            header.append(nameElement, amountElement)
+            progressTrack.appendChild(progressBar)
+            wrapper.append(header, progressTrack)
+            dashboardMoneyFlowCategories.appendChild(wrapper)    
+        })
+    }
+
 const loadDashboardData = async () => {
     try {
         const [
@@ -405,7 +461,12 @@ const loadDashboardData = async () => {
             bills,
             billPayments,
             currentMonthStart, 
-            currentMonthEnd)
+            currentMonthEnd
+        )
+
+        renderMoneyFlowCategories(moneyFlowTest)
+
+        console.log("Money Flow categories container:", dashboardMoneyFlowCategories)
 
         dashboardMonthlyIncome.textContent = formatCurrency(moneyFlowTest.income)
 
