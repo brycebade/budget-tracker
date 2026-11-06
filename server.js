@@ -1521,6 +1521,37 @@ app.put("/api/income-sources/:id", async (request, response) => {
     }
 })
 
+app.put("/api/income-sources/:id/deactivate", async (request, response) => {
+    const { id } = request.params
+
+    try {
+        const result = await pool.query(
+            `
+                UPDATE income_sources
+                SET active = false
+                WHERE id = $1
+                    AND user_id = $2
+                RETURNING *
+            `,
+            [id, TEMP_USER_ID]
+        )
+
+        if (result.rows.length === 0) {
+            return response.status(404).json({
+                message: "Income source not found"
+            })
+        }
+
+        response.json(result.rows[0])
+    } catch (error) {
+        console.error("Failed to deactivate income source:", error)
+
+        response.status(500).json({
+            message: "Failed to deactivate income source"
+        })
+    }
+})
+
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running at http://localhost:${PORT}`)
 })
