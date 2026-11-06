@@ -25,6 +25,8 @@ const dashboardBillsSubtitle = document.getElementById("dashboardBillsSubtitle")
 const dashboardUpcomingObligations = document.getElementById("dashboardUpcomingObligations")
 const dashboardMonthlyIncome = document.getElementById("dashboardMonthlyIncome")
 const dashboardMoneyFlowCategories = document.getElementById("dashboardMoneyFlowCategories")
+const dashboardMoneyFlowRemaining = document.getElementById("dashboardMoneyFlowRemaining")
+const dashboardMoneyFlowRemainingPercent = document.getElementById("dashboardMoneyFlowRemainingPercent")
 
 const accounts = []
 const transactions = []
@@ -466,21 +468,26 @@ const loadDashboardData = async () => {
 
         renderMoneyFlowCategories(moneyFlowTest)
 
-        console.log("Money Flow categories container:", dashboardMoneyFlowCategories)
+        const totalRecordedOutflows = 
+            moneyFlowTest.purchases +
+            moneyFlowTest.billSpending +
+            moneyFlowTest.debtRepayments +
+            moneyFlowTest.unclassifiedPayments
+
+        const moneyFlowRemaining = moneyFlowTest.income - totalRecordedOutflows
+
+        const remainingPercentage = 
+            moneyFlowTest.income > 0
+                ? (moneyFlowRemaining / moneyFlowTest.income) * 100
+                : null
+
+        dashboardMoneyFlowRemaining.textContent = formatCurrency(moneyFlowRemaining)
+        dashboardMoneyFlowRemainingPercent.textContent = 
+            remainingPercentage === null
+                ? "No recorded income"
+                : `${remainingPercentage.toFixed(1)}% of income`
 
         dashboardMonthlyIncome.textContent = formatCurrency(moneyFlowTest.income)
-
-        console.log("Money Flow Period:", currentMonthStart, currentMonthEnd)
-
-        console.log("Transactions in period:", transactions.filter((transaction) => {
-            return (
-                transaction.transation_date >= currentMonthStart &&
-                transaction.transaction_date <= currentMonthEnd
-            )
-        }).length
-    )
-
-        console.log("Money Flow Tests:", moneyFlowTest)
 
         referencePayDay.setHours(0, 0, 0, 0)
         
