@@ -1,5 +1,11 @@
 import { renderLayout } from "./components/layout.js"
-import { getIncomeSources, createIncomeSource, updateIncomeSource } from "./api/incomeSourcesApi.js"
+import { 
+    getIncomeSources,
+    createIncomeSource,
+    updateIncomeSource,
+    deactivateIncomeSources,
+    reactivateIncomeSource
+} from "./api/incomeSourcesApi.js"
 import { renderIncomeSourceModal } from "./incomeSourceModal.js"
 import { getAccounts } from "./api/accountsApi.js"
 
@@ -11,14 +17,28 @@ renderLayout({
 
 const incomeSourcesContainer = document.getElementById("incomeSourcesContainer")
 const actionButton = document.getElementById("pageActionButton")
+const toggleInactiveIncomeButton = document.getElementById("toggleInactiveIncomeButton")
 
 const incomeSources = []
 const accounts = []
+let showingInactiveIncomeSources = false
 
 const renderIncomeSources = () => {
     incomeSourcesContainer.innerHTML = ""
 
-    if (incomeSources.length === 0) {
+    const activeIncomeSources = incomeSources.filter((source) => {
+        return source.active === true
+    })
+
+    const inactiveIncomeSources = incomeSources.filter((source) => {
+        return source.active === false
+    })
+
+    const incomeSourcesToDisplay = showingInactiveIncomeSources
+        ? inactiveIncomeSources
+        : activeIncomeSources
+
+    if (incomeSourcesToDisplay.length === 0) {
         incomeSourcesContainer.innerHTML = `
             <div class="card bg-base-100 border border-base-300">
                 <div class="card-body">
@@ -32,7 +52,7 @@ const renderIncomeSources = () => {
         return
     }
 
-    incomeSources.forEach((incomeSource) => {
+    incomeSourcesToDisplay.forEach((incomeSource) => {
         incomeSourcesContainer.innerHTML += `
             <div class="card bg-base-100 border border-base-300">
                 <div class="card-body">
@@ -47,12 +67,34 @@ const renderIncomeSources = () => {
                     <p class="capitalize text-base-content/70">
                         ${incomeSource.frequency}
                     </p>
-                    <button
-                        class="btn btn-sm btn-outline mt-3 self-start editIncomeSourceButton"
-                        data-income-id="${incomeSource.id}"
-                    >
-                        Edit Income Source
-                    </button>
+                    <div class="flex flex-wrap gap-2 mt-3">
+                        ${
+                            incomeSource.active
+                                ? `
+                                    <button
+                                        class="btn btn-sm btn-outline editIncomeSourceButton"
+                                        data-income-id="${incomeSource.id}"
+                                    >
+                                        Edit Income Source
+                                    </button>
+
+                                    <button
+                                        class="btn btn-sm btn-outline deactivateIncomeSourceButton"
+                                        data-income-id="${incomeSource.id}"
+                                    >
+                                        Deactivate
+                                    </button>
+                                `
+                                : `
+                                    <button
+                                        class="btn btn-sm btn-outline reactivateIncomeSourceButton"
+                                        data-income-id="${incomeSource.id}"
+                                    >
+                                        Reactivate
+                                    </button>
+                                `
+                        }
+                    </div>
                 </div>
             </div>
         `
@@ -174,6 +216,17 @@ const openIncomeSourceModal = (incomeSource = null) => {
     modal.showModal()
 }
 
+toggleInactiveIncomeButton.addEventListener("click", () => {
+    showingInactiveIncomeSources = !showingInactiveIncomeSources
+
+    toggleInactiveIncomeButton.textContent =
+        showingInactiveIncomeSources
+            ? "View Active Income Sources"
+            : "View Inactive Income Sources"
+
+    renderIncomeSources()
+})
+
 incomeSourcesContainer.addEventListener("click", (event) => {
     const editButton = event.target.closest(".editIncomeSourceButton")
 
@@ -192,6 +245,57 @@ incomeSourcesContainer.addEventListener("click", (event) => {
     }
 
     openIncomeSourceModal(selectedIncomeSource)
+})
+
+incomeSourcesContainer.addEventListener("click", async (event) => {
+    const button = event.target.closest(
+        ".deactivateIncomeSourceButton, .reactivateIncomeSourceButton"
+    )
+
+    if (!button) {
+        return
+    }
+
+    const incomeSourceId = button.dataset.incomeId
+
+    const incomeSourceIndex = incomeSources.findIndex((source) => {
+        return source.id === incomeSourceId
+    })
+
+    if (incomeSourceIndex === -1) {
+        return
+    }
+
+    const isDeactivating = button.classList.contains("deactivateIncomeSourceButton")
+
+    if (isDeactivating) {
+        const confirmed = window.confirm(
+            `Deactivate ${incomeSources[incomeSourceIndex].name}?`
+        )
+
+        if (!confirmed) {
+            return
+        }
+    }
+
+    button.disabled = true
+
+    try {
+        let updatedIncomeSource
+
+        if (isDeactivating) {
+            updatedIncomeSource = await deactivateIncomeSources(incomeSourceId)
+        } else {
+            updatedIncomeSource = await reactivateIncomeSource(incomeSourceId)
+        }
+
+        incomeSources[incomeSourceIndex] = updatedIncomeSource
+
+        renderIncomeSources()
+    } catch (error) {
+        button.disabled = false
+        console.error("Income source status could not be updated:", error)
+    }
 })
 
 actionButton.addEventListener("click", () => {

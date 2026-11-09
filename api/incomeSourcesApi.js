@@ -29,6 +29,36 @@ export const updateIncomeSource = async (id, incomeSourceData) => {
     return response.json()
 }
 
+export const deactivateIncomeSources = async (id) => {
+    const response = await fetch(
+        `${INCOME_SOURCES_URL}/${id}/deactivate`,
+        {
+            method: "PUT"
+        }
+    )
+
+    if (!response.ok) {
+        throw new Error("Failed to deactivate income source")
+    }
+
+    return response.json()
+}
+
+export const reactivateIncomeSource = async (id) => {
+    const response = await fetch(
+        `${INCOME_SOURCES_URL}/${id}/reactivate`,
+        {
+            method: "PUT"
+        }
+    )
+
+    if (!response.ok) {
+        throw new Error("Failed to reactivate income source")
+    }
+
+    return response.json()
+}
+
 export const createIncomeSource = async (incomeSourceData) => {
     const response = await fetch(INCOME_SOURCES_URL, {
         method: "POST",
