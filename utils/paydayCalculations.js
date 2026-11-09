@@ -35,3 +35,77 @@ export const getPaycheckPeriod = (referencePayday, referenceDate = new Date()) =
 
     return {startDate, endDate, nextPayday}
 }
+
+export const getNextPayday = (incomeSource, referenceDate = new Date()) => {
+    const today = new Date(referenceDate)
+    today.setHours(0, 0, 0, 0)
+
+    if(incomeSource.frequency === "monthly") {
+        const payDay = Number(incomeSource.pay_day_1)
+
+        if (
+            !Number.isInteger(payDay) ||
+            payDay < 1 ||
+            payDay > 31
+        ) {
+            return null
+        }
+
+        const getMonthlyPayday = (year, monthIndex) => {
+            const lastDayOfMonth = new Date(
+                year,
+                monthIndex + 1,
+                0
+            ).getDate()
+
+            const actualPayDay = Math.min(payDay, lastDayOfMonth)
+
+            return new Date(year, monthIndex, actualPayDay)
+        }
+
+        let nextPayday = getMonthlyPayday(
+            today.getFullYear(),
+            today.getMonth()
+        )
+
+        if (nextPayday < today) {
+            nextPayday = getMonthlyPayday(
+                today.getFullYear(),
+                today.getMonth() + 1
+            )
+        }
+
+        return nextPayday
+    }
+
+    if (
+        incomeSource.frequency !== "weekly" &&
+        incomeSource.frequency !== "biweekly"
+    ) {
+        return null
+    }
+
+    const anchorDate = incomeSource.anchor_date?.split("T")[0]
+
+    if (!anchorDate) {
+        return null
+    }
+
+    const payday = new Date(`${anchorDate}T00:00:00`)
+
+    if (incomeSource.frequency === "weekly") {
+        while (payday < today) {
+            payday.setDate(payday.getDate() + 7)
+        }
+
+        return payday
+    }
+
+    const paycheckPeriod = getPaycheckPeriod(payday, today)
+
+    if(paycheckPeriod.startDate.getTime() === today.getTime()) {
+        return paycheckPeriod.startDate
+    }
+
+    return paycheckPeriod.nextPayday
+}
