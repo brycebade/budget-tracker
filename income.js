@@ -84,7 +84,7 @@ const renderIncomeSources = () => {
                             ${nexPaydayText}
                         </span>
                     </p>
-                    
+
                     <div class="flex flex-wrap gap-2 mt-3">
                         ${
                             incomeSource.active
@@ -149,6 +149,23 @@ const openIncomeSourceModal = (incomeSource = null) => {
     const payDay2Input = document.getElementById("incomePayDay2")
     const form = document.getElementById("incomeSourceForm")
     const depositAccountSelect = document.getElementById("incomeDepositAccount")
+    const payTypeSelect = document.getElementById("incomePayType")
+    const hourlyFields = document.getElementById("incomeHourlyFields")
+    const hourlyRateInput = document.getElementById("incomeHourlyRate")
+    const overtimeMultiplierInput = document.getElementById("incomeOvertimeMultiplier")
+
+    const updatePayTypeFields = () => {
+        const isHourly = payTypeSelect.value === "hourly"
+
+        hourlyFields.hidden = !isHourly
+
+        hourlyRateInput.required = isHourly
+        overtimeMultiplierInput.required = isHourly
+    }
+
+    payTypeSelect.addEventListener("change", updatePayTypeFields)
+
+    updatePayTypeFields()
 
     accounts.forEach((account) => {
         if (
@@ -191,10 +208,13 @@ const openIncomeSourceModal = (incomeSource = null) => {
         event.preventDefault()
 
         const frequency = frequencySelect.value
+        const isHourly = payTypeSelect.value === "hourly"
 
         const incomeSourceData = {
             name: document.getElementById("incomeName").value.trim(),
             payType: document.getElementById("incomePayType").value,
+            hourlyRate: isHourly ? Number(hourlyRateInput.value) : null,
+            overtimeMultiplier: isHourly ? Number(overtimeMultiplierInput.value) : 1.50,
             frequency: frequency,
 
             anchorDate: frequency === "weekly" || frequency === "biweekly" ? anchorDateInput.value : null,

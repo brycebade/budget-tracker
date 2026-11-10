@@ -37,6 +37,32 @@ export const renderIncomeSourceModal = (incomeSource = null) => {
                             </select>
                         </div>
 
+                        <div id="incomeHourlyFields" class="space-y-4" hidden>
+                            <div>
+                                <label class="label">Hourly Rate</label>
+                                <input
+                                    id="incomeHourlyRate"
+                                    type="number"
+                                    min="0.01"
+                                    step="0.01"
+                                    placeholder="0.00"
+                                    class="input input-bordered w-full"
+                                />
+                            </div>
+
+                            <div>
+                                <label class="label">Overtime Multiplier</label>
+                                <input
+                                    id="incomeOvertimeMultiplier"
+                                    type="number"
+                                    min="0.01"
+                                    step="0.01"
+                                    value="1.50"
+                                    class="input input-bordered w-full"
+                                />
+                            </div>
+                        </div>
+
                         <div>
                             <label class="label">Pay Frequency</label>
                             <select
@@ -119,6 +145,8 @@ export const renderIncomeSourceModal = (incomeSource = null) => {
             document.getElementById("incomeAnchorDate").value = incomeSource.anchor_date?.split("T")[0] ?? ""
             document.getElementById("incomePayDay1").value = incomeSource.pay_day_1 ?? ""
             document.getElementById("incomePayDay2").value = incomeSource.pay_day_2 ?? ""
+            document.getElementById("incomeHourlyRate").value = incomeSource.hourly_rate ?? ""
+            document.getElementById("incomeOvertimeMultiplier").value = incomeSource.overtime_multiplier ?? "1.50"
         }
 
         return modal

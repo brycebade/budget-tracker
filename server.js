@@ -1318,6 +1318,8 @@ app.post("/api/income-sources", async (request, response) => {
     const {
         name,
         payType,
+        hourlyRate,
+        overtimeMultiplier,
         frequency,
         anchorDate,
         payDay1,
@@ -1359,13 +1361,17 @@ app.post("/api/income-sources", async (request, response) => {
                     anchor_date,
                     pay_day_1,
                     pay_day_2,
-                    deposit_account_id    
+                    deposit_account_id,
+                    hourly_rate,
+                    overtime_multiplier   
                 )
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
                 RETURNING
                     id,
                     name,
                     pay_type,
+                    hourly_rate,
+                    overtime_multiplier,
                     frequency,
                     anchor_date,
                     pay_day_1,
@@ -1382,7 +1388,9 @@ app.post("/api/income-sources", async (request, response) => {
                 anchorDate ?? null,
                 payDay1 ?? null,
                 payDay2 ?? null,
-                depositAccountId ?? null
+                depositAccountId ?? null,
+                hourlyRate ?? null,
+                overtimeMultiplier ?? 1.50
             ]
         )
 
@@ -1404,6 +1412,8 @@ app.get("/api/income-sources", async (request, response) => {
                     id,
                     name,
                     pay_type,
+                    hourly_rate,
+                    overtime_multiplier,
                     frequency,
                     anchor_date,
                     pay_day_1,
@@ -1436,6 +1446,8 @@ app.put("/api/income-sources/:id", async (request, response) => {
     const {
         name,
         payType,
+        hourlyRate,
+        overtimeMultiplier,
         frequency,
         anchorDate,
         payDay1,
@@ -1471,7 +1483,7 @@ app.put("/api/income-sources/:id", async (request, response) => {
             payDay1 === payDay2
         ))
     ) {
-        return reponse.status(400).json({
+        return response.status(400).json({
             message: "Invalid income source information"
         })
     }
@@ -1487,9 +1499,11 @@ app.put("/api/income-sources/:id", async (request, response) => {
                     anchor_date = $4,
                     pay_day_1 = $5,
                     pay_day_2 = $6,
-                    deposit_account_id = $7
-                WHERE id = $8
-                    AND user_id = $9
+                    deposit_account_id = $7,
+                    hourly_rate = $8,
+                    overtime_multiplier = $9
+                WHERE id = $10
+                    AND user_id = $11
                 RETURNING *
             `,
             [
@@ -1500,6 +1514,8 @@ app.put("/api/income-sources/:id", async (request, response) => {
                 usesPayDay1 ? payDay1 : null,
                 usesPayDay2 ? payDay2 : null,
                 depositAccountId || null,
+                hourlyRate ?? null,
+                overtimeMultiplier ?? 1.50,
                 id,
                 TEMP_USER_ID
             ]
