@@ -78,6 +78,45 @@ export const getNextPayday = (incomeSource, referenceDate = new Date()) => {
         return nextPayday
     }
 
+    if (incomeSource.frequency === "semimonthly") {
+        const payDay1 = Number(incomeSource.pay_day_1)
+        const payDay2 = Number(incomeSource.pay_day_2)
+
+        const validPayDay = (day) => {
+            return Number.isInteger(day) && day >= 1 && day <= 31
+        }
+
+        if (
+            !validPayDay(payDay1) ||
+            !validPayDay(payDay2) ||
+            payDay1 === payDay2
+        ) {
+            return null
+        }
+
+        const getScheduledPayDay = (year, monthIndex, day) => {
+            const lastDayOfMonth = new Date(year, monthIndex + 1, 0).getDate()
+
+            return new Date(year, monthIndex, Math.min(day, lastDayOfMonth))
+        }
+
+        const year = today.getFullYear()
+        const monthIndex = today.getMonth()
+
+        const upcomingPaydays = [
+            getScheduledPayDay(year, monthIndex, payDay1),
+            getScheduledPayDay(year, monthIndex, payDay2),
+            getScheduledPayDay(year, monthIndex + 1, payDay1),
+            getScheduledPayDay(year, monthIndex + 1, payDay2)
+        ]
+
+        const nextPayDay = upcomingPaydays
+            .filter((date) => date >= today)
+            .sort((dateA, dateB) => dateA - dateB)[0]
+
+        return nextPayDay ?? null
+    }
+
     if (
         incomeSource.frequency !== "weekly" &&
         incomeSource.frequency !== "biweekly"
