@@ -8,6 +8,7 @@ import {
 } from "./api/incomeSourcesApi.js"
 import { renderIncomeSourceModal } from "./incomeSourceModal.js"
 import { getAccounts } from "./api/accountsApi.js"
+import { getNextPayday } from "./utils/paydayCalculations.js"
 
 renderLayout({
     title: "Income",
@@ -53,6 +54,16 @@ const renderIncomeSources = () => {
     }
 
     incomeSourcesToDisplay.forEach((incomeSource) => {
+        const nextPayday = getNextPayday(incomeSource)
+
+        const nexPaydayText = nextPayday
+            ? nextPayday.toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric"
+            })
+            : "Not Available"
+
         incomeSourcesContainer.innerHTML += `
             <div class="card bg-base-100 border border-base-300">
                 <div class="card-body">
@@ -67,6 +78,13 @@ const renderIncomeSources = () => {
                     <p class="capitalize text-base-content/70">
                         ${incomeSource.frequency}
                     </p>
+                    <p class="text-sm text-base-content/70">
+                        Next Payday: 
+                        <span class="font-semibold text-base-content">
+                            ${nexPaydayText}
+                        </span>
+                    </p>
+                    
                     <div class="flex flex-wrap gap-2 mt-3">
                         ${
                             incomeSource.active
