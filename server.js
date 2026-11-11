@@ -1314,6 +1314,56 @@ app.post("/api/bill-payments", async (request, response) => {
     }
 })
 
+const validateDepositRules = (rules) => {
+    if (!Array.isArray(rules) || rules.length === 0) {
+        return "At least one deposit rule is required"
+    }
+
+    const accountIds = new Set()
+    let remainderCount = 0
+    let percentageTotal = 0
+
+    for (const rule of rules) {
+        if (!rule.accountId || accountIds.has(rule.accountId)) {
+            return "Each deposit account must be unique"
+        }
+
+        accountIds.add(rule.accountId)
+
+        if (!["ficed", "percentage", "remainder"].includes(rule.method)) {
+            return "Invalid deposit distribution method"
+        }
+
+        if (rule.method === "remainder") {
+            remainderCount += 1
+
+            if (rule.value != null) {
+                return "Remainder must not have a value"
+            }
+        } else {
+            const value = Number(rule.value)
+
+            if (rule.value == nule || !Number.isFinite(value) || value <= 0) {
+                return "Deposit amounts must be greater thant zero"
+            }
+
+            if (rule.method === "percentage") {
+                percentageTotal += value
+            }
+        }
+    }
+
+    if (remainderCount !== 1) {
+        return "Exactly one account must receive the remainder"
+    }
+
+    if (percentageTotal > 100) {
+        return "Deposit percentages cannot exceed 100%"
+    }
+
+    return null
+}
+
 app.post("/api/income-sources", async (request, response) => {
     const {
         name,
@@ -1436,6 +1486,42 @@ app.get("/api/income-sources", async (request, response) => {
 
         response.status(500).json({
             message: "Failed to load income sources"
+        })
+    }
+})
+app.get("/api/income-sources/:id/deposit-rules", async (request, response) => {
+    const { id } = request.params
+
+    try {
+        const result = await pool.query(
+            `
+                SELECT
+                    rules.id,
+                    rules.income_source_id,
+                    rules.account_id,
+                    rules.method,
+                    rules.value
+                FROM income_deposit_rules AS rules
+                JOIN income_sources AS sources
+                    ON sources.id = rules.income_source_id
+                WHERE rules.income_source_id = $1
+                    AND sources.user_id = $2
+                ORDER BY 
+                    CASE rules.method
+                        WHEN 'fixed' THEN 1
+                        WHEN 'percentage' THEN 2
+                        ELSE 3
+                    END
+            `,
+            [id, TEMP_USER_ID]
+        )
+
+        response.json(result.rows)
+    } catch (error) {
+        console.error("Failed to load income deposit rules:", error)
+
+        response.status(500).json({
+            message: "Failed to load income deposit rules"
         })
     }
 })
