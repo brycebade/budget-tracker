@@ -1576,9 +1576,53 @@ app.put("/api/income-sources/:id/deposit-rules", async (request, response) => {
             })
         }
 
-        return response.status(501).json({
-            message: "Deposit rule saving is not implemented yet"
-        })
+        const client = await pool.connect()
+
+        try {
+            await client.query("BEGIN")
+
+            await client.query(
+                `
+                    DELETE FROM income_deposit_rules
+                    WHERE income_source_id = $1
+                `,
+                [id]
+            )
+
+            const savedRules = []
+
+            for (const rule of rules) {
+                const result = await client.query(
+                    `
+                        INSERT INTO income_deposit_rules (
+                            income_source_id,
+                            account_id,
+                            method,
+                            value
+                        )
+                        VALUES ($1, $2, $3, $4)
+                        RETURNING *
+                    `,
+                    [
+                        id,
+                        rule.accountId,
+                        rule.method,
+                        rule.method === "remainder" ? null : rule.value
+                    ]
+                )
+
+                savedRules.push(result.rows[0])
+            }
+
+            await client.query("COMMIT")
+
+            return response.json(savedRules)
+        } catch (error) {
+            await client.query("ROLLBACK")
+            throw error
+        } finally {
+            client.release()
+        }
     } catch (error) {
         console.error("Failed to save deposit rules:", error)
 
