@@ -1330,7 +1330,7 @@ const validateDepositRules = (rules) => {
 
         accountIds.add(rule.accountId)
 
-        if (!["ficed", "percentage", "remainder"].includes(rule.method)) {
+        if (!["fixed", "percentage", "remainder"].includes(rule.method)) {
             return "Invalid deposit distribution method"
         }
 
@@ -1343,7 +1343,7 @@ const validateDepositRules = (rules) => {
         } else {
             const value = Number(rule.value)
 
-            if (rule.value == nule || !Number.isFinite(value) || value <= 0) {
+            if (rule.value == null || !Number.isFinite(value) || value <= 0) {
                 return "Deposit amounts must be greater thant zero"
             }
 

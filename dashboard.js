@@ -1,3 +1,5 @@
+/* global echarts */
+
 import { renderLayout } from "./components/layout.js"
 import { getAccounts } from "./api/accountsApi.js"
 import { getTransactions } from "./api/transactionsApi.js"

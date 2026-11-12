@@ -1,4 +1,7 @@
-export const getPaycheckPeriod = (referencePayday, referenceDate = new Date()) => {
+export const getPaycheckPeriod = (
+    referencePayday,
+    referenceDate = new Date(),
+) => {
     const payday = new Date(referencePayday)
     const today = new Date(referenceDate)
 
@@ -8,22 +11,17 @@ export const getPaycheckPeriod = (referencePayday, referenceDate = new Date()) =
     const millisecondsPerDay = 1000 * 60 * 60 * 24
 
     const daysSinceReference = Math.round(
-        (
-            Date.UTC(
-                today.getFullYear(),
-                today.getMonth(),
-                today.getDate()
-            ) -
+        (Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) -
             Date.UTC(
                 payday.getFullYear(),
                 payday.getMonth(),
-                payday.getDate()
-            )
-        ) / millisecondsPerDay
+                payday.getDate(),
+            )) /
+            millisecondsPerDay,
     )
 
     const paycheckPeriodsPassed = Math.floor(daysSinceReference / 14)
-    
+
     const startDate = new Date(payday)
     startDate.setDate(payday.getDate() + paycheckPeriodsPassed * 14)
 
@@ -33,45 +31,34 @@ export const getPaycheckPeriod = (referencePayday, referenceDate = new Date()) =
     const nextPayday = new Date(startDate)
     nextPayday.setDate(startDate.getDate() + 14)
 
-    return {startDate, endDate, nextPayday}
+    return { startDate, endDate, nextPayday }
 }
 
 export const getNextPayday = (incomeSource, referenceDate = new Date()) => {
     const today = new Date(referenceDate)
     today.setHours(0, 0, 0, 0)
 
-    if(incomeSource.frequency === "monthly") {
+    if (incomeSource.frequency === "monthly") {
         const payDay = Number(incomeSource.pay_day_1)
 
-        if (
-            !Number.isInteger(payDay) ||
-            payDay < 1 ||
-            payDay > 31
-        ) {
+        if (!Number.isInteger(payDay) || payDay < 1 || payDay > 31) {
             return null
         }
 
         const getMonthlyPayday = (year, monthIndex) => {
-            const lastDayOfMonth = new Date(
-                year,
-                monthIndex + 1,
-                0
-            ).getDate()
+            const lastDayOfMonth = new Date(year, monthIndex + 1, 0).getDate()
 
             const actualPayDay = Math.min(payDay, lastDayOfMonth)
 
             return new Date(year, monthIndex, actualPayDay)
         }
 
-        let nextPayday = getMonthlyPayday(
-            today.getFullYear(),
-            today.getMonth()
-        )
+        let nextPayday = getMonthlyPayday(today.getFullYear(), today.getMonth())
 
         if (nextPayday < today) {
             nextPayday = getMonthlyPayday(
                 today.getFullYear(),
-                today.getMonth() + 1
+                today.getMonth() + 1,
             )
         }
 
@@ -107,7 +94,7 @@ export const getNextPayday = (incomeSource, referenceDate = new Date()) => {
             getScheduledPayDay(year, monthIndex, payDay1),
             getScheduledPayDay(year, monthIndex, payDay2),
             getScheduledPayDay(year, monthIndex + 1, payDay1),
-            getScheduledPayDay(year, monthIndex + 1, payDay2)
+            getScheduledPayDay(year, monthIndex + 1, payDay2),
         ]
 
         const nextPayDay = upcomingPaydays
@@ -142,7 +129,7 @@ export const getNextPayday = (incomeSource, referenceDate = new Date()) => {
 
     const paycheckPeriod = getPaycheckPeriod(payday, today)
 
-    if(paycheckPeriod.startDate.getTime() === today.getTime()) {
+    if (paycheckPeriod.startDate.getTime() === today.getTime()) {
         return paycheckPeriod.startDate
     }
 

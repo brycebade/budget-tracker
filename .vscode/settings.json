@@ -1,0 +1,19 @@
+{
+    "sqltools.connections": [
+        {
+            "pgOptions": {
+                "ssl": {
+                    "rejectUnauthorized": true
+                }
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "ep-green-bonus-ayw8qec2.c-5.us-east-2.aws.neon.tech",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "database": "neondb",
+            "name": "Lumicairn - Neon",
+            "username": "neondb_owner"
+        }
+    ]
+}

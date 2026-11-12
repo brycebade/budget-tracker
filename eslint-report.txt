@@ -1,0 +1,686 @@
+[0m
+[4mC:\Users\bryce\Desktop\Projects\Budget\bills.js[24m
+  [2m557:15[22m  [31merror[39m  'plannedAmount' is assigned a value but never used  [2mno-unused-vars[22m
+  [2m559:15[22m  [31merror[39m  'dueDateKey' is assigned a value but never used     [2mno-unused-vars[22m
+  [2m583:15[22m  [31merror[39m  'dueText' is assigned a value but never used        [2mno-unused-vars[22m
+
+[4mC:\Users\bryce\Desktop\Projects\Budget\components\layout.js[24m
+  [2m2:5[22m  [31merror[39m  'title' is defined but never used  [2mno-unused-vars[22m
+
+[4mC:\Users\bryce\Desktop\Projects\Budget\dashboard.js[24m
+   [2m44:7[22m   [31merror[39m  'formatAccountType' is assigned a value but never used  [2mno-unused-vars[22m
+  [2m551:28[22m  [31merror[39m  'echarts' is not defined                                [2mno-undef[22m
+
+[4mC:\Users\bryce\Desktop\Projects\Budget\server.js[24m
+    [2m2:19[22m  [31merror[39m  'request' is defined but never used                  [2mno-unused-vars[22m
+  [2m406:9[22m   [31merror[39m  'openingBalance' is assigned a value but never used  [2mno-unused-vars[22m
+  [2m749:11[22m  [31merror[39m  'usesAnchorDate' is assigned a value but never used  [2mno-unused-vars[22m
+
+[4mC:\Users\bryce\Desktop\Projects\Budget\vendor\echarts.min.js[24m
+  [2m21:107[22m      [31merror[39m  'define' is not defined                                                                                                [2mno-undef[22m
+  [2m21:118[22m      [31merror[39m  'define' is not defined                                                                                                [2mno-undef[22m
+  [2m21:143[22m      [31merror[39m  The value assigned to 't' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m35:949[22m      [31merror[39m  'wx' is not defined                                                                                                    [2mno-undef[22m
+  [2m35:1954[22m     [31merror[39m  'WebKitCSSMatrix' is not defined                                                                                       [2mno-undef[22m
+  [2m35:3000[22m     [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m35:4012[22m     [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m35:4132[22m     [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m35:4437[22m     [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m35:4928[22m     [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m35:5508[22m     [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m35:6161[22m     [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m35:8027[22m     [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m35:8267[22m     [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m35:9363[22m     [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m35:14808[22m    [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m35:18653[22m    [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m35:30036[22m    [31merror[39m  The value assigned to 's' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m35:31078[22m    [31merror[39m  Expected a 'break' statement before 'case'                                                                             [2mno-fallthrough[22m
+  [2m35:31099[22m    [31merror[39m  Expected a 'break' statement before 'case'                                                                             [2mno-fallthrough[22m
+  [2m35:31203[22m    [31merror[39m  The value assigned to 's' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m35:31503[22m    [31merror[39m  The value assigned to 's' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m35:32014[22m    [31merror[39m  The value assigned to 'l' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m35:32851[22m    [31merror[39m  The value assigned to 'l' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m35:32909[22m    [31merror[39m  The value assigned to 'd' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m35:32913[22m    [31merror[39m  The value assigned to 'p' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m35:33016[22m    [31merror[39m  The value assigned to 'u' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m35:33653[22m    [31merror[39m  The value assigned to 'u' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m35:34140[22m    [31merror[39m  The value assigned to 'o' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m35:34164[22m    [31merror[39m  The value assigned to 'o' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m35:39791[22m    [31merror[39m  The value assigned to 'm' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m35:39819[22m    [31merror[39m  The value assigned to 'x' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m35:42018[22m    [31merror[39m  Unnecessary escape character: \.                                                                                       [2mno-useless-escape[22m
+  [2m35:49410[22m    [31merror[39m  Expected a 'break' statement before 'case'                                                                             [2mno-fallthrough[22m
+  [2m35:53551[22m    [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m35:58810[22m    [31merror[39m  The value assigned to 'l' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m35:64468[22m    [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m35:67625[22m    [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m35:69919[22m    [31merror[39m  Expected a conditional expression and instead saw an assignment                                                        [2mno-cond-assign[22m
+  [2m35:74518[22m    [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m35:75464[22m    [31merror[39m  The value assigned to 'p' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m35:75473[22m    [31merror[39m  The value assigned to 'f' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m35:75968[22m    [31merror[39m  The value assigned to 'm' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m35:75977[22m    [31merror[39m  The value assigned to 'x' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m35:76751[22m    [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m35:76892[22m    [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m35:77132[22m    [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m35:77134[22m    [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m35:84277[22m    [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:1405[22m     [31merror[39m  The value assigned to 'n' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:4346[22m     [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:6413[22m     [31merror[39m  Unnecessary escape character: \/                                                                                       [2mno-useless-escape[22m
+  [2m45:6430[22m     [31merror[39m  Unnecessary escape character: \/                                                                                       [2mno-useless-escape[22m
+  [2m45:6506[22m     [31merror[39m  Unnecessary escape character: \+                                                                                       [2mno-useless-escape[22m
+  [2m45:6508[22m     [31merror[39m  Unnecessary escape character: \-                                                                                       [2mno-useless-escape[22m
+  [2m45:7127[22m     [31merror[39m  The value assigned to 't' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:8165[22m     [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:8484[22m     [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:8508[22m     [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:10149[22m    [31merror[39m  The value assigned to 'r' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:12382[22m    [31merror[39m  The value assigned to 'l' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:13056[22m    [31merror[39m  The value assigned to 'f' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:14972[22m    [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:20792[22m    [31merror[39m  The value assigned to 't' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:20798[22m    [31merror[39m  The value assigned to 't' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:21635[22m    [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:24963[22m    [31merror[39m  's[f]' is assigned to itself                                                                                           [2mno-self-assign[22m
+  [2m45:25048[22m    [31merror[39m  'this.style[f]' is assigned to itself                                                                                  [2mno-self-assign[22m
+  [2m45:30602[22m    [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:30604[22m    [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:30606[22m    [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:30608[22m    [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:30610[22m    [31merror[39m  'r' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:30612[22m    [31merror[39m  'o' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:30614[22m    [31merror[39m  'a' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:30616[22m    [31merror[39m  's' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:30618[22m    [31merror[39m  'l' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:32681[22m    [31merror[39m  The value assigned to 'y' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:32690[22m    [31merror[39m  The value assigned to 'm' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:35178[22m    [31merror[39m  The value assigned to 'l' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:37568[22m    [31merror[39m  The value assigned to 'i' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:37572[22m    [31merror[39m  The value assigned to 'r' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:40943[22m    [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:40945[22m    [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:40947[22m    [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:50229[22m    [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:51756[22m    [31merror[39m  The value assigned to 'T' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:51773[22m    [31merror[39m  The value assigned to 'S' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:55562[22m    [31merror[39m  The value assigned to 'C' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:65601[22m    [31merror[39m  's' is always 'undefined' because it's never assigned                                                                  [2mno-unassigned-vars[22m
+  [2m45:65672[22m    [31merror[39m  The value assigned to 'o' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:67154[22m    [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:67478[22m    [31merror[39m  The value assigned to 'y' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:67487[22m    [31merror[39m  The value assigned to 'm' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:67496[22m    [31merror[39m  The value assigned to 'x' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:67505[22m    [31merror[39m  The value assigned to '_' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:67514[22m    [31merror[39m  The value assigned to 'b' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:67523[22m    [31merror[39m  The value assigned to 'w' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:67532[22m    [31merror[39m  The value assigned to 'S' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:67541[22m    [31merror[39m  The value assigned to 'M' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:67545[22m    [31merror[39m  The value assigned to 'I' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:67549[22m    [31merror[39m  The value assigned to 'T' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:67558[22m    [31merror[39m  The value assigned to 'C' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:68967[22m    [31merror[39m  The value assigned to 'M' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:68971[22m    [31merror[39m  The value assigned to 'I' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:69074[22m    [31merror[39m  The value assigned to 'M' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:69078[22m    [31merror[39m  The value assigned to 'I' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:69730[22m    [31merror[39m  'n.applyTransform' is assigned to itself                                                                               [2mno-self-assign[22m
+  [2m45:71476[22m    [31merror[39m  The value assigned to 'm' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:71485[22m    [31merror[39m  The value assigned to 'x' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:71494[22m    [31merror[39m  The value assigned to '_' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:71503[22m    [31merror[39m  The value assigned to 'b' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:83181[22m    [31merror[39m  The value assigned to 'l' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:83190[22m    [31merror[39m  The value assigned to 'u' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:83199[22m    [31merror[39m  The value assigned to 'c' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:85004[22m    [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:86839[22m    [31merror[39m  The value assigned to 'i' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:92223[22m    [31merror[39m  Expected a conditional expression and instead saw an assignment                                                        [2mno-cond-assign[22m
+  [2m45:93136[22m    [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:98334[22m    [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:98336[22m    [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:98338[22m    [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:98437[22m    [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:98833[22m    [31merror[39m  The value assigned to 'n' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:99677[22m    [31merror[39m  The value assigned to 'ds' is not used in subsequent statements                                                        [2mno-useless-assignment[22m
+  [2m45:104892[22m   [31merror[39m  The value assigned to 'c' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:106556[22m   [31merror[39m  Expected a 'break' statement before 'case'                                                                             [2mno-fallthrough[22m
+  [2m45:106580[22m   [31merror[39m  Expected a 'break' statement before 'case'                                                                             [2mno-fallthrough[22m
+  [2m45:106602[22m   [31merror[39m  Expected a 'break' statement before 'case'                                                                             [2mno-fallthrough[22m
+  [2m45:106625[22m   [31merror[39m  Expected a 'break' statement before 'case'                                                                             [2mno-fallthrough[22m
+  [2m45:106650[22m   [31merror[39m  Expected a 'break' statement before 'case'                                                                             [2mno-fallthrough[22m
+  [2m45:109544[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:109578[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:110189[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:115470[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:115567[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:115569[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:119184[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:122902[22m   [31merror[39m  The value assigned to 'v' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:123522[22m   [31merror[39m  The value assigned to 'o' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:123593[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:130015[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:130674[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:131053[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:132327[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:133877[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:137044[22m   [31merror[39m  Unexpected constant truthiness on the left-hand side of a `&&` expression                                              [2mno-constant-binary-expression[22m
+  [2m45:137118[22m   [31merror[39m  This branch can never execute. Its condition is a duplicate or covered by previous conditions in the if-else-if chain  [2mno-dupe-else-if[22m
+  [2m45:141322[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:142093[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:142095[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:142132[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:144153[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:144155[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:144211[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:144272[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:144489[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:144590[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:146377[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:146379[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:146381[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:150923[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:151036[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:151154[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:151156[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:151204[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:151206[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:151714[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:151716[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:155353[22m   [31merror[39m  The value assigned to 'p' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:156358[22m   [31merror[39m  The value assigned to 't' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:157393[22m   [31merror[39m  The value assigned to 'n' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:157647[22m   [31merror[39m  The value assigned to 'h' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:159569[22m   [31merror[39m  The value assigned to 'I' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:162368[22m   [31merror[39m  The value assigned to 'e' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:163881[22m   [31merror[39m  The value assigned to 'a' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:163890[22m   [31merror[39m  The value assigned to 's' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:168621[22m   [31merror[39m  The value assigned to 't' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:172313[22m   [31merror[39m  The value assigned to 'r' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:172978[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:172980[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:174445[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178153[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178155[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178188[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178190[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178192[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178194[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178228[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178230[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178267[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178269[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178271[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178273[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178312[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178314[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178316[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178318[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178357[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178359[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178361[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178363[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178406[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178408[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178410[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178923[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178925[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178958[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178960[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178962[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:178964[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:179183[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:179185[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:179241[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:179243[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:182198[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:185316[22m   [31merror[39m  's' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:185657[22m   [31merror[39m  'l' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:188267[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:188269[22m   [31merror[39m  Empty block statement                                                                                                  [2mno-empty[22m
+  [2m45:192010[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:206123[22m   [31merror[39m  The value assigned to 'u' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:216011[22m   [31merror[39m  'c' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:217702[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:217756[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:233448[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:234434[22m   [31merror[39m  'o' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:234813[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:240191[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:241401[22m   [31merror[39m  Unnecessary escape character: \`                                                                                       [2mno-useless-escape[22m
+  [2m45:244718[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:253800[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:257616[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:257618[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:258550[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:259613[22m   [31merror[39m  The value assigned to 'o' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:262492[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:264189[22m   [31merror[39m  The value assigned to 't' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:265057[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:267208[22m   [31merror[39m  The value assigned to 'n' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:269359[22m   [31merror[39m  The value assigned to 'o' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:271190[22m   [31merror[39m  The value assigned to 'f' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:273365[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:276765[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:285796[22m   [31merror[39m  The value assigned to 'e' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:289146[22m   [31merror[39m  The value assigned to 't' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:291486[22m   [31merror[39m  The value assigned to 't' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:293031[22m   [31merror[39m  The value assigned to 'n' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:295977[22m   [31merror[39m  The value assigned to 't' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:296144[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:296146[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:297073[22m   [31merror[39m  The value assigned to 't' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:298178[22m   [31merror[39m  The value assigned to 't' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:308730[22m   [31merror[39m  The value assigned to 'u' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:308742[22m   [31merror[39m  The value assigned to 'u' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:312498[22m   [31merror[39m  The value assigned to 'p' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:313028[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:313030[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:313032[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:313034[22m   [31merror[39m  'r' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:313036[22m   [31merror[39m  'o' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:313038[22m   [31merror[39m  'a' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:313040[22m   [31merror[39m  's' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:313042[22m   [31merror[39m  'l' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:314653[22m   [31merror[39m  The value assigned to 'e' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:317647[22m   [31merror[39m  Expected a conditional expression and instead saw an assignment                                                        [2mno-cond-assign[22m
+  [2m45:317833[22m   [31merror[39m  'f' is already defined                                                                                                 [2mno-redeclare[22m
+  [2m45:318000[22m   [31merror[39m  'f' is already defined                                                                                                 [2mno-redeclare[22m
+  [2m45:318063[22m   [31merror[39m  The value assigned to 'S' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:318245[22m   [31merror[39m  'f' is already defined                                                                                                 [2mno-redeclare[22m
+  [2m45:321386[22m   [31merror[39m  The value assigned to 'u' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:329208[22m   [31merror[39m  The value assigned to 'n' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:330246[22m   [31merror[39m  The value assigned to 'f' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:333460[22m   [31merror[39m  Expected a conditional expression and instead saw an assignment                                                        [2mno-cond-assign[22m
+  [2m45:335956[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:341671[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:341673[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:342074[22m   [31merror[39m  The value assigned to 'p' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:345250[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:354494[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:354953[22m   [31merror[39m  The value assigned to 'x' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:354968[22m   [31merror[39m  The value assigned to '_' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:355052[22m   [31merror[39m  The value assigned to 'I' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:355057[22m   [31merror[39m  The value assigned to 'T' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:355061[22m   [31merror[39m  The value assigned to 'C' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:355153[22m   [31merror[39m  The value assigned to 'R' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:355162[22m   [31merror[39m  The value assigned to 'N' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:355205[22m   [31merror[39m  The value assigned to 'R' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:355233[22m   [31merror[39m  The value assigned to 'N' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:355297[22m   [31merror[39m  The value assigned to 'R' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:355325[22m   [31merror[39m  The value assigned to 'N' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:355368[22m   [31merror[39m  The value assigned to 'p' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:355413[22m   [31merror[39m  The value assigned to 'f' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:355442[22m   [31merror[39m  The value assigned to 'D' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:355498[22m   [31merror[39m  The value assigned to 'C' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:355501[22m   [31merror[39m  The value assigned to 'A' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:355530[22m   [31merror[39m  The value assigned to 'p' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:355535[22m   [31merror[39m  The value assigned to 'T' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:355576[22m   [31merror[39m  The value assigned to 'T' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:355608[22m   [31merror[39m  The value assigned to 'C' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:356426[22m   [31merror[39m  The value assigned to 'u' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:356435[22m   [31merror[39m  The value assigned to 'c' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:356444[22m   [31merror[39m  The value assigned to 'h' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:356453[22m   [31merror[39m  The value assigned to 'd' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:356462[22m   [31merror[39m  The value assigned to 'p' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:356471[22m   [31merror[39m  The value assigned to 'f' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:356480[22m   [31merror[39m  The value assigned to 'g' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:363070[22m   [31merror[39m  The value assigned to 'l' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:363528[22m   [31merror[39m  The value assigned to 'l' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:365194[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:371960[22m   [31merror[39m  The value assigned to 's' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:374200[22m   [31merror[39m  The value assigned to 'b' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:374209[22m   [31merror[39m  The value assigned to 'w' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:376078[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:376890[22m   [31merror[39m  The value assigned to 'f' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:379103[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:379105[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:379107[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:382277[22m   [31merror[39m  'a' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:388394[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:388836[22m   [31merror[39m  'o' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:393359[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:393935[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:394091[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:397170[22m   [31merror[39m  The value assigned to 'C' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:397179[22m   [31merror[39m  The value assigned to 'D' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:397188[22m   [31merror[39m  The value assigned to 'A' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:397197[22m   [31merror[39m  The value assigned to 'k' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:398029[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:398031[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:403474[22m   [31merror[39m  The value assigned to 'M' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:404453[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:404455[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:407869[22m   [31merror[39m  'a' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:407871[22m   [31merror[39m  's' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:407873[22m   [31merror[39m  'l' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:408129[22m   [31merror[39m  Unexpected constant truthiness on the left-hand side of a `||` expression                                              [2mno-constant-binary-expression[22m
+  [2m45:408416[22m   [31merror[39m  The value assigned to '_' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:408427[22m   [31merror[39m  The value assigned to 'b' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:408438[22m   [31merror[39m  The value assigned to 'w' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:408447[22m   [31merror[39m  The value assigned to 'S' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:410331[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:421005[22m   [31merror[39m  The value assigned to 'g' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:423065[22m   [31merror[39m  The value assigned to 'u' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:423069[22m   [31merror[39m  The value assigned to 'c' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:423316[22m   [31merror[39m  The value assigned to 'r' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:423320[22m   [31merror[39m  The value assigned to 'o' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:423503[22m   [31merror[39m  The value assigned to 'o' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:423507[22m   [31merror[39m  The value assigned to 'a' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:425845[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:425847[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:425849[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:426966[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:426968[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:429851[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:430148[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:431276[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:431623[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:431625[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:431761[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:431763[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:431902[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:432623[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:432625[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:439553[22m   [31merror[39m  The value assigned to 'n' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:443461[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:450728[22m   [31merror[39m  'r' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:451199[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:452468[22m   [31merror[39m  The value assigned to 'x' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:452477[22m   [31merror[39m  The value assigned to '_' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:452486[22m   [31merror[39m  The value assigned to 'b' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:452495[22m   [31merror[39m  The value assigned to 'w' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:453549[22m   [31merror[39m  'r' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:454324[22m   [31merror[39m  'r' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:454878[22m   [31merror[39m  'r' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:455447[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:458445[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:458848[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:459006[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:459008[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:459117[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:459119[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:460105[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:460107[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:460706[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:467758[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:467760[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:467951[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:467953[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:467955[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:468042[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:468044[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:468046[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:468129[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:469491[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:480284[22m   [31merror[39m  The value assigned to 'r' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:482791[22m   [31merror[39m  Unnecessary escape character: \-                                                                                       [2mno-useless-escape[22m
+  [2m45:482798[22m   [31merror[39m  Unnecessary escape character: \.                                                                                       [2mno-useless-escape[22m
+  [2m45:484149[22m   [31merror[39m  There is no `cause` attached to the symptom error being thrown                                                         [2mpreserve-caught-error[22m
+  [2m45:486989[22m   [31merror[39m  There is no `cause` attached to the symptom error being thrown                                                         [2mpreserve-caught-error[22m
+  [2m45:498294[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:498296[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:498440[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:500871[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:501738[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:501740[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:503973[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:508081[22m   [31merror[39m  The value assigned to 'f' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:512007[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:522942[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:522944[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:525775[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:526440[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:527511[22m   [31merror[39m  The value assigned to '_' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:527520[22m   [31merror[39m  The value assigned to 'b' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:530998[22m   [31merror[39m  Expected a conditional expression and instead saw an assignment                                                        [2mno-cond-assign[22m
+  [2m45:531275[22m   [31merror[39m  The value assigned to 's' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:531626[22m   [31merror[39m  Expected a conditional expression and instead saw an assignment                                                        [2mno-cond-assign[22m
+  [2m45:531866[22m   [31merror[39m  Expected a conditional expression and instead saw an assignment                                                        [2mno-cond-assign[22m
+  [2m45:531976[22m   [31merror[39m  Expected a conditional expression and instead saw an assignment                                                        [2mno-cond-assign[22m
+  [2m45:534273[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:534275[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:539813[22m   [31merror[39m  Expected a conditional expression and instead saw an assignment                                                        [2mno-cond-assign[22m
+  [2m45:542954[22m   [31merror[39m  The value assigned to 'a' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:549765[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:551075[22m   [31merror[39m  The value assigned to 't' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:551692[22m   [31merror[39m  The value assigned to 'c' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:554807[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:555107[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:557348[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:559282[22m   [31merror[39m  The value assigned to 's' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:563966[22m   [31merror[39m  The value assigned to 'd' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:563975[22m   [31merror[39m  The value assigned to 'p' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:564159[22m   [31merror[39m  The value assigned to 'y' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:564168[22m   [31merror[39m  The value assigned to 'm' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:564880[22m   [31merror[39m  The value assigned to 'l' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:564889[22m   [31merror[39m  The value assigned to 'u' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:565075[22m   [31merror[39m  The value assigned to 'h' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:565084[22m   [31merror[39m  The value assigned to 'd' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:566682[22m   [31merror[39m  The value assigned to 'r' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:568321[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:572375[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:574600[22m   [31merror[39m  The value assigned to 'o' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:577019[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:577135[22m   [31merror[39m  'o' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:583132[22m   [31merror[39m  The value assigned to 'd' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:583402[22m   [31merror[39m  The value assigned to 'w' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:587160[22m   [31merror[39m  's' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:590821[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:591983[22m   [31merror[39m  The value assigned to 'y' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:593808[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:598991[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:598993[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:605555[22m   [31merror[39m  Expected a conditional expression and instead saw an assignment                                                        [2mno-cond-assign[22m
+  [2m45:609989[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:609991[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:611580[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:611582[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:614039[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:614041[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:616515[22m   [31merror[39m  The value assigned to 'p' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:616524[22m   [31merror[39m  The value assigned to 'f' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:617891[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:617893[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:617895[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:618724[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:618726[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:618728[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:618840[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:620021[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:620023[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:620806[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:623671[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:625434[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:625752[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:625754[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:628087[22m   [31merror[39m  The value assigned to 'c' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:629105[22m   [31merror[39m  Expected a conditional expression and instead saw an assignment                                                        [2mno-cond-assign[22m
+  [2m45:638913[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:648701[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:657094[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:657096[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:657815[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:662592[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:662594[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:662785[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:662787[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:662872[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:662874[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:664526[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:666610[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:671561[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:671563[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:672064[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:672066[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:672357[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:672359[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:673924[22m   [31merror[39m  The value assigned to 'c' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:678491[22m   [31merror[39m  The value assigned to 'd' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:678500[22m   [31merror[39m  The value assigned to 'p' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:679425[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:680114[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:680455[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:680793[22m   [31merror[39m  The value assigned to 's' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:682328[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:686024[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:686277[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:686279[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:690089[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:690091[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:690093[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:691069[22m   [31merror[39m  The value assigned to 'C' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:693893[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:693895[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:695841[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:703513[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:703715[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:703955[22m   [31merror[39m  'u' is already defined                                                                                                 [2mno-redeclare[22m
+  [2m45:703964[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:704067[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:704898[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:705236[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:705238[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:705768[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:705770[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:707287[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:713116[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:714031[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:717447[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:717449[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:725638[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:725640[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:725642[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:726111[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:735376[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:735378[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:735380[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:735382[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:735384[22m   [31merror[39m  'r' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:735430[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:735432[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:741427[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:745671[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:746969[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:747660[22m   [31merror[39m  'l' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:755895[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:755897[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:757842[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:764144[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:764285[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:764931[22m   [31merror[39m  The value assigned to 'T' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:764940[22m   [31merror[39m  The value assigned to 'C' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:764949[22m   [31merror[39m  The value assigned to 'D' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:764958[22m   [31merror[39m  The value assigned to 'A' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:766860[22m   [31merror[39m  'r' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:767595[22m   [31merror[39m  'r' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:768010[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:768264[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:768266[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:768507[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:768509[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:771343[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:772259[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:772261[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:773537[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:779366[22m   [31merror[39m  The value assigned to 'a' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:781932[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:782175[22m   [31merror[39m  Unnecessary escape character: \/                                                                                       [2mno-useless-escape[22m
+  [2m45:782332[22m   [31merror[39m  Unnecessary escape character: \/                                                                                       [2mno-useless-escape[22m
+  [2m45:782345[22m   [31merror[39m  Unnecessary escape character: \/                                                                                       [2mno-useless-escape[22m
+  [2m45:786199[22m   [31merror[39m  'u' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:789436[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:804590[22m   [31merror[39m  Expected a conditional expression and instead saw an assignment                                                        [2mno-cond-assign[22m
+  [2m45:805023[22m   [31merror[39m  Expected a conditional expression and instead saw an assignment                                                        [2mno-cond-assign[22m
+  [2m45:805640[22m   [31merror[39m  The value assigned to 'd' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:805852[22m   [31merror[39m  Expected a conditional expression and instead saw an assignment                                                        [2mno-cond-assign[22m
+  [2m45:810506[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:812860[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:813187[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:814710[22m   [31merror[39m  'e[a]' is assigned to itself                                                                                           [2mno-self-assign[22m
+  [2m45:815497[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:827250[22m   [31merror[39m  Unexpected control character(s) in regular expression: \x09                                                            [2mno-control-regex[22m
+  [2m45:827946[22m   [31merror[39m  The value assigned to 's' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:827951[22m   [31merror[39m  The value assigned to 'l' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:829458[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:835605[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:838546[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:838548[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:839840[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:840571[22m   [31merror[39m  Expected a conditional expression and instead saw an assignment                                                        [2mno-cond-assign[22m
+  [2m45:842583[22m   [31merror[39m  The value assigned to 't' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:843550[22m   [31merror[39m  The value assigned to 'o' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:845640[22m   [31merror[39m  Expected a conditional expression and instead saw an assignment                                                        [2mno-cond-assign[22m
+  [2m45:847177[22m   [31merror[39m  The value assigned to 'u' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:849524[22m   [31merror[39m  'r' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:862449[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:862809[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:863183[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:863242[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:868634[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:869625[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:874561[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:881480[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:881872[22m   [31merror[39m  The value assigned to 'p' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:889000[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:890097[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:890099[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:893030[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:896734[22m   [31merror[39m  The value assigned to 's' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:896743[22m   [31merror[39m  The value assigned to 'l' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:901609[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:902389[22m   [31merror[39m  The value assigned to 'm' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:902405[22m   [31merror[39m  The value assigned to 'x' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:907389[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:907686[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:907801[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:912130[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:912132[22m   [31merror[39m  'r' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:922089[22m   [31merror[39m  The value assigned to 'y' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:922254[22m   [31merror[39m  The value assigned to 'y' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:941235[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:946949[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:946978[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:947892[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:947980[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:948031[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:948621[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:948623[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:952659[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:952661[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:952663[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:952665[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:955428[22m   [31merror[39m  'r' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:955430[22m   [31merror[39m  'o' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:960149[22m   [31merror[39m  'i' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:962662[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:966274[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:967474[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:967533[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:967951[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:967988[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:968075[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:970906[22m   [31merror[39m  Do not access Object.prototype method 'hasOwnProperty' from target object                                              [2mno-prototype-builtins[22m
+  [2m45:974971[22m   [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:974973[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:981351[22m   [31merror[39m  The value assigned to 'i' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:981405[22m   [31merror[39m  The value assigned to 'i' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:993328[22m   [31merror[39m  The value assigned to 'c' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:993337[22m   [31merror[39m  The value assigned to 'h' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:994593[22m   [31merror[39m  The value assigned to 'S' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:994610[22m   [31merror[39m  The value assigned to 'M' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:995971[22m   [31merror[39m  The value assigned to 'a' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:996893[22m   [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:996895[22m   [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:996897[22m   [31merror[39m  'o' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:1010724[22m  [31merror[39m  The value assigned to 'k' is not used in subsequent statements                                                         [2mno-useless-assignment[22m
+  [2m45:1015674[22m  [31merror[39m  'e' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:1016967[22m  [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:1019697[22m  [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:1020285[22m  [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:1023720[22m  [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:1023751[22m  [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:1023796[22m  [31merror[39m  't' is defined but never used                                                                                          [2mno-unused-vars[22m
+  [2m45:1026388[22m  [31merror[39m  'n' is defined but never used                                                                                          [2mno-unused-vars[22m
+
+[31m[1m✖ 673 problems (673 errors, 0 warnings)[22m[39m
+[0m
