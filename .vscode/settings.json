@@ -15,5 +15,6 @@
             "name": "Lumicairn - Neon",
             "username": "neondb_owner"
         }
-    ]
+    ],
+    "python.terminal.useEnvFile": true
 }

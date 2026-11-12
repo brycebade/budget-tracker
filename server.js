@@ -1555,6 +1555,27 @@ app.put("/api/income-sources/:id/deposit-rules", async (request, response) => {
             })
         }
 
+        const accountIds = rules.map((rule) => {
+            return rule.accountId
+        })
+
+        const accountsResult = await pool.query(
+            `
+                SELECT id
+                FROM accounts
+                WHERE user_id = $1
+                    AND type IN ('checking', 'savings')
+                    AND id = ANY($2::uuid[])
+            `,
+            [TEMP_USER_ID, accountIds]
+        )
+
+        if (accountsResult.rows.length !== accountIds.length) {
+            return response.status(400).json({
+                message: "One or more deposit accounts are invalid"
+            })
+        }
+
         return response.status(501).json({
             message: "Deposit rule saving is not implemented yet"
         })
