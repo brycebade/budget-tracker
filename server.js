@@ -1526,6 +1526,47 @@ app.get("/api/income-sources/:id/deposit-rules", async (request, response) => {
     }
 })
 
+app.put("/api/income-sources/:id/deposit-rules", async (request, response) => {
+    const { id } = request.params
+    const { rules } = request.body
+
+    const validationError = validateDepositRules(rules)
+
+    if (validationError) {
+        return response.status(400).json({
+            message: validationError
+        })
+    }
+
+    try {
+        const result = await pool.query(
+            `
+                SELECT id
+                FROM income_sources
+                WHERE id = $1
+                    AND user_id = $2
+            `,
+            [id, TEMP_USER_ID]
+        )
+
+        if (result.rows.length === 0) {
+            return response.status(404).json({
+                message: "Income source not found"
+            })
+        }
+
+        return response.status(501).json({
+            message: "Deposit rule saving is not implemented yet"
+        })
+    } catch (error) {
+        console.error("Failed to save deposit rules:", error)
+
+        response.status(500).json({
+            message: "Failed to save deposit rules"
+        })
+    }
+})
+
 app.put("/api/income-sources/:id", async (request, response) => {
     const { id } = request.params
 
