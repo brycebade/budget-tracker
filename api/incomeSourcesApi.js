@@ -74,3 +74,34 @@ export const createIncomeSource = async (incomeSourceData) => {
 
     return response.json()
 }
+
+export const getIncomeDepositRules = async (incomeSourceId) => {
+    const response = await fetch(
+        `${INCOME_SOURCES_URL}/${incomeSourceId}/deposit-rules`
+    )
+
+    if (!response.ok) {
+        throw new Error("Failed to load income deposit rules")
+    }
+
+    return response.json()
+}
+
+export const updateIncomeDepositRules = async (incomeSourceId, rules) => {
+    const response = await fetch(
+        `${INCOME_SOURCES_URL}/${incomeSourceId}/deposit-rules`,
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ rules })
+        }
+    )
+
+    if (!response.ok) {
+        throw new Error("Failed to save income deposit rules")
+    }
+
+    return response.json()
+}
