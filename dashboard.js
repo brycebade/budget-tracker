@@ -197,8 +197,6 @@ const calculateMoneyFlow = (
 const renderDashboard = () => {
     const metrics = calculateDashboardMetrics()
 
-console.log("Financial Path starting cash:", metrics.availableCash)
-
     renderDashboardMetrics(metrics)
     renderRecentTransactions()
 }

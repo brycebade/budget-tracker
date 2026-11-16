@@ -1377,6 +1377,21 @@ app.post("/api/income-sources", async (request, response) => {
         depositAccountId
     } = request.body
 
+    const validPayTypes = [
+        "hourly",
+        "salary",
+        "fixed",
+        "variable"
+    ]
+
+    const validFrequencies = [
+        "weekly",
+        "biweekly",
+        "semimonthly",
+        "monthly",
+        "irregular"
+    ]
+
     const usesAnchorDate =
         frequency === "weekly" ||
         frequency === "biweekly"
@@ -1390,13 +1405,14 @@ app.post("/api/income-sources", async (request, response) => {
     if (
         !name ||
         !payType ||
-        !frequency ||
+        !validPayTypes.includes(payType) ||
+        !validFrequencies.includes(frequency) ||
         (usesAnchorDate && !anchorDate) ||
         (usesOnePayDay && !payDay1) ||
         (usesTwoPayDays && (!payDay1 || !payDay2))
     ) {
         return response.status(400).json({
-            message: "Required income source information missing"
+            message: "Invalid income source information"
         })
     }
 
@@ -1435,9 +1451,9 @@ app.post("/api/income-sources", async (request, response) => {
                 name,
                 payType,
                 frequency,
-                anchorDate ?? null,
-                payDay1 ?? null,
-                payDay2 ?? null,
+                usesAnchorDate ? anchorDate : null,
+                (usesOnePayDay || usesTwoPayDays) ? payDay1 : null,
+                usesTwoPayDays ? payDay2 : null,
                 depositAccountId ?? null,
                 hourlyRate ?? null,
                 overtimeMultiplier ?? 1.50
@@ -1647,13 +1663,14 @@ app.put("/api/income-sources/:id", async (request, response) => {
         depositAccountId
     } = request.body
 
-    const validPayTypes = ["hourly", "salary", "fixed"]
+    const validPayTypes = ["hourly", "salary", "fixed", "variable"]
 
     const validFrequencies = [
         "weekly",
         "biweekly",
         "semimonthly",
-        "monthly"
+        "monthly",
+        "irregular"
     ]
 
     const usesAnchorDate = frequency === "weekly" || frequency === "biweekly"

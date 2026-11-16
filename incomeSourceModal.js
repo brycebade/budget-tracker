@@ -34,6 +34,7 @@ export const renderIncomeSourceModal = (incomeSource = null) => {
                                 <option value="hourly">Hourly</option>
                                 <option value="salary">Salary</option>
                                 <option value="fixed">Fixed Income</option>
+                                <option value="variable">Variable Income</option>
                             </select>
                         </div>
 
@@ -74,6 +75,7 @@ export const renderIncomeSourceModal = (incomeSource = null) => {
                                 <option value="biweekly">Biweekly</option>
                                 <option value="semimonthly">Semi-monthly</option>
                                 <option value="monthly">Monthly</option>
+                                <option value="irregular">Irregular / As Needed</option>
                             </select>
                         </div>
 
