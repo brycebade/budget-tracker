@@ -1364,6 +1364,63 @@ const validateDepositRules = (rules) => {
     return null
 }
 
+const validateIncomeDeductions = (deductions) => {
+    if (!Array.isArray(deductions)) {
+        return "Deductions must be an array"
+    }
+
+    const validCategories = [
+        "insurance",
+        "retirement",
+        "tax",
+        "other"
+    ]
+
+    const validMethods = [
+        "fixed",
+        "percentage"
+    ]
+
+    for (const deduction of deductions) {
+        if (
+            !deduction ||
+            typeof deduction.name !== "string" ||
+            !deduction.name.trim()
+        ) {
+            return "Each deduction must have a name"
+        }
+
+        if (!validCategories.includes(deduction.category)) {
+            return "Invalid deduction category"
+        }
+
+        if (!validMethods.includes(deduction.method)) {
+            return "Invalid deduction method"
+        }
+
+        const value = Number(deduction.value)
+
+        if (
+            deduction.value === null ||
+            deduction.value === undefined ||
+            deduction.value === "" ||
+            !Number.isFinite(value) ||
+            value <= 0
+        ) {
+            return "Deduction amounts must be greater than zero"
+        }
+
+        if (
+            deduction.method === "percentage" &&
+            value > 100
+        ) {
+            return "Deduction percentage cannot exceed 100%"
+        }
+    }
+
+    return null
+}
+
 app.post("/api/income-sources", async (request, response) => {
     const {
         name,
@@ -1804,6 +1861,129 @@ app.put("/api/income-sources/:id/reactivate", async (request, response) => {
 
         response.status(500).json({
             message: "Failed to reactivate income source"
+        })
+    }
+})
+
+app.get("/api/income-sources/:id/deductions", async (request, response) => {
+    const { id } = request.params
+
+    try {
+        const result = await pool.query(
+            `
+                SELECT
+                    deductions.id,
+                    deductions.income_source_id,
+                    deductions.name,
+                    deductions.category,
+                    deductions.method,
+                    deductions.value,
+                    deductions.active,
+                    deductions.created_at
+                FROM income_deductions AS deductions
+                JOIN income_sources AS sources
+                    ON sources.id = deductions.income_source_id
+                WHERE deductions.income_source_id = $1
+                    AND sources.user_id = $2
+                ORDER BY deductions.created_at ASC
+            `,
+            [id, TEMP_USER_ID]
+        )
+
+        response.json(result.rows)
+    } catch (error) {
+        console.error("Failed to load income deductions:", error)
+
+        response.status(500).json({
+            message: "Failed to load income deductions"
+        })
+    }
+})
+
+app.put("/api/income-sources/:id/deductions", async (request, response) => {
+    const { id } = request.params
+    const { deductions } = request.body
+
+    const validationError = validateIncomeDeductions(deductions)
+
+    if (validationError) {
+        return response.status(400).json({
+            message: validationError
+        })
+    }
+
+    try {
+        const result = await pool.query(
+            `
+                SELECT id
+                FROM income_sources
+                WHERE id = $1
+                    AND user_id = $2
+            `,
+            [id, TEMP_USER_ID]
+        )
+
+        if (result.rows.length === 0) {
+            return response.status(404).json({
+                message: "Income source not found"
+            })
+        }
+
+        const client = await pool.connect()
+
+        try {
+            await client.query("BEGIN")
+
+            await client.query(
+                `
+                    DELETE FROM income_deductions
+                    WHERE income_source_id = $1
+                `,
+                [id]
+            )
+
+            const savedDeductions = []
+
+            for (const deduction of deductions) {
+                const insertResult = await client.query(
+                    `
+                        INSERT INTO income_deductions (
+                            income_source_id,
+                            name,
+                            category,
+                            method,
+                            value
+                        )
+                        VALUES ($1, $2, $3, $4, $5)
+                        RETURNING *
+                    `,
+                    [
+                        id,
+                        deduction.name.trim(),
+                        deduction.category,
+                        deduction.method,
+                        deduction.value
+                    ]
+                )
+
+                savedDeductions.push(insertResult.rows[0])
+            }
+
+            await client.query("COMMIT")
+
+            return response.json(savedDeductions)
+
+        } catch (error) {
+            await client.query("ROLLBACK")
+            throw error
+        } finally {
+            client.release()
+        }
+    } catch (error) {
+        console.error("Failed to save income deductions:", error)
+
+        response.status(500).json({
+            message: "Failed to save income deductions"
         })
     }
 })
