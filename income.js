@@ -6,12 +6,15 @@ import {
     deactivateIncomeSources,
     reactivateIncomeSource,
     getIncomeDepositRules,
-    updateIncomeDepositRules
+    updateIncomeDepositRules,
+    getIncomeDeductions,
+    updateIncomeDeductions
 } from "./api/incomeSourcesApi.js"
 import { renderIncomeSourceModal } from "./incomeSourceModal.js"
 import { getAccounts } from "./api/accountsApi.js"
 import { getNextPayday } from "./utils/paydayCalculations.js"
 import { renderIncomeDepositModal } from "./incomeDepositModal.js"
+import { renderIncomeDeductionsModal } from "./incomeDeductionsModal.js"
 
 renderLayout({
     title: "Income",
@@ -104,6 +107,13 @@ const renderIncomeSources = () => {
                                         data-income-id="${incomeSource.id}"
                                     >
                                         Configure Deposits
+                                    </button>
+
+                                    <button
+                                        class="btn btn-sm btn-outline configureDeductionsButton"
+                                        data-income-id="${incomeSource.id}"
+                                    >
+                                        Configure Deductions
                                     </button>
 
                                     <button
@@ -543,6 +553,157 @@ incomeSourcesContainer.addEventListener("click", async (event) => {
         modal.showModal()
     } catch (error) {
         console.error("Could not load deposit rules:", error)
+    }
+})
+
+incomeSourcesContainer.addEventListener("click", async (event) => {
+    const button = event.target.closest(".configureDeductionsButton")
+
+    if (!button) {
+        return
+    }
+
+    const incomeSourceId = button.dataset.incomeId
+
+    try {
+        const deductions = await getIncomeDeductions(incomeSourceId)
+
+        const modal = renderIncomeDeductionsModal()
+
+        const deductionsContainer = document.getElementById("incomeDeductionsContainer")
+
+        deductionsContainer.innerHTML = ""
+
+        const addDeductionButton = document.getElementById("addIncomeDeductionButton")
+
+        const addDeductionRow = (existingDeduction = null) => {
+            const deductionRow = document.createElement("div")
+            deductionRow.className = "deductionRow border border-base-300 rounded-lg p-3 space-y-3"
+
+            deductionRow.innerHTML = `
+                <div>
+                    <label class="label">Deduction Name</label>
+                    <input
+                        type="text"
+                        class="input input-bordered w-full deductionNameInput"
+                        placeholder="Example: Health Insurance"
+                    />
+                </div>
+
+                <div>
+                    <label class="label">Category</label>
+                    <select class="select select-bordered w-full deductionCategorySelect">
+                        <option value="insurance">Insurance</option>
+                        <option value="retirement">Retirement</option>
+                        <option value="tax">Tax</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="label">Calculation Method</label>
+                    <select class="select select-bordered w-full deductionMethodSelect">
+                        <option value="fixed">Fixed Amount</option>
+                        <option value="percentage">Percentage</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="label">Amount ($)</label>
+                    <input
+                        type="number"
+                        min="0.01"
+                        step="0.01"
+                        class="input input-bordered w-full deductionValueInput"
+                    />
+                </div>
+
+                <button
+                    type="button"
+                    class="btn btn-sm btn-error btn-outline removeDeductionButton"
+                >
+                    Remove Deduction
+                </button>
+            `
+
+            if (existingDeduction) {
+                deductionRow.querySelector(".deductionNameInput").value = existingDeduction.name
+                deductionRow.querySelector(".deductionCategorySelect").value = existingDeduction.category
+                deductionRow.querySelector(".deductionMethodSelect").value = existingDeduction.method
+                deductionRow.querySelector(".deductionValueInput").value = existingDeduction.value
+            }
+
+            const removeButton = deductionRow.querySelector(".removeDeductionButton")
+
+            removeButton.addEventListener("click", () => {
+                deductionRow.remove()
+            })
+
+            deductionsContainer.appendChild(deductionRow)
+        }
+        
+        addDeductionButton.addEventListener("click", () => {
+            addDeductionRow()
+        })
+
+        deductions.forEach((deduction) => {
+            addDeductionRow(deduction)
+        })
+
+        const saveButton = document.getElementById("saveIncomeDeductionsButton")
+
+        saveButton.addEventListener("click", async () => {
+            const deductionRows = deductionsContainer.querySelectorAll(".deductionRow")
+
+            const updatedDeductions = []
+
+            for (const row of deductionRows) {
+                const name = row.querySelector(".deductionNameInput").value.trim()
+                const category = row.querySelector(".deductionCategorySelect").value
+                const method = row.querySelector(".deductionMethodSelect").value
+                const value = Number(row.querySelector(".deductionValueInput").value)
+
+                if (!name || !Number.isFinite(value) || value <= 0) {
+                    alert("Each deduction needs a name and an amount greater than zero.")
+                    return
+                }
+
+                if (method === "percentage" && value > 100) {
+                    alert("A percentage deduction cannot exceed 100%.")
+                    return
+                }
+
+                updatedDeductions.push({
+                    name: name,
+                    category: category,
+                    method: method,
+                    value: value
+                })
+            }
+
+            try {
+                saveButton.disabled = true
+                
+                await updateIncomeDeductions(incomeSourceId, updatedDeductions)
+
+                modal.close()
+            } catch (error) {
+                console.error("Could not save deductions:", error)
+                alert("Failed to save paycheck deductions.")
+            } finally {
+                saveButton.disabled = false
+            }
+        })
+
+        const closeButton = document.getElementById("closeDeductionsButton")
+
+        closeButton.addEventListener("click", () => {
+            modal.close()
+        })
+
+        modal.showModal()
+    } catch (error) {
+        console.error("Could not load income deductions:", error)
     }
 })
 

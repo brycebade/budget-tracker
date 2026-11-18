@@ -105,3 +105,34 @@ export const updateIncomeDepositRules = async (incomeSourceId, rules) => {
 
     return response.json()
 }
+
+export const getIncomeDeductions = async (incomeSourceId) => {
+    const response = await fetch(
+        `${INCOME_SOURCES_URL}/${incomeSourceId}/deductions`
+    )
+
+    if (!response.ok) {
+        throw new Error("Failed to load income deductions")
+    }
+
+    return response.json()
+}
+
+export const updateIncomeDeductions = async (incomeSourceId, deductions) => {
+    const response = await fetch(
+        `${INCOME_SOURCES_URL}/${incomeSourceId}/deductions`,
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ deductions })
+        }
+    )
+
+    if (!response.ok) {
+        throw new Error("Failed to save income deductions")
+    }
+
+    return response.json()
+}
