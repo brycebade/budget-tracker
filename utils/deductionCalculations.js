@@ -61,8 +61,8 @@ export const calculatePaycheckDeductions = (grossPay, deductions) => {
 
     return {
         grossPay: grossCents / 100,
-         totalDeductionCents: totalDeductionCents / 100,
-         netPay: (grossCents - totalDeductionCents) / 100,
-         breakdown: breakdown
+        totalDeductions: totalDeductionCents / 100,
+        netPay: (grossCents - totalDeductionCents) / 100,
+        breakdown: breakdown
     }
 }

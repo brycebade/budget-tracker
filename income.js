@@ -15,6 +15,10 @@ import { getAccounts } from "./api/accountsApi.js"
 import { getNextPayday } from "./utils/paydayCalculations.js"
 import { renderIncomeDepositModal } from "./incomeDepositModal.js"
 import { renderIncomeDeductionsModal } from "./incomeDeductionsModal.js"
+import { renderPaycheckEstimatorModal } from "./paycheckEstimatorModal.js"
+import { calculateGrossPay } from "./utils/paycheckCalculations.js"
+import { estimatePaycheck } from "./utils/paycheckEstimate.js"
+import { calculateDepositDistribution } from "./utils/depositCalculations.js"
 
 renderLayout({
     title: "Income",
@@ -115,6 +119,15 @@ const renderIncomeSources = () => {
                                     >
                                         Configure Deductions
                                     </button>
+
+                                    ${incomeSource.pay_type === "hourly" ? `
+                                        <button
+                                            class="btn btn-sm btn-primary estimatePaycheckButton"
+                                            data-income-id="${incomeSource.id}"
+                                        >
+                                            Estimate Paycheck
+                                        </button>
+                                    ` : ""}
 
                                     <button
                                         class="btn btn-sm btn-outline deactivateIncomeSourceButton"
@@ -705,6 +718,330 @@ incomeSourcesContainer.addEventListener("click", async (event) => {
     } catch (error) {
         console.error("Could not load income deductions:", error)
     }
+})
+
+incomeSourcesContainer.addEventListener("click", async (event) => {
+    const button = event.target.closest(".estimatePaycheckButton")
+
+    if (!button) {
+        return
+    }
+
+    const incomeSourceId = button.dataset.incomeId
+
+    const incomeSource = incomeSources.find((source) => {
+        return source.id === incomeSourceId
+    })
+
+    if (!incomeSource) {
+        console.error("Income source not found")
+        return
+    }
+
+    let deductions = []
+    let depositRules = []
+
+    try {
+        deductions = await getIncomeDeductions(incomeSourceId)
+        depositRules = await getIncomeDepositRules(incomeSourceId)
+
+        console.log("Estimator Deductions:", deductions)
+        console.log("Estimator Deposit Rules:", depositRules)
+    } catch (error) {
+        console.error("Failed to load paycheck settings:", error)
+        alert("Unable to load paycheck settings.")
+        return
+    }
+
+    const modal = renderPaycheckEstimatorModal(incomeSource)
+
+    const regularHoursInput = document.getElementById("estimatorRegularHours")
+    const overtimeHoursInput = document.getElementById("estimatorOvertimeHours")
+    const grossPayDisplay = document.getElementById("estimatorGrossPay")
+    const regularDifferentialHoursInput = document.getElementById("estimatorRegularDifferentialHours")
+    const overtimeDifferentialHoursInput = document.getElementById("estimatorOvertimeDifferentialHours")
+    const differentialPercentInput = document.getElementById("estimatorDifferentialPercent")
+    const additionalEarningsContainer = document.getElementById("estimatorAdditionalEarningsContainer")
+    const addEarningButton = document.getElementById("addEstimatorEarningButton")
+    const regularPayDisplay = document.getElementById("estimatorRegularPay")
+    const overtimePayDisplay = document.getElementById("estimatorOvertimePay")
+    const shiftDifferentialPayDisplay = document.getElementById("estimatorShiftDifferentialPay")
+    const additionalEarningsPayDisplay = document.getElementById("estimatorAdditionalEarningsPay")
+    const summaryGrossPayDisplay = document.getElementById("estimatorSummaryGrossPay")
+    const totalDeductionsDisplay = document.getElementById("estimatorTotalDeductions")
+    const netPayDisplay = document.getElementById("estimatorNetPay")
+    const deductionBreakdownContainer = document.getElementById("estimatorDeductionBreakdown")
+    const bankDepositsContainer = document.getElementById("estimatorBankDeposits")
+
+    const formatCurrency = (amount) => {
+        return amount.toLocaleString("en-US", {
+            style: "currency",
+            currency: "USD"
+        })
+    }
+
+    const updatePaycheckEstimate = () => {
+        try {
+            const earningRows = additionalEarningsContainer.querySelectorAll(".additionalEarningRow")
+
+            const additionalEarnings = []
+
+            for (const row of earningRows) {
+                const name = row.querySelector(".earningNameInput").value.trim()
+                const method = row.querySelector(".earningMethodSelect").value
+                const value = row.querySelector(".earningAmountInput").value
+
+                if (method === "hourly") {
+                    additionalEarnings.push({
+                        name: name,
+                        method: method,
+                        hours: value
+                    })
+                } else {
+                    additionalEarnings.push({
+                        name: name,
+                        method: method,
+                        amount: value
+                    })
+                }
+            }
+
+            const noWorkedHours = 
+                Number(regularHoursInput.value) === 0 &&
+                Number(overtimeHoursInput.value) === 0
+
+            const noAdditionalEarnings = additionalEarnings.every((earning) => {
+                const value = earning.method === "hourly"
+                    ? earning.hours
+                    : earning.amount
+
+                return Number(value) === 0
+            })
+
+            if (noWorkedHours && noAdditionalEarnings) {
+                regularPayDisplay.textContent = formatCurrency(0)
+                overtimePayDisplay.textContent = formatCurrency(0)
+                shiftDifferentialPayDisplay.textContent = formatCurrency(0)
+                additionalEarningsPayDisplay.textContent = formatCurrency(0)
+                grossPayDisplay.textContent = formatCurrency(0)
+                summaryGrossPayDisplay.textContent = formatCurrency(0)
+                totalDeductionsDisplay.textContent = "—"
+                netPayDisplay.textContent = "Enter hours or earnings"
+                deductionBreakdownContainer.innerHTML = ""
+                bankDepositsContainer.textContent = "Enter earnings to see expected deposits."
+
+                return
+
+            }
+
+            const payDetails = {
+                regularHours: Number(regularHoursInput.value),
+                overtimeHours: Number(overtimeHoursInput.value),
+                hourlyRate: Number(incomeSource.hourly_rate),
+                overtimeMultiplier: Number(incomeSource.overtime_multiplier),
+                regularDifferentialHours: Number(regularDifferentialHoursInput.value),
+                overtimeDifferentialHours: Number(overtimeDifferentialHoursInput.value),
+                differentialPercent: Number(differentialPercentInput.value),
+                additionalEarnings: additionalEarnings
+            }
+
+            let result
+
+            try {
+                result = estimatePaycheck(payDetails, deductions)
+            } catch (error) {
+                if (error.message !== "Deductions cannot exceed gross pay") {
+                    throw error
+                }
+
+                const grossResult = calculateGrossPay(payDetails)
+
+                regularPayDisplay.textContent = formatCurrency(grossResult.regularPay)
+                overtimePayDisplay.textContent = formatCurrency(grossResult.overtimePay)
+                shiftDifferentialPayDisplay.textContent = formatCurrency(grossResult.shiftDifferentialPay)
+                additionalEarningsPayDisplay.textContent = formatCurrency(grossResult.additionalEarningsPay)
+                grossPayDisplay.textContent = formatCurrency(grossResult.grossPay)
+                summaryGrossPayDisplay.textContent = formatCurrency(grossResult.grossPay)
+                totalDeductionsDisplay.textContent = "Exceed gross pay"
+                netPayDisplay.textContent = "Insufficient earnings"
+                deductionBreakdownContainer.innerHTML = ""
+                bankDepositsContainer.textContent = "Not available until earnings over configured deduction"
+
+                return
+            }
+
+            bankDepositsContainer.innerHTML = ""
+
+            if (depositRules.length === 0) {
+                bankDepositsContainer.textContent = "No Deposit distribution configured."
+            } else {
+                try {
+                    const distribution = calculateDepositDistribution(
+                        result.netPay,
+                        depositRules
+                    )
+
+                    distribution.forEach((deposit) => {
+                        const account = accounts.find((account) => {
+                            return account.id === deposit.accountId
+                        })
+
+                        const depositRow = document.createElement("div")
+                        depositRow.className = "flex justify-between items-center gap-3"
+
+                        const accountName = document.createElement("span")
+                        accountName.className = "text-sm"
+                        accountName.textContent = account
+                            ? account.name
+                            : "Unknown account"
+
+                        const depositAmount = document.createElement("span")
+                        depositAmount.className = "font-semibold"
+                        depositAmount.textContent = formatCurrency(deposit.amount)
+
+                        depositRow.append(accountName, depositAmount)
+
+                        bankDepositsContainer.appendChild(depositRow)
+                    })
+                } catch (error) {
+                    bankDepositsContainer.textContent = 
+                        "Unable to distribute this paycheck using the configured rules."
+
+                    console.warn("Deposit distribution error:", error)
+                }
+            }
+
+            regularPayDisplay.textContent = formatCurrency(result.regularPay)
+            overtimePayDisplay.textContent = formatCurrency(result.overtimePay)
+            shiftDifferentialPayDisplay.textContent = formatCurrency(result.shiftDifferentialPay)
+            additionalEarningsPayDisplay.textContent = formatCurrency(result.additionalEarningsPay)
+            grossPayDisplay.textContent = formatCurrency(result.grossPay)
+            summaryGrossPayDisplay.textContent = formatCurrency(result.grossPay)
+            totalDeductionsDisplay.textContent = `-${formatCurrency(result.totalDeductions)}`
+            netPayDisplay.textContent = formatCurrency(result.netPay)
+
+            deductionBreakdownContainer.innerHTML = ""
+
+            result.deductionsBreakdown.forEach((deduction) => {
+                const deductionRow = document.createElement("div")
+
+                deductionRow.className = "flex justify-between text-sm gap-3"
+
+                const deductionName = document.createElement("span")
+                deductionName.className = "text-base-content/70"
+                deductionName.textContent = deduction.name
+
+                const deductionAmount = document.createElement("span")
+                deductionAmount.textContent = `-${formatCurrency(deduction.amount)}`
+
+                deductionRow.append(deductionName, deductionAmount)
+
+                deductionBreakdownContainer.appendChild(deductionRow)
+            })
+        } catch (error) {
+            grossPayDisplay.textContent = "Invalid earnings"
+            regularPayDisplay.textContent = "—"
+            overtimePayDisplay.textContent = "—"
+            shiftDifferentialPayDisplay.textContent = "—"
+            additionalEarningsPayDisplay.textContent = "—"
+            summaryGrossPayDisplay.textContent = "—"
+            totalDeductionsDisplay.textContent = "—"
+            netPayDisplay.textContent = "—"
+            deductionBreakdownContainer.innerHTML = "" 
+            console.error(error)
+        }
+    }
+
+    const addEarningRow = () => {
+        const earningRow = document.createElement("div")
+
+        earningRow.className = "additionalEarningRow border border-base-300 rounded-lg p-3 space-y-2"
+
+        earningRow.innerHTML = `
+            <div>
+                <label class="label">Earning Name</label>
+                <input
+                    type="text"
+                    class="input input-bordered w-full earningNameInput"
+                    placeholder="Example: On-Call Stipend"
+                />
+            </div>
+
+            <div>
+                <label class="label">Calculation Method</label>
+                <select class="select select-bordered w-full earningMethodSelect">
+                    <option value="fixed">Fixed Dollar Amount</option>
+                    <option value="hourly">Hourly Pay</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="label earningValueLabel">Amount ($)</label>
+                <input
+                    type="number"
+                    class="input input-bordered w-full earningAmountInput"
+                    min="0"
+                    step="0.01"
+                    value="0"
+                />
+            </div>
+
+            <button
+                type="button"
+                class="btn btn-sm btn-error btn-outline removeEarningButton"
+            >
+                Remove
+            </button>
+        `
+
+        const removeButton = earningRow.querySelector(".removeEarningButton")
+
+        removeButton.addEventListener("click", () => {
+            earningRow.remove()
+            updatePaycheckEstimate()
+        })
+
+        const earningAmountInput = earningRow.querySelector(".earningAmountInput")
+
+        const earningMethodSelect = earningRow.querySelector(".earningMethodSelect")
+        const earningValueLabel = earningRow.querySelector(".earningValueLabel")
+
+        earningMethodSelect.addEventListener("change", () => {
+            if (earningMethodSelect.value === "hourly") {
+                earningValueLabel.textContent = "Paid Hours"
+            } else {
+                earningValueLabel.textContent = "Amount ($)"
+            }
+            
+            earningAmountInput.value = "0"
+            
+            updatePaycheckEstimate()
+        })
+
+        earningAmountInput.addEventListener("input", updatePaycheckEstimate)
+
+        additionalEarningsContainer.appendChild(earningRow)
+    }
+
+    addEarningButton.addEventListener("click", () => {
+        addEarningRow()
+    })
+
+    regularHoursInput.addEventListener("input", updatePaycheckEstimate)
+    overtimeHoursInput.addEventListener("input", updatePaycheckEstimate)
+    regularDifferentialHoursInput.addEventListener("input", updatePaycheckEstimate)
+    overtimeDifferentialHoursInput.addEventListener("input", updatePaycheckEstimate)
+    differentialPercentInput.addEventListener("input", updatePaycheckEstimate)
+
+    updatePaycheckEstimate()
+
+    const closeButton = document.getElementById("closePaycheckEstimatorButton")
+
+    closeButton.addEventListener("click", () => {
+        modal.close()
+    })
+
+    modal.showModal()
 })
 
 actionButton.addEventListener("click", () => {

@@ -990,6 +990,30 @@
     }
   }
   @layer daisyui.l1.l2.l3 {
+    .collapse-content {
+      --overflow-delay: 0s;
+      content-visibility: hidden;
+      overflow: clip;
+      grid-column-start: 1;
+      grid-row-start: 2;
+      min-height: 0;
+      padding-left: 1rem;
+      padding-right: 1rem;
+      cursor: unset;
+    }
+    @supports not (content-visibility: hidden) {
+      .collapse-content {
+        visibility: hidden;
+      }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .collapse-content {
+        transition: overflow 0.2s allow-discrete var(--overflow-delay), content-visibility 0.2s allow-discrete, visibility 0.2s allow-discrete, min-height 0.2s ease-out allow-discrete, padding 0.1s ease-out 20ms, background-color 0.2s ease-out;
+      }
+    }
+    details > .collapse-content {
+      content-visibility: visible;
+    }
     .filter {
       display: flex;
       flex-wrap: wrap;
@@ -2899,6 +2923,9 @@
   .gap-2 {
     gap: calc(var(--spacing) * 2);
   }
+  .gap-3 {
+    gap: calc(var(--spacing) * 3);
+  }
   .gap-4 {
     gap: calc(var(--spacing) * 4);
   }
@@ -2915,6 +2942,11 @@
     --tw-space-y-reverse: 0;
     margin-block-start: calc(var(--spacing) * var(--tw-space-y-reverse));
     margin-block-end: calc(var(--spacing) * calc(1 - var(--tw-space-y-reverse)));
+  }
+  :where(.space-y-2 > :not(:last-child)) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse)));
   }
   :where(.space-y-3 > :not(:last-child)) {
     --tw-space-y-reverse: 0;
@@ -3060,6 +3092,9 @@
   .py-4 {
     padding-block: calc(var(--spacing) * 4);
   }
+  .pt-3 {
+    padding-top: calc(var(--spacing) * 3);
+  }
   .pt-4 {
     padding-top: calc(var(--spacing) * 4);
   }
@@ -3074,6 +3109,9 @@
   }
   .pb-2 {
     padding-bottom: calc(var(--spacing) * 2);
+  }
+  .pl-3 {
+    padding-left: calc(var(--spacing) * 3);
   }
   .text-right {
     text-align: right;
@@ -3281,6 +3319,9 @@
     }
     .sm\:inline {
       display: inline;
+    }
+    .sm\:grid-cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
   @media (width >= 48rem) {

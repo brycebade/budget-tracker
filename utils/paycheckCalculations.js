@@ -62,22 +62,44 @@ export const calculateShiftDifferential = (hours, hourlyRate, differentialPercen
     return Math.round((differentialPay + Number.EPSILON) * 100) / 100
 }
 
-export const calculateAdditionalEarnings = (earnings) => {
+export const calculateAdditionalEarnings = (earnings, hourlyRate) => {
     if (!Array.isArray(earnings)) {
         throw new Error("Additional earnings must be an array")
     }
 
     const totalCents = earnings.reduce((total, earning) => {
-        const amount = Number(earning.amount)
+        let amount
 
-        if(
-            earning.amount === null ||
-            earning.amount === undefined ||
-            earning.amount === "" ||
-            !Number.isFinite(amount) ||
-            amount < 0
+        const method = earning.method ?? "fixed"
+
+        const rawValue = method === "hourly"
+            ? earning.hours
+            : earning.amount
+
+        if (
+            rawValue === null ||
+            rawValue === undefined ||
+            String(rawValue).trim() === "" ||
+            !["number", "string"].includes(typeof rawValue) ||
+            !Number.isFinite(Number(rawValue)) ||
+            Number(rawValue) < 0
         ) {
-            throw new Error("Additional earnings must be valid non-negative amounts")
+            throw new Error("Additional earnings must be valid non-negative numbers")
+        }
+
+        if (method === "hourly") {
+            amount = calculateRegularPay(
+                earning.hours,
+                hourlyRate
+            )
+        } else if (method === "fixed") {
+            amount = Number(earning.amount)
+        } else {
+            throw new Error("Invalid earning method")
+        }
+
+        if (!Number.isFinite(amount) || amount < 0) {
+            throw new Error("Invalid additional earning amount")
         }
 
         return total + Math.round(amount * 100)
@@ -110,7 +132,7 @@ export const calculateGrossPay = ({
     const regularDifferential = calculateShiftDifferential(regularDifferentialHours, hourlyRate, differentialPercent)
     const overtimeDifferential = calculateShiftDifferential(overtimeDifferentialHours, hourlyRate, differentialPercent, overtimeMultiplier)
     const shiftDifferentialPay = Math.round((regularDifferential + overtimeDifferential) * 100) / 100
-    const additionalEarningsPay = calculateAdditionalEarnings(additionalEarnings)
+    const additionalEarningsPay = calculateAdditionalEarnings(additionalEarnings, hourlyRate)
 
     const totalCents = 
         Math.round(regularPay * 100) +
