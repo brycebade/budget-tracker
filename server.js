@@ -1416,6 +1416,24 @@ const validateIncomeDeductions = (deductions) => {
         ) {
             return "Deduction percentage cannot exceed 100%"
         }
+
+        const taxTreatmentFields = [
+            "reduces_federal_taxable_wages",
+            "reduces_state_taxable_wages",
+            "reduces_fica_taxable_wages"
+        ]
+
+        for (const field of taxTreatmentFields) {
+            const value = deduction[field]
+
+            if (
+                value !== undefined &&
+                value !== null &&
+                typeof value !== "boolean"
+            ) {
+                return `${field} must be true or false`
+            }
+        }
     }
 
     return null
@@ -1879,7 +1897,10 @@ app.get("/api/income-sources/:id/deductions", async (request, response) => {
                     deductions.method,
                     deductions.value,
                     deductions.active,
-                    deductions.created_at
+                    deductions.created_at,
+                    deductions.reduces_federal_taxable_wages,
+                    deductions.reduces_state_taxable_wages,
+                    deductions.reduces_fica_taxable_wages
                 FROM income_deductions AS deductions
                 JOIN income_sources AS sources
                     ON sources.id = deductions.income_source_id
@@ -1952,9 +1973,12 @@ app.put("/api/income-sources/:id/deductions", async (request, response) => {
                             name,
                             category,
                             method,
-                            value
+                            value,
+                            reduces_federal_taxable_wages,
+                            reduces_state_taxable_wages,
+                            reduces_fica_taxable_wages
                         )
-                        VALUES ($1, $2, $3, $4, $5)
+                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
                         RETURNING *
                     `,
                     [
@@ -1962,7 +1986,10 @@ app.put("/api/income-sources/:id/deductions", async (request, response) => {
                         deduction.name.trim(),
                         deduction.category,
                         deduction.method,
-                        deduction.value
+                        deduction.value,
+                        deduction.reduces_federal_taxable_wages ?? false,
+                        deduction.reduces_state_taxable_wages ?? false,
+                        deduction.reduces_fica_taxable_wages ?? false
                     ]
                 )
 

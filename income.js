@@ -631,6 +631,40 @@ incomeSourcesContainer.addEventListener("click", async (event) => {
                     />
                 </div>
 
+                <div class="border-t border-base-300 pt-3 space-y-3">
+                    <h4 class="font-semibold text-sm">
+                        Tax Treatment
+                    </h4>
+
+                    <p class="text-xs text-base-content/60">
+                        Select which taxable wages this deduction reduces.
+                    </p>
+
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input
+                            type="checkbox"
+                            class="checkbox checkbox-sm deductionFederalTaxCheckbox"
+                        />
+                        <span class="text-sm">Reduces Federal Taxable Wages</span>
+                    </label>
+
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input
+                            type="checkbox"
+                            class="checkbox checkbox-sm deductionStateTaxCheckbox"
+                        />
+                        <span class="text-sm">Reduces State Taxable Wages</span>
+                    </label>
+
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input
+                            type="checkbox"
+                            class="checkbox checkbox-sm deductionFicaTaxCheckbox"
+                        />
+                        <span class="text-sm">Reduces Social Security / Medicare Wages</span>
+                    </label>
+                </div>
+
                 <button
                     type="button"
                     class="btn btn-sm btn-error btn-outline removeDeductionButton"
@@ -644,6 +678,15 @@ incomeSourcesContainer.addEventListener("click", async (event) => {
                 deductionRow.querySelector(".deductionCategorySelect").value = existingDeduction.category
                 deductionRow.querySelector(".deductionMethodSelect").value = existingDeduction.method
                 deductionRow.querySelector(".deductionValueInput").value = existingDeduction.value
+
+                deductionRow.querySelector(".deductionFederalTaxCheckbox").checked = 
+                    existingDeduction.reduces_federal_taxable_wages === true
+
+                deductionRow.querySelector(".deductionStateTaxCheckbox").checked =
+                    existingDeduction.reduces_state_taxable_wages === true
+                
+                deductionRow.querySelector(".deductionFicaTaxCheckbox").checked =
+                    existingDeduction.reduces_fica_taxable_wages === true
             }
 
             const removeButton = deductionRow.querySelector(".removeDeductionButton")
@@ -690,7 +733,10 @@ incomeSourcesContainer.addEventListener("click", async (event) => {
                     name: name,
                     category: category,
                     method: method,
-                    value: value
+                    value: value,
+                    reduces_federal_taxable_wages: row.querySelector(".deductionFederalTaxCheckbox").checked,
+                    reduces_state_taxable_wages: row.querySelector(".deductionStateTaxCheckbox").checked,
+                    reduces_fica_taxable_wages: row.querySelector(".deductionFicaTaxCheckbox").checked
                 })
             }
 
