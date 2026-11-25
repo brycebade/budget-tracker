@@ -1,6 +1,7 @@
 import { calculateGrossPay } from "./paycheckCalculations.js"
 import { calculatePaycheckDeductions } from "./deductionCalculations.js"
 import { calculateDepositDistribution } from "./depositCalculations.js"
+import { calculatePayrollTaxEstimate } from "./taxCalculations.js"
 
 export const estimatePaycheck = (payDetails, deductions) => {
     const grossResults = calculateGrossPay(payDetails)
@@ -23,5 +24,23 @@ export const estimatePaycheckDeposits = (payDetails, deductions, depositRules) =
     return {
         ...estimate,
         depositDistribution: depositDistribution
+    }
+}
+
+export const estimatePaycheckWithFica = (payDetails, deductions, taxOptions = {}) => {
+    const estimate = estimatePaycheck(payDetails, deductions)
+    const payrollTaxes = calculatePayrollTaxEstimate(estimate.grossPay, deductions, taxOptions)
+    const fica = payrollTaxes.ficaWithholding
+    const netCents = Math.round(estimate.netPay * 100) - Math.round(fica.totalFica * 100)
+
+    if (netCents < 0) {
+        throw new Error("Deductions and taxes exceed gross pay")
+    }
+
+    return {
+        ...estimate,
+        taxableWages: payrollTaxes.taxableWages,
+        ficaWithholding: fica,
+        estimatedNetAfterFica: netCents / 100
     }
 }
