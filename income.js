@@ -587,7 +587,9 @@ incomeSourcesContainer.addEventListener("click", async (event) => {
 
         deductionsContainer.innerHTML = ""
 
-        const addDeductionButton = document.getElementById("addIncomeDeductionButton")
+        const originalAddButton = document.getElementById("addIncomeDeductionButton")
+        const addDeductionButton = originalAddButton.cloneNode(true)
+        originalAddButton.replaceWith(addDeductionButton)
 
         const addDeductionRow = (existingDeduction = null) => {
             const deductionRow = document.createElement("div")
@@ -610,6 +612,20 @@ incomeSourcesContainer.addEventListener("click", async (event) => {
                         <option value="retirement">Retirement</option>
                         <option value="tax">Tax</option>
                         <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="deductionTaxTypeField hidden">
+                    <label class="label">Tax Type</label>
+
+                    <select class="select select-bordered w-full deductionTaxTypeSelect">
+                        <option value="">Unclassified - Review Required</option>
+                        <option value="federal_income">Federal Income Tax</option>
+                        <option value="state_income">State Income Tax</option>
+                        <option value="social_security">Social Security</option>
+                        <option value="medicare">Medicare</option>
+                        <option value="additional_medicare">Additional Medicare</option>
+                        <option value="other_tax">Other Tax</option>
                     </select>
                 </div>
 
@@ -689,6 +705,26 @@ incomeSourcesContainer.addEventListener("click", async (event) => {
                     existingDeduction.reduces_fica_taxable_wages === true
             }
 
+            const categorySelect = deductionRow.querySelector(".deductionCategorySelect")
+            const taxTypeField = deductionRow.querySelector(".deductionTaxTypeField")
+            const taxTypeSelect = deductionRow.querySelector(".deductionTaxTypeSelect")
+            
+            taxTypeSelect.value = existingDeduction?.tax_type ?? ""
+
+            const updateTaxTypeVisibility = () => {
+                const isTax = categorySelect.value === "tax"
+
+                taxTypeField.classList.toggle("hidden", !isTax)
+
+                if (!isTax) {
+                    taxTypeSelect.value = ""
+                }
+            }
+
+            categorySelect.addEventListener("change", updateTaxTypeVisibility)
+
+            updateTaxTypeVisibility()
+
             const removeButton = deductionRow.querySelector(".removeDeductionButton")
 
             removeButton.addEventListener("click", () => {
@@ -706,7 +742,11 @@ incomeSourcesContainer.addEventListener("click", async (event) => {
             addDeductionRow(deduction)
         })
 
-        const saveButton = document.getElementById("saveIncomeDeductionsButton")
+        const originalSaveButton = document.getElementById("saveIncomeDeductionsButton")
+
+        const saveButton = originalSaveButton.cloneNode(true)
+
+        originalSaveButton.replaceWith(saveButton)
 
         saveButton.addEventListener("click", async () => {
             const deductionRows = deductionsContainer.querySelectorAll(".deductionRow")
@@ -716,6 +756,7 @@ incomeSourcesContainer.addEventListener("click", async (event) => {
             for (const row of deductionRows) {
                 const name = row.querySelector(".deductionNameInput").value.trim()
                 const category = row.querySelector(".deductionCategorySelect").value
+                const taxType = row.querySelector(".deductionTaxTypeSelect").value
                 const method = row.querySelector(".deductionMethodSelect").value
                 const value = Number(row.querySelector(".deductionValueInput").value)
 
@@ -736,7 +777,8 @@ incomeSourcesContainer.addEventListener("click", async (event) => {
                     value: value,
                     reduces_federal_taxable_wages: row.querySelector(".deductionFederalTaxCheckbox").checked,
                     reduces_state_taxable_wages: row.querySelector(".deductionStateTaxCheckbox").checked,
-                    reduces_fica_taxable_wages: row.querySelector(".deductionFicaTaxCheckbox").checked
+                    reduces_fica_taxable_wages: row.querySelector(".deductionFicaTaxCheckbox").checked,
+                    tax_type: category === "tax" ? taxType : null
                 })
             }
 
@@ -754,7 +796,11 @@ incomeSourcesContainer.addEventListener("click", async (event) => {
             }
         })
 
-        const closeButton = document.getElementById("closeDeductionsButton")
+        const originalCloseButton = document.getElementById("closeDeductionsButton")
+
+        const closeButton = originalCloseButton.cloneNode(true)
+
+        originalCloseButton.replaceWith(closeButton)
 
         closeButton.addEventListener("click", () => {
             modal.close()
